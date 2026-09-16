@@ -1,5 +1,9 @@
 # BIOBUZZ 2026–27 — FTC Team 26282
 
+Background, decision history, verified API details and environment
+troubleshooting live in `docs/PROJECT-NOTES.md` — read it when you need the
+reasoning behind a decision or hit an environment problem.
+
 FTC DECODE-successor season code. Mecanum drivebase, Pinpoint odometry, turret
 shooter. Written by one student programmer who also codes FRC Team 5817.
 
