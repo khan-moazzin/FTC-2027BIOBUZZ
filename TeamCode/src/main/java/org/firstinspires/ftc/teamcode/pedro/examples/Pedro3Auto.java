@@ -24,7 +24,7 @@ public class Pedro3Auto extends OpMode {
     @Override
     public void init() {
         Scheduler.reset();
-        follower = Constants.create(hardwareMap)
+        follower = Constants.createFollower(hardwareMap)
                 .withLogger(log -> telemetry.addData("Pedro", log.toString()));
         DemoPaths paths = new DemoPaths(false);
         follower.setPose(paths.start);

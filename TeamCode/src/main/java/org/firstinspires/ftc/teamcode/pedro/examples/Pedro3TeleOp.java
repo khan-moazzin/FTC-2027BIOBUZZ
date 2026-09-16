@@ -16,7 +16,7 @@ public class Pedro3TeleOp extends OpMode {
 
     @Override
     public void init() {
-        follower = Constants.create(hardwareMap)
+        follower = Constants.createFollower(hardwareMap)
                 .withLogger(log -> telemetry.addData("Pedro", log.toString()));
         // Heading zero is the robot's forward direction at initialization.
         follower.setPose(Pose.zero());
