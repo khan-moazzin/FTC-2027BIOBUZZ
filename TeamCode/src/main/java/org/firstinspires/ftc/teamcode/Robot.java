@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Hood;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 
 
@@ -17,6 +18,7 @@ public class Robot {
     public Turret turret;
     public Hood hood;
     public Flywheel flywheel;
+    public Limelight limelight;
 
     private Telemetry telemetry;
 
@@ -28,6 +30,7 @@ public class Robot {
         turret = new Turret(hw);
         hood = new Hood(hw);
         flywheel = new Flywheel(hw);
+        limelight = new Limelight(hw);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -35,7 +38,18 @@ public class Robot {
 
     public void update() {
         drive.update();
+        updateVision();
         sendTelemetry();
+    }
+
+    /** Continuous correction: every valid frame fuses in, timestamped back through the latency. */
+    private void updateVision() {
+        limelight.update();
+        if (!limelight.hasTarget()) return;
+
+        drive.addVisionMeasurement(
+                Limelight.robotPose(limelight.cameraPose(), turret.getAngle()),
+                System.nanoTime() - (long) (limelight.latencyMs() * 1e6));
     }
 
     public void sendTelemetry() {
@@ -49,5 +63,7 @@ public class Robot {
         telemetry.addData("Flywheel RPM", flywheel.getRpm());
         telemetry.addData("Flywheel Target", flywheel.getTargetRpm());
         telemetry.addData("Flywheel At Speed", flywheel.atSpeed());
+        telemetry.addData("LL Target", limelight.hasTarget());
+        telemetry.addData("LL tx", limelight.tx());
     }
 }

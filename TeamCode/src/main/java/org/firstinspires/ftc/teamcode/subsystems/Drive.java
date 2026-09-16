@@ -5,6 +5,7 @@ import com.pedropathing.follower.ManualDrive;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.behaviors.InterruptedBehavior;
 import com.pedropathing.ivy.commands.Commands;
+import com.pedropathing.localization.FusionLocalizer;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,13 +16,20 @@ import java.util.function.DoubleSupplier;
 
 public class Drive {
 
+    private final FusionLocalizer localizer;
     private final Follower follower;
 
     private double headingOffset = 0.0;
     private boolean robotOriented = false;
 
     public Drive(HardwareMap hw) {
-        follower = Constants.createFollower(hw);
+        localizer = Constants.createLocalizer(hw);
+        follower = Constants.createFollower(hw, localizer);
+    }
+
+    /** Vision pose in, timestamp in System.nanoTime() minus camera latency. */
+    public void addVisionMeasurement(Pose pose, long timestampNanos) {
+        localizer.addMeasurement(pose, timestampNanos);
     }
 
     public void update() {
@@ -66,6 +74,7 @@ public class Drive {
     public void resetHeading() {
         headingOffset = follower.pose().heading();
     }
+
 
     public void toggleRobotOriented() {
         robotOriented = !robotOriented;

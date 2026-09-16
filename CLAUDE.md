@@ -142,7 +142,24 @@ negates none of them and drives inverted — do not copy it.
 currently in those blocks is a conservative placeholder so an untuned robot
 crawls. Replace generated blocks wholesale; do not hand-edit individual numbers.
 
+## Turret: bounded, not multi-turn
+
+Settled: two Axon MAX servos, no motor. `Servo.setPosition(0..1)` is absolute over
+one servo revolution, so the turret cannot accumulate turns and there is nothing
+to unwind. `Turret.splitAim()` is the final design, not a placeholder: bounded
++/-120, turret pins at its limit, drivetrain takes the remainder. Revisit only if
+the mechanism ever becomes motor-driven.
+
+Known gap: `splitAim` slams the turret +120 -> -120 as a target crosses directly
+behind the robot. Needs hysteresis in the shooter layer.
+
 ## Open questions
+
+- **Limelight mount offsets are zeros, pending CAD.** `LL_FORWARD_FROM_TURRET_IN`,
+  `TURRET_FORWARD_IN`, `TURRET_LEFT_IN` in Constants. Vision pose is wrong by those
+  offsets until they are measured. **Remind Moazzin once the robot is CADed.**
+- `BiobuzzVision.java` is dead code: it needs a webcam and there is none. Kept only
+  for the HIVE pivot values, which are now copied into Constants.
 
 - `FLYWHEEL_TICKS_PER_REV = 28.0` assumes a bare 1:1 goBILDA motor. If the
   flywheel motors are geared this is wrong by the gear ratio and every RPM number

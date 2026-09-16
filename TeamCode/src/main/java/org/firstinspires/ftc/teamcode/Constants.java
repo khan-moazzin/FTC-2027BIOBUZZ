@@ -5,7 +5,9 @@ import com.pedropathing.algorithm.ForesightConfig;
 import com.pedropathing.controllers.Controller;
 import com.pedropathing.drivetrain.Drivetrain;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.FusionLocalizer;
 import com.pedropathing.localization.Localizer;
+import com.pedropathing.math.Pose;
 import com.pedropathing.math.Matrix;
 import com.pedropathing.math.Vector2D;
 import com.pedropathing.revhub.drivetrains.Mecanum;
@@ -34,28 +36,41 @@ public class Constants {
     public static double INTAKE_IDLE = 0.0;
 
     // ================= FLYWHEEL =================
-    /** Encoder ticks per output revolution. goBILDA motor dependent. */
     public static double FLYWHEEL_TICKS_PER_REV = 28.0;
-
-    /** RPM error that still counts as up to speed. */
     public static double FLYWHEEL_TOLERANCE = 75.0;
 
     // ================= TURRET =================
-    // Servo units [0, 1] over 360 degrees of travel.
+    // Servo units [0, 1]. TURRET_CENTER is the position that points the turret
+    // straight forward, i.e. 0 degrees.
     public static double TURRET_MIN = 0.15;
     public static double TURRET_MAX = 0.85;
     public static double TURRET_CENTER = 0.5;
 
+    /** Total travel between TURRET_MIN and TURRET_MAX. PLACEHOLDER: measure on the real turret.
+     *  At center 0.5 that is -120 to +120. */
+    public static double TURRET_RANGE_DEGREES = 240.0;
+
     // ================= HOOD =================
-    // Servo units [0, 1].
     public static double HOOD_MIN = 0.15;
     public static double HOOD_MAX = 0.85;
     public static double HOOD_STOW = 0.15;
 
+    // ================= VISION =================
+    // HIVE pivots, Pedro field inches. Taken from BiobuzzVision; verify against official CAD.
+    public static double RED_HIVE_X = 59.25,  RED_HIVE_Y = 72.0;
+    public static double BLUE_HIVE_X = 84.75, BLUE_HIVE_Y = 72.0;
+
+    /** AprilTag pipeline on the Limelight. */
+    public static int LIMELIGHT_PIPELINE = 1;
+
+    // PLACEHOLDER: robot not CADed yet. Camera offset ahead of the turret axis, inches.
+    public static double LL_FORWARD_FROM_TURRET_IN = 0.0;
+    // PLACEHOLDER: robot not CADed yet. Turret axis from robot center, robot frame (+fwd, +left).
+    public static double TURRET_FORWARD_IN = 0.0;
+    public static double TURRET_LEFT_IN = 0.0;
+
     // ================= LOCALIZER =================
     // TUNER: PinpointTuner, pod type CUSTOM; podtypes
-    // defaults to goBILDA_4_BAR_POD. Leaving ticksPerUnit unset
-    // silently applies goBILDA's resolution and every distance is wrong.
 
     public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
         c.name.set("pinpoint");
@@ -108,15 +123,22 @@ public class Constants {
     // FOLLOWER FACTORY
     // -----------------------------------------------------
     public static Follower createFollower(HardwareMap hw) {
-        return new Follower(
-                createLocalizer(hw),
-                createDrivetrain(hw),
-                new Foresight(foresightConfig)
-        );
+        return createFollower(hw, createLocalizer(hw));
     }
 
-    public static Localizer createLocalizer(HardwareMap hw) {
-        return new PinpointLocalizer(hw, localizerConfig);
+    /** Overload so Drive can keep a typed handle for addMeasurement(). */
+    public static Follower createFollower(HardwareMap hw, Localizer localizer) {
+        return new Follower(localizer, createDrivetrain(hw), new Foresight(foresightConfig));
+    }
+
+    /** Pinpoint wrapped in Pedro's Kalman filter so Limelight frames fuse in by timestamp. */
+    public static FusionLocalizer createLocalizer(HardwareMap hw) {
+        return new FusionLocalizer(
+                new PinpointLocalizer(hw, localizerConfig),
+                new Pose(1.0, 1.0, Math.toRadians(5)),     // initial covariance
+                new Pose(0.05, 0.05, Math.toRadians(0.5)), // process variance per update
+                new Pose(2.0, 2.0, Math.toRadians(10)),    // measurement variance: TUNER, trust odom first
+                50);
     }
 
     public static Drivetrain createDrivetrain(HardwareMap hw) {
