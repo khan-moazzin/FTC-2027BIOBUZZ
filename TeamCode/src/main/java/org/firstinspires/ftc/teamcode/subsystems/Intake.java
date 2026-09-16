@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.ivy.Command;
-import com.pedropathing.ivy.commands.Commands;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -33,10 +32,6 @@ public class Intake {
                 .setStart(() -> motor.setPower(OUTTAKE))
                 .setEnd(end -> motor.setPower(INTAKE_IDLE))
                 .requiring(this);
-    }
-
-    public Command stop() {
-        return Commands.instant(() -> motor.setPower(INTAKE_IDLE)).requiring(this);
     }
 
     // -----------------------------------------------------
