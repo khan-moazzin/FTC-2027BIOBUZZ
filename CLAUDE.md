@@ -63,9 +63,12 @@ public Command intake() {
 }
 ```
 
-`setEnd` must make the mechanism safe on every exit path — natural, interrupted
-and suspended all route through it. Leave `done()` at its default `false` for
-hold-to-run mechanisms and bound them at the call site with `.until(...)`.
+`setEnd` must make the mechanism safe on every scheduled exit path — natural,
+interrupted and suspended all route through it. `Scheduler.reset()` is the one
+exception: Ivy clears its collections without calling command end callbacks, so
+use it only at OpMode boundaries where the FTC runtime disables hardware. Leave
+`done()` at its default `false` for hold-to-run mechanisms and bound them at the
+call site with `.until(...)`.
 
 ### OpMode pattern
 
@@ -101,6 +104,8 @@ match what the tuners generate verbatim — `localizerConfig`, `drivetrainConfig
 which guarantees the tuner measures the config the robot actually drives.
 
 An OpMode never constructs its own `Follower`. `Drive` builds it, once.
+Teleop driving is always field-oriented using the Pinpoint/localizer heading;
+there is no robot-oriented toggle.
 
 ## Hardware
 
@@ -142,16 +147,17 @@ negates none of them and drives inverted — do not copy it.
 currently in those blocks is a conservative placeholder so an untuned robot
 crawls. Replace generated blocks wholesale; do not hand-edit individual numbers.
 
-## Turret: bounded, not multi-turn
+## Turret: full revolution, not continuous rotation
 
-Settled: two Axon MAX servos, no motor. `Servo.setPosition(0..1)` is absolute over
-one servo revolution, so the turret cannot accumulate turns and there is nothing
-to unwind. `Turret.splitAim()` is the final design, not a placeholder: bounded
-+/-120, turret pins at its limit, drivetrain takes the remainder. Revisit only if
-the mechanism ever becomes motor-driven.
+Settled: two Axon MAX servos drive the turret 1:1, with one logically reversed
+because the servos face each other. Logical servo position 0.5 is turret zero and
+points straight forward. The full 0.0–1.0 range maps to -180 through +180 degrees.
+The turret can reach every bearing, but it cannot accumulate turns.
 
-Known gap: `splitAim` slams the turret +120 -> -120 as a target crosses directly
-behind the robot. Needs hysteresis in the shooter layer.
+The -180/+180 endpoints point in the same direction but are opposite ends of the
+positional servo range. Aiming must manage that wrap seam deliberately so a target
+crossing directly behind the robot does not command an unnecessary full-revolution
+sweep. `Turret.getAngle()` is the commanded angle, not measured turret feedback.
 
 ## Open questions
 
@@ -164,8 +170,7 @@ behind the robot. Needs hysteresis in the shooter layer.
 - `FLYWHEEL_TICKS_PER_REV = 28.0` assumes a bare 1:1 goBILDA motor. If the
   flywheel motors are geared this is wrong by the gear ratio and every RPM number
   is off. Needs the part number.
-- Turret and hood travel limits (0.15 / 0.85) are placeholders; measure on the
-  robot.
+- Hood travel limits (0.15 / 0.85) are placeholders; measure on the robot.
 - Flywheel velocity PIDF is deliberately at hub defaults — tune it with the
   shooter work, do not invent values.
 

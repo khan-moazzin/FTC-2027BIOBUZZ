@@ -49,6 +49,8 @@ public class Flywheel {
     // DIRECT CONTROL
     // -----------------------------------------------------
     public void setTargetRpm(double rpm) {
+        if (!Double.isFinite(rpm)) rpm = 0.0;
+
         targetRpm = Math.max(0.0, rpm);
         double ticksPerSecond = targetRpm / 60.0 * FLYWHEEL_TICKS_PER_REV;
         leftShooter.setVelocity(ticksPerSecond);
@@ -58,15 +60,31 @@ public class Flywheel {
     /** Gate for readyToShoot later. False whenever the wheel is commanded off. */
     public boolean atSpeed() {
         if (targetRpm <= 0.0) return false;
-        return Math.abs(getRpm() - targetRpm) <= FLYWHEEL_TOLERANCE;
+        double leftRpm = getLeftRpm();
+        double rightRpm = getRightRpm();
+        return Double.isFinite(leftRpm)
+                && Double.isFinite(rightRpm)
+                && Math.abs(leftRpm - targetRpm) <= FLYWHEEL_TOLERANCE
+                && Math.abs(rightRpm - targetRpm) <= FLYWHEEL_TOLERANCE;
     }
 
     public double getRpm() {
-        double avgTicksPerSecond = (leftShooter.getVelocity() + rightShooter.getVelocity()) / 2.0;
-        return avgTicksPerSecond / FLYWHEEL_TICKS_PER_REV * 60.0;
+        return (getLeftRpm() + getRightRpm()) / 2.0;
+    }
+
+    public double getLeftRpm() {
+        return ticksPerSecondToRpm(leftShooter.getVelocity());
+    }
+
+    public double getRightRpm() {
+        return ticksPerSecondToRpm(rightShooter.getVelocity());
     }
 
     public double getTargetRpm() {
         return targetRpm;
+    }
+
+    private static double ticksPerSecondToRpm(double ticksPerSecond) {
+        return ticksPerSecond / FLYWHEEL_TICKS_PER_REV * 60.0;
     }
 }

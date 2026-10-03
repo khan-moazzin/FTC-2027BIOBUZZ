@@ -43,6 +43,12 @@ while adding the frame-conversion bug class that cost 5817 a full debugging
 cycle. Default plan: shoot from rest with an interpolated map, add compensation
 only if match data demands it.
 
+**Turret travel is one complete revolution (2026-10-03).** Two Axon MAX servos
+drive the turret 1:1. Logical servo position 0.5 is turret zero, facing straight
+forward, and the full 0.0–1.0 command range maps to -180 through +180 degrees.
+This reaches every bearing but is not continuous rotation: -180 and +180 point
+the same way while remaining opposite ends of the positional command range.
+
 ---
 
 ## Lessons from last season's code — do not repeat
@@ -126,7 +132,9 @@ at *runtime*, not compile time. The Quickstart ships `Constants.java` as
 - Group commands aggregate child requirements and take max child priority, so
   `.until(...)` preserves the wrapped command's requirement
 - `Scheduler` is static and survives OpMode restarts — `Scheduler.reset()` in
-  `init()` is mandatory
+  `init()` is mandatory. Verified in Ivy 1.1.1 bytecode: `reset()` clears the
+  running, queued and suspended collections without invoking command `end()`.
+  Use it only at OpMode boundaries where the FTC runtime disables hardware.
 
 ### Hardware
 

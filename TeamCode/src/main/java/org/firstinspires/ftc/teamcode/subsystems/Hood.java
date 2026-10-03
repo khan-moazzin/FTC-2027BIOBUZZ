@@ -40,6 +40,8 @@ public class Hood {
     // DIRECT CONTROL
     // -----------------------------------------------------
     public void setPosition(double target) {
+        if (!Double.isFinite(target)) return;
+
         position = clamp(target, HOOD_MIN, HOOD_MAX);
         hood.setPosition(position);
     }

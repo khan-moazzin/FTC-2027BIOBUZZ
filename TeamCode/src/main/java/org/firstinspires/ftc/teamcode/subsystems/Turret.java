@@ -43,8 +43,14 @@ public class Turret {
     // -----------------------------------------------------
     // ANGLE CONTROL
     // -----------------------------------------------------
-    /** 0 = forward, CCW positive. Returns false if unreachable; then parks at the nearest limit. */
+    /**
+     * 0 = forward and CCW is positive. Exact -180 and +180 requests select their
+     * respective ends of the servo range even though both point directly backward.
+     * Returns false and holds the previous target if the request is not finite.
+     */
     public boolean setAngle(double degrees) {
+        if (!Double.isFinite(degrees)) return false;
+
         double normalized = normalize(degrees);
         double low = minAngle();
         double high = maxAngle();
@@ -62,8 +68,9 @@ public class Turret {
         return false;
     }
 
-    /**Gated Shooting**/
     public boolean canReach(double degrees) {
+        if (!Double.isFinite(degrees)) return false;
+
         double normalized = normalize(degrees);
         for (double offset : WRAP_OFFSETS) {
             double candidate = normalized + offset;
@@ -74,17 +81,6 @@ public class Turret {
 
     public double getAngle() {
         return servoToAngle(position);
-    }
-
-    public static double[] splitAim(double targetDegrees) {
-        double total = normalize(targetDegrees);
-        double low = minAngle();
-        double high = maxAngle();
-
-        if (total >= low && total <= high) return new double[] {0.0, total};
-
-        double turret = (total > high) ? high : low;
-        return new double[] {total - turret, turret};
     }
 
     public static double minAngle() {
@@ -99,6 +95,8 @@ public class Turret {
     // SERVO-UNIT CONTROL
     // -----------------------------------------------------
     public void setPosition(double target) {
+        if (!Double.isFinite(target)) return;
+
         position = clamp(target, TURRET_MIN, TURRET_MAX);
         apply(position);
     }
@@ -112,7 +110,7 @@ public class Turret {
     // -----------------------------------------------------
     private static final double[] WRAP_OFFSETS = {0.0, -360.0, 360.0};
 
-    /** Configure during bringu0 */
+    /** Converts the configured logical servo interval into mechanism degrees. */
     private static double degreesPerServoUnit() {
         return TURRET_RANGE_DEGREES / (TURRET_MAX - TURRET_MIN);
     }
@@ -125,11 +123,11 @@ public class Turret {
         return (servoPosition - TURRET_CENTER) * degreesPerServoUnit();
     }
 
-    /** To (-180, 180]. */
+    /** To [-180, 180], preserving the sign of an exact 180-degree request. */
     private static double normalize(double degrees) {
         double d = degrees % 360.0;
         if (d > 180.0) d -= 360.0;
-        if (d <= -180.0) d += 360.0;
+        if (d < -180.0) d += 360.0;
         return d;
     }
 

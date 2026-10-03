@@ -46,9 +46,10 @@ public class Robot {
         telemetry.addData("X", drive.getPose().x());
         telemetry.addData("Y", drive.getPose().y());
         telemetry.addData("Heading", Math.toDegrees(drive.getPose().heading()));
-        telemetry.addData("Field Oriented", !drive.isRobotOriented());
+        telemetry.addData("Drive Mode", "Field Oriented");
         telemetry.addData("Intake", intake.getPower());
-        telemetry.addData("Turret", turret.getPosition());
+        telemetry.addData("Turret Target Degrees", turret.getAngle());
+        telemetry.addData("Turret Target Position", turret.getPosition());
         telemetry.addData("Hood", hood.getPosition());
         telemetry.addData("Flywheel RPM", flywheel.getRpm());
         telemetry.addData("Flywheel Target", flywheel.getTargetRpm());

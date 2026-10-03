@@ -40,15 +40,12 @@ public class Constants {
     public static double FLYWHEEL_TOLERANCE = 75.0;
 
     // ================= TURRET =================
-    // Servo units [0, 1]. TURRET_CENTER is the position that points the turret
-    // straight forward, i.e. 0 degrees.
-    public static double TURRET_MIN = 0.15;
-    public static double TURRET_MAX = 0.85;
+    // The two Axon MAX servos drive the turret 1:1. Logical servo position 0.5
+    // points straight forward; the complete [0, 1] PWM range is one revolution.
+    public static double TURRET_MIN = 0.0;
+    public static double TURRET_MAX = 1.0;
     public static double TURRET_CENTER = 0.5;
-
-    /** Total travel between TURRET_MIN and TURRET_MAX. PLACEHOLDER: measure on the real turret.
-     *  At center 0.5 that is -120 to +120. */
-    public static double TURRET_RANGE_DEGREES = 240.0;
+    public static double TURRET_RANGE_DEGREES = 360.0;
 
     // ================= HOOD =================
     public static double HOOD_MIN = 0.15;

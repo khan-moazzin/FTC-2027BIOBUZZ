@@ -12,7 +12,7 @@ public final class Aiming {
         return Math.hypot(goalX - robot.x(), goalY - robot.y());
     }
 
-    /** Robot-relative bearing to the goal, from pose alone. Pass to Turret.splitAim(). */
+    /** Robot-relative bearing to the goal, from pose alone. Pass to Turret.setAngle(). */
     public static double bearingTo(Pose robot, double goalX, double goalY) {
         double fieldBearing = Math.toDegrees(Math.atan2(goalY - robot.y(), goalX - robot.x()));
         return normalize(fieldBearing - Math.toDegrees(robot.heading()));
@@ -23,11 +23,11 @@ public final class Aiming {
         return normalize(turretAngle - tx);
     }
 
-    /** To (-180, 180]. */
+    /** To [-180, 180], preserving the sign of an exact 180-degree result. */
     public static double normalize(double degrees) {
         double d = degrees % 360.0;
         if (d > 180.0) d -= 360.0;
-        if (d <= -180.0) d += 360.0;
+        if (d < -180.0) d += 360.0;
         return d;
     }
 }
