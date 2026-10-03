@@ -10,25 +10,25 @@ import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class Flywheel {
 
-    private final DcMotorEx left;
-    private final DcMotorEx right;
+    private final DcMotorEx leftShooter;
+    private final DcMotorEx rightShooter;
     private double targetRpm = 0.0;
 
     public Flywheel(HardwareMap hw) {
-        left = hw.get(DcMotorEx.class, "flywheel1");
-        right = hw.get(DcMotorEx.class, "flywheel2");
+        leftShooter = hw.get(DcMotorEx.class, "flywheel1");
+        rightShooter = hw.get(DcMotorEx.class, "flywheel2");
 
-        left.setDirection(DcMotor.Direction.FORWARD);
-        right.setDirection(DcMotor.Direction.REVERSE);
+        leftShooter.setDirection(DcMotor.Direction.FORWARD);
+        rightShooter.setDirection(DcMotor.Direction.REVERSE);
 
 
-        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     // -----------------------------------------------------
@@ -51,8 +51,8 @@ public class Flywheel {
     public void setTargetRpm(double rpm) {
         targetRpm = Math.max(0.0, rpm);
         double ticksPerSecond = targetRpm / 60.0 * FLYWHEEL_TICKS_PER_REV;
-        left.setVelocity(ticksPerSecond);
-        right.setVelocity(ticksPerSecond);
+        leftShooter.setVelocity(ticksPerSecond);
+        rightShooter.setVelocity(ticksPerSecond);
     }
 
     /** Gate for readyToShoot later. False whenever the wheel is commanded off. */
@@ -62,7 +62,7 @@ public class Flywheel {
     }
 
     public double getRpm() {
-        double avgTicksPerSecond = (left.getVelocity() + right.getVelocity()) / 2.0;
+        double avgTicksPerSecond = (leftShooter.getVelocity() + rightShooter.getVelocity()) / 2.0;
         return avgTicksPerSecond / FLYWHEEL_TICKS_PER_REV * 60.0;
     }
 

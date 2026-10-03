@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import static org.firstinspires.ftc.teamcode.Constants.*;
 
-/**
- * One Axon MAX MK2 servo. Closes its own position loop, so nothing to run per
- * loop and no PID here.*/
+/** One servo, model TBD. Closes its own position loop, so no PID here.
+ *  If it is not a 500-2500us servo, setPosition() will not reach full travel and it
+ *  needs ServoImplEx.setPwmRange. */
 
 public class Hood {
 

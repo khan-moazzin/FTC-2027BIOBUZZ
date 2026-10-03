@@ -2,18 +2,14 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.pedropathing.ivy.Scheduler;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Robot;
 
-/**
- * Drive and intake only. Xbox and Logitech expose identical button names in the SDK,
- * so nothing here is controller-specific.
- */
 
-@TeleOp(name = "TeleopMain", group = "Teleop")
-public class TeleopMain extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleopMain", group = "Teleop")
+public class TeleOp extends OpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
     private Robot mRobot;
@@ -27,9 +23,17 @@ public class TeleopMain extends OpMode {
         Scheduler.reset();
         mRobot = new Robot();
         mRobot.init(hardwareMap, telemetry);
+    }
 
-        // Robot-oriented until the Pinpoint is tuned.
-        mRobot.drive.toggleRobotOriented();
+    /** Pick the alliance before match start. */
+    @Override
+    public void init_loop() {
+        if (gamepad1.dpad_left)  Constants.ALLIANCE = Constants.Alliance.BLUE;
+        if (gamepad1.dpad_right) Constants.ALLIANCE = Constants.Alliance.RED;
+
+        telemetry.addData("ALLIANCE", Constants.ALLIANCE);
+        telemetry.addLine("dpad LEFT = BLUE, dpad RIGHT = RED");
+        telemetry.update();
     }
 
     @Override
@@ -56,7 +60,6 @@ public class TeleopMain extends OpMode {
                     .until(() -> !gamepad1.left_bumper));
         }
 
-        // back, not start: the Driver Station uses start+A / start+B to bind gamepads
         boolean reset = gamepad1.back;
         if (reset && !lastReset) mRobot.drive.resetHeading();
         lastReset = reset;
@@ -75,6 +78,7 @@ public class TeleopMain extends OpMode {
         Scheduler.reset();
     }
 
+    //Stick Drift Helper
     private static double deadband(double value) {
         return Math.abs(value) < deadband ? 0.0 : value;
     }

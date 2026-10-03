@@ -105,7 +105,7 @@ An OpMode never constructs its own `Follower`. `Drive` builds it, once.
 ## Hardware
 
 Driver Hub configuration names:
-`fl` `bl` `fr` `br` `pinpoint` `intake` `turret1` `turret2` `hood`
+`fl` `bl` `fr` `br` `pinpoint` `intake1` `intake2` `turret1` `turret2` `hood`
 `flywheel1` `flywheel2`
 
 - Odometry: goBILDA Pinpoint + two **SWYFT** linear pods. SWYFT are third-party,
@@ -113,7 +113,7 @@ Driver Hub configuration names:
   applies `podType` when `ticksPerUnit` is empty, and `podType` defaults to
   `goBILDA_4_BAR_POD` — leaving `ticksPerUnit` unset silently applies goBILDA's
   resolution to SWYFT hardware and every distance is wrong with no error.
-- Intake: one motor driving roller and indexer together.
+- Intake: two goBILDA 1620 RPM motors, same direction, roller and indexer together.
 - Turret: two Axon MAX MK2 servos. Hood: one. Axon MAX is 500–2500µs over 360°,
   exactly FTC's default `Servo` PWM range, so plain `setPosition()` gets full
   travel — no `ServoImplEx`/`setPwmRange`. The servos close their own loop, so

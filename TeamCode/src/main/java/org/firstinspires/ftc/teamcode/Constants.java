@@ -55,17 +55,33 @@ public class Constants {
     public static double HOOD_MAX = 0.85;
     public static double HOOD_STOW = 0.15;
 
+    // ================= ALLIANCE =================
+    public enum Alliance {
+        RED,
+        BLUE
+    }
+
+    /** Set in TeleopMain's init, or by an auto. Decides which way is "forward" for the driver. */
+    public static Alliance ALLIANCE = Alliance.BLUE;
+
+    // Placeholder in degrees. Verify on field
+    public static double BLUE_DRIVER_FORWARD_DEG = 90.0;
+    public static double RED_DRIVER_FORWARD_DEG = -90.0;
+
+    public static double driverForwardDegrees() {
+        return ALLIANCE == Alliance.RED ? RED_DRIVER_FORWARD_DEG : BLUE_DRIVER_FORWARD_DEG;
+    }
+
     // ================= VISION =================
-    // HIVE pivots, Pedro field inches. Taken from BiobuzzVision; verify against official CAD.
     public static double RED_HIVE_X = 59.25,  RED_HIVE_Y = 72.0;
     public static double BLUE_HIVE_X = 84.75, BLUE_HIVE_Y = 72.0;
 
     /** AprilTag pipeline on the Limelight. */
     public static int LIMELIGHT_PIPELINE = 1;
 
-    // PLACEHOLDER: robot not CADed yet. Camera offset ahead of the turret axis, inches.
+    // PLACEHOLDER: Camera offset ahead of the turret axis, inches.
     public static double LL_FORWARD_FROM_TURRET_IN = 0.0;
-    // PLACEHOLDER: robot not CADed yet. Turret axis from robot center, robot frame (+fwd, +left).
+    // PLACEHOLDER: Turret axis from robot center, robot frame (+fwd, +left).
     public static double TURRET_FORWARD_IN = 0.0;
     public static double TURRET_LEFT_IN = 0.0;
 
@@ -97,7 +113,7 @@ public class Constants {
     });
 
     // ================= PATH FOLLOWING =================
-    // These placeholders are deliberately slow so the untuned robot crawls.
+    // These placeholders are deliberately slow.
     public static ForesightConfig foresightConfig = new ForesightConfig(c -> {
         c.forwardTranslational.set(
                 Controller.piecewise(Controller.proportional(0.1)).put(2.5, Controller.proportional(0.1)));

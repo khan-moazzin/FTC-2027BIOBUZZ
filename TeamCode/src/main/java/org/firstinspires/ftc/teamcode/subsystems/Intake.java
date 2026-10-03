@@ -8,36 +8,46 @@ import static org.firstinspires.ftc.teamcode.Constants.*;
 
 public class Intake {
 
-    private final DcMotor motor;
+    private final DcMotor intake1;
+    private final DcMotor intake2;
 
     public Intake(HardwareMap hw) {
-        motor = hw.get(DcMotor.class, "intake");
-        motor.setDirection(DcMotor.Direction.REVERSE);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        intake1 = hw.get(DcMotor.class, "intake1");
+        intake2 = hw.get(DcMotor.class, "intake2");
+
+        intake1.setDirection(DcMotor.Direction.REVERSE);
+        intake2.setDirection(DcMotor.Direction.REVERSE);
+
+        intake1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     // -----------------------------------------------------
     // COMMANDS
     // -----------------------------------------------------
-
     public Command intake() {
         return Command.build()
-                .setStart(() -> motor.setPower(INTAKE))
-                .setEnd(end -> motor.setPower(INTAKE_IDLE))
+                .setStart(() -> set(INTAKE))
+                .setEnd(end -> set(INTAKE_IDLE))
                 .requiring(this);
     }
 
     public Command outtake() {
         return Command.build()
-                .setStart(() -> motor.setPower(OUTTAKE))
-                .setEnd(end -> motor.setPower(INTAKE_IDLE))
+                .setStart(() -> set(OUTTAKE))
+                .setEnd(end -> set(INTAKE_IDLE))
                 .requiring(this);
     }
 
     // -----------------------------------------------------
     // STATE
     // -----------------------------------------------------
+    private void set(double power) {
+        intake1.setPower(power);
+        intake2.setPower(power);
+    }
+
     public double getPower() {
-        return motor.getPower();
+        return intake1.getPower();
     }
 }

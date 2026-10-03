@@ -19,8 +19,10 @@ public class Drive {
     private final FusionLocalizer localizer;
     private final Follower follower;
 
+    /** Manual trim on top of the alliance heading, for when localization is lost. */
     private double headingOffset = 0.0;
     private boolean robotOriented = false;
+    private boolean fieldOriented = false;
 
     public Drive(HardwareMap hw) {
         localizer = Constants.createLocalizer(hw);
@@ -67,12 +69,27 @@ public class Drive {
             follower.manual(axial, lateral, yaw);
         } else {
             follower.manual(ManualDrive.fieldCentric(
-                    axial, lateral, yaw, follower.pose().heading(), -headingOffset));
+                    axial, lateral, yaw, follower.pose().heading(), -driverForward()));
         }
     }
 
+    /** Driver forward in field radians: alliance heading plus manual trim. */
+    private double driverForward() {
+        return Math.toRadians(Constants.driverForwardDegrees()) + headingOffset;
+    }
+
+    /** Declares the robot's current facing to be driver-forward. Escape hatch if pose drifts. */
     public void resetHeading() {
-        headingOffset = follower.pose().heading();
+        headingOffset = follower.pose().heading() - Math.toRadians(Constants.driverForwardDegrees());
+    }
+
+    /** Clears the manual trim, back to pure alliance-relative. */
+    public void clearHeadingTrim() {
+        headingOffset = 0.0;
+    }
+
+    public void toggleFieldOriented(){
+        fieldOriented =! fieldOriented;
     }
 
 
