@@ -1,53 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems;
-
-import com.pedropathing.ivy.Command;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import static org.firstinspires.ftc.teamcode.Constants.*;
-
-public class Intake {
-
-    private final DcMotor intake1;
-    private final DcMotor intake2;
-
-    public Intake(HardwareMap hw) {
-        intake1 = hw.get(DcMotor.class, "intake1");
-        intake2 = hw.get(DcMotor.class, "intake2");
-
-        intake1.setDirection(DcMotor.Direction.REVERSE);
-        intake2.setDirection(DcMotor.Direction.REVERSE);
-
-        intake1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
-
-    // -----------------------------------------------------
-    // COMMANDS
-    // -----------------------------------------------------
-    public Command intake() {
-        return Command.build()
-                .setStart(() -> set(INTAKE))
-                .setEnd(end -> set(INTAKE_IDLE))
-                .requiring(this);
-    }
-
-    public Command outtake() {
-        return Command.build()
-                .setStart(() -> set(OUTTAKE))
-                .setEnd(end -> set(INTAKE_IDLE))
-                .requiring(this);
-    }
-
-    // -----------------------------------------------------
-    // STATE
-    // -----------------------------------------------------
-    private void set(double power) {
-        intake1.setPower(power);
-        intake2.setPower(power);
-    }
-
-    public double getPower() {
-        return intake1.getPower();
-    }
+import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.hardware.motors.*;
+public final class Intake extends SubsystemBase {
+ private final MotorEx left,right; private double power;
+ public Intake(HardwareMap hw){
+  left=new MotorEx(hw,"intake1");right=new MotorEx(hw,"intake2");
+  for(MotorEx m:new MotorEx[]{left,right}){m.setRunMode(Motor.RunMode.RawPower);m.setInverted(true);m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);}
+ }
+ public static double requested(boolean collect,boolean reverse){return reverse?-.9:collect?1:0;}
+ public void set(double p){power=Double.isFinite(p)?Math.max(-1,Math.min(1,p)):0;}
+ public void write(){left.set(power);right.set(power);}
+ public void stop(){set(0);write();}
+ public double getPower(){return power;}
 }

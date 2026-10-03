@@ -1,56 +1,15 @@
 package org.firstinspires.ftc.teamcode.subsystems;
-
-import com.pedropathing.ivy.Command;
-import com.pedropathing.ivy.commands.Commands;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import static org.firstinspires.ftc.teamcode.Constants.*;
-
-/** One servo, model TBD. Closes its own position loop, so no PID here.
- *  If it is not a 500-2500us servo, setPosition() will not reach full travel and it
- *  needs ServoImplEx.setPwmRange. */
-
-public class Hood {
-
-    private final Servo hood;
-
-    private double position;
-
-    public Hood(HardwareMap hw) {
-        hood = hw.get(Servo.class, "hood");
-        hood.setDirection(Servo.Direction.FORWARD);
-
-        position = HOOD_STOW;
-        hood.setPosition(position);
-    }
-
-    // -----------------------------------------------------
-    // COMMANDS
-    // -----------------------------------------------------
-    public Command goTo(double target) {
-        return Commands.instant(() -> setPosition(target)).requiring(this);
-    }
-
-    public Command stow() {
-        return goTo(HOOD_STOW);
-    }
-
-    // -----------------------------------------------------
-    // DIRECT CONTROL
-    // -----------------------------------------------------
-    public void setPosition(double target) {
-        if (!Double.isFinite(target)) return;
-
-        position = clamp(target, HOOD_MIN, HOOD_MAX);
-        hood.setPosition(position);
-    }
-
-    public double getPosition() {
-        return position;
-    }
-
-    private static double clamp(double v, double min, double max) {
-        return Math.max(min, Math.min(max, v));
-    }
+import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
+import org.firstinspires.ftc.teamcode.config.MechanismConfig;
+import org.firstinspires.ftc.teamcode.control.Angles;
+public final class Hood extends SubsystemBase {
+ private final ServoEx servo;private double position=MechanismConfig.hoodStow;private long changed;
+ public Hood(HardwareMap hw){servo=new ServoEx(hw,"hood");changed=System.nanoTime();}
+ public void setPosition(double p){if(!Double.isFinite(p))return;p=Angles.clamp(p,MechanismConfig.hoodMin,MechanismConfig.hoodMax);if(p!=position){position=p;changed=System.nanoTime();}}
+ public void setAngle(double a){setPosition(MechanismConfig.hoodZero+a/MechanismConfig.hoodRadiansPerUnit);}
+ public boolean ready(long now){return MechanismConfig.hoodCalibrated&&now-changed>MechanismConfig.hoodSettle*1e9;}
+ public void write(){servo.set(position);}public void stow(){setPosition(MechanismConfig.hoodStow);write();}
+ public double getPosition(){return position;}
 }

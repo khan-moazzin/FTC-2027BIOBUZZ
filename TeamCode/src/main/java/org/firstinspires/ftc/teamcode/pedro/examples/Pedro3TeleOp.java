@@ -26,8 +26,8 @@ public class Pedro3TeleOp extends OpMode {
     @Override
     public void loop() {
         double forward = -gamepad1.left_stick_y;
-        double lateral = gamepad1.left_stick_x;
-        double turn = gamepad1.right_stick_x;
+        double lateral = -gamepad1.left_stick_x;
+        double turn = -gamepad1.right_stick_x;
         if (gamepad1.left_bumper) {
             follower.manual(forward, lateral, turn);
         } else {

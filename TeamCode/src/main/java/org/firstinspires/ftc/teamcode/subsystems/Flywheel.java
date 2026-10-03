@@ -1,90 +1,40 @@
 package org.firstinspires.ftc.teamcode.subsystems;
-
-import com.pedropathing.ivy.Command;
-import com.pedropathing.ivy.commands.Commands;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import static org.firstinspires.ftc.teamcode.Constants.*;
-
-public class Flywheel {
-
-    private final DcMotorEx leftShooter;
-    private final DcMotorEx rightShooter;
-    private double targetRpm = 0.0;
-
-    public Flywheel(HardwareMap hw) {
-        leftShooter = hw.get(DcMotorEx.class, "flywheel1");
-        rightShooter = hw.get(DcMotorEx.class, "flywheel2");
-
-        leftShooter.setDirection(DcMotor.Direction.FORWARD);
-        rightShooter.setDirection(DcMotor.Direction.REVERSE);
-
-
-        leftShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        leftShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    // -----------------------------------------------------
-    // COMMANDS
-    // -----------------------------------------------------
-    public Command spin(double rpm) {
-        return Command.build()
-                .setStart(() -> setTargetRpm(rpm))
-                .setEnd(end -> setTargetRpm(0.0))
-                .requiring(this);
-    }
-
-    public Command stop() {
-        return Commands.instant(() -> setTargetRpm(0.0)).requiring(this);
-    }
-
-    // -----------------------------------------------------
-    // DIRECT CONTROL
-    // -----------------------------------------------------
-    public void setTargetRpm(double rpm) {
-        if (!Double.isFinite(rpm)) rpm = 0.0;
-
-        targetRpm = Math.max(0.0, rpm);
-        double ticksPerSecond = targetRpm / 60.0 * FLYWHEEL_TICKS_PER_REV;
-        leftShooter.setVelocity(ticksPerSecond);
-        rightShooter.setVelocity(ticksPerSecond);
-    }
-
-    /** Gate for readyToShoot later. False whenever the wheel is commanded off. */
-    public boolean atSpeed() {
-        if (targetRpm <= 0.0) return false;
-        double leftRpm = getLeftRpm();
-        double rightRpm = getRightRpm();
-        return Double.isFinite(leftRpm)
-                && Double.isFinite(rightRpm)
-                && Math.abs(leftRpm - targetRpm) <= FLYWHEEL_TOLERANCE
-                && Math.abs(rightRpm - targetRpm) <= FLYWHEEL_TOLERANCE;
-    }
-
-    public double getRpm() {
-        return (getLeftRpm() + getRightRpm()) / 2.0;
-    }
-
-    public double getLeftRpm() {
-        return ticksPerSecondToRpm(leftShooter.getVelocity());
-    }
-
-    public double getRightRpm() {
-        return ticksPerSecondToRpm(rightShooter.getVelocity());
-    }
-
-    public double getTargetRpm() {
-        return targetRpm;
-    }
-
-    private static double ticksPerSecondToRpm(double ticksPerSecond) {
-        return ticksPerSecond / FLYWHEEL_TICKS_PER_REV * 60.0;
-    }
+import com.qualcomm.robotcore.hardware.*;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.controller.PIDFController;
+import com.seattlesolvers.solverslib.hardware.motors.Motor;
+import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
+import org.firstinspires.ftc.teamcode.config.MechanismConfig;
+import org.firstinspires.ftc.teamcode.control.*;
+public final class Flywheel extends SubsystemBase {
+ private final MotorEx[] motors;
+ private final PIDFController[] pid={new PIDFController(0,0,0,0),new PIDFController(0,0,0,0)};
+ private final Readiness gate=new Readiness(); private final double[] rpm=new double[2];
+ private double target;private boolean ready;
+ public Flywheel(HardwareMap hw){
+  motors=new MotorEx[]{new MotorEx(hw,"flywheel1"),new MotorEx(hw,"flywheel2")};
+  for(int i=0;i<2;i++){motors[i].motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+   motors[i].setRunMode(Motor.RunMode.RawPower);motors[i].setInverted(i==1);motors[i].setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);}
+ }
+ public void read(long now){
+  for(int i=0;i<2;i++)rpm[i]=motors[i].getVelocity()*60/MechanismConfig.ticksPerRev;
+  ready=gate.update(MechanismConfig.flywheelCalibrated&&Readiness.wheels(rpm[0],rpm[1],target,MechanismConfig.flywheelTolerance),now,MechanismConfig.readySeconds);
+ }
+ public void setTargetRpm(double r){
+  double next=Double.isFinite(r)?Angles.clamp(r,0,MechanismConfig.maxRpm):0;
+  if(next!=target){ready=false;gate.update(false,0,0);}target=next;
+ }
+ public void write(){
+  for(int i=0;i<2;i++){
+   pid[i].setPIDF(MechanismConfig.flywheelP[i],0,0,0);
+   double p=target>0&&MechanismConfig.flywheelCalibrated?pid[i].calculate(rpm[i],target)+MechanismConfig.flywheelS[i]+MechanismConfig.flywheelV[i]*target:0;
+   motors[i].set(Double.isFinite(p)?Angles.clamp(p,0,1):0);
+  }
+ }
+ public void characterize(double p){for(MotorEx m:motors)m.set(Double.isFinite(p)?Angles.clamp(p,0,1):0);}
+ public void stop(){target=0;ready=false;for(MotorEx m:motors)m.set(0);}
+ public boolean atSpeed(){return ready;}
+ public double getRpm(){return (rpm[0]+rpm[1])/2;}
+ public double getLeftRpm(){return rpm[0];}public double getRightRpm(){return rpm[1];}
+ public double getTargetRpm(){return target;}
 }

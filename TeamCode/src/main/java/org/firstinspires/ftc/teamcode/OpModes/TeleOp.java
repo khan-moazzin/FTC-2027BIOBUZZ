@@ -1,85 +1,30 @@
 package org.firstinspires.ftc.teamcode.OpModes;
-
-import com.pedropathing.ivy.Scheduler;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.Constants;
+import com.seattlesolvers.solverslib.command.*;
 import org.firstinspires.ftc.teamcode.Robot;
-
-
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleopMain", group = "Teleop")
-public class TeleOp extends OpMode {
-
-    private final ElapsedTime runtime = new ElapsedTime();
-    private Robot mRobot;
-
-    private static final double rotationScale = 0.6;
-    private static final double deadband = 0.05;
-    private boolean lastReset = false;
-
-    @Override
-    public void init() {
-        Scheduler.reset();
-        mRobot = new Robot();
-        mRobot.init(hardwareMap, telemetry);
-    }
-
-    /** Pick the alliance before match start. */
-    @Override
-    public void init_loop() {
-        if (gamepad1.dpad_left)  Constants.ALLIANCE = Constants.Alliance.BLUE;
-        if (gamepad1.dpad_right) Constants.ALLIANCE = Constants.Alliance.RED;
-
-        telemetry.addData("ALLIANCE", Constants.ALLIANCE);
-        telemetry.addLine("dpad LEFT = BLUE, dpad RIGHT = RED");
-        telemetry.update();
-    }
-
-    @Override
-    public void start() {
-        runtime.reset();
-        Scheduler.schedule(mRobot.drive.teleopDrive(
-                () -> -deadband(gamepad1.left_stick_y),
-                () -> -deadband(gamepad1.left_stick_x),
-                () -> -deadband(gamepad1.right_stick_x) * rotationScale
-        ));
-    }
-
-    @Override
-    public void loop() {
-
-        // ================= DRIVER — GAMEPAD 1 =================
-        if (gamepad1.leftTriggerWasPressed()) {
-            Scheduler.schedule(mRobot.intake.intake()
-                    .until(() -> !gamepad1.left_trigger_pressed));
-        }
-
-        if (gamepad1.leftBumperWasPressed()) {
-            Scheduler.schedule(mRobot.intake.outtake()
-                    .until(() -> !gamepad1.left_bumper));
-        }
-
-        boolean reset = gamepad1.back;
-        if (reset && !lastReset) mRobot.drive.resetHeading();
-        lastReset = reset;
-
-        // ================= SCHEDULER =================
-        Scheduler.execute();
-        mRobot.update();
-
-        telemetry.addData("Runtime", runtime.seconds());
-        telemetry.update();
-
-    }
-
-    @Override
-    public void stop() {
-        Scheduler.reset();
-    }
-
-    //Stick Drift Helper
-    private static double deadband(double value) {
-        return Math.abs(value) < deadband ? 0.0 : value;
-    }
+import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.control.Angles;
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleopMain",group="Competition")
+public final class TeleOp extends OpMode {
+ private Robot robot;private boolean lastBack,lastB;private long telemetryAt;
+ public void init(){
+  CommandScheduler.getInstance().cancelAll();CommandScheduler.getInstance().reset();
+  robot=new Robot();robot.init(hardwareMap,telemetry);
+  robot.drive.setDefaultCommand(robot.drive.teleopDrive(()->-Angles.deadband(gamepad1.left_stick_y),()->-Angles.deadband(gamepad1.left_stick_x),()->-.6*Angles.deadband(gamepad1.right_stick_x)));
+  robot.intake.setDefaultCommand(new RunCommand(()->robot.intake.set(Intake.requested(gamepad1.left_trigger>.5,gamepad1.left_bumper)),robot.intake));
+ }
+ public void init_loop(){
+  if(gamepad1.dpad_left)Constants.ALLIANCE=Constants.Alliance.BLUE;
+  if(gamepad1.dpad_right)Constants.ALLIANCE=Constants.Alliance.RED;
+  telemetry.addData("Alliance (dpad left/right)",Constants.ALLIANCE);telemetry.update();
+ }
+ public void loop(){
+  long now=System.nanoTime();robot.read(now);
+  if(gamepad1.back&&!lastBack)robot.drive.resetHeading();lastBack=gamepad1.back;
+  if(gamepad1.b&&!lastB)robot.drive.toggleRobotOriented();lastB=gamepad1.b;
+  CommandScheduler.getInstance().run();robot.write();
+  if(now-telemetryAt>100000000L){robot.sendTelemetry();telemetry.update();telemetryAt=now;}
+ }
+ public void stop(){if(robot!=null)robot.close();}
 }
