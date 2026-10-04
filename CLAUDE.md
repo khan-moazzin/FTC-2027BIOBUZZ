@@ -21,7 +21,7 @@ shooter. Written by one student programmer who also codes FRC Team 5817.
 ## Build environment
 
 - Android Studio Quail 4 (2026.1.4) or newer. Ladybug **cannot** open this project.
-- AGP 8.13.2 / Gradle 9.1.0, FTC SDK 12.0.0, Pedro Pathing 3.0, Ivy 1.1.1.
+- AGP 8.13.2 / Gradle 9.1.0, FTC SDK 12.0.0, Pedro Pathing 3.0, SolversLib 0.3.6.
 - Terminal Gradle needs `JAVA_HOME` pointed at Studio's bundled JBR:
   `/Applications/Android Studio.app/Contents/jbr/Contents/Home`
 - `dev.frozenmilk.sinister:Sloth` arrives transitively from Pedro and resolves
@@ -32,176 +32,27 @@ shooter. Written by one student programmer who also codes FRC Team 5817.
 - Decline Android Studio's AGP upgrade prompt and its "migrate to Daemon
   toolchain" prompt. Both break a pinned FTC build.
 
-## Architecture: Ivy command-based
+## Current architecture
 
-`com.pedropathing.ivy:pedro:1.1.1`. Facts verified against Ivy source:
+See docs/ROBOT_INTEGRATION.md for runtime, controls, units and calibration.
+See docs/FIELD_GEOMETRY.md for official geometry provenance.
+Historical decisions in docs/PROJECT-NOTES.md and docs/PEDRO_SETUP.md may describe the pre-SolversLib code; the integration guide supersedes them.
 
-- **No `Subsystem` class.** `Command.requirements()` is a `Set<Object>`, so the
-  subsystem instance is the requirement token: `.requiring(this)`.
-- **No trigger/binding layer.** Buttons are bound in the OpMode loop with
-  explicit rising-edge detection.
-- **No default commands.** The replacement is
-  `InterruptedBehavior.SUSPEND` — the Scheduler auto-resumes a suspended command
-  once its requirements free up. `Drive.teleopDrive()` uses this so a path-follow
-  or auto-align command can take the drivetrain and driver control returns on its
-  own. Without it the driver loses the sticks for the rest of the match.
-- **No periodic hook.** `Scheduler.execute()` only runs scheduled commands.
-  Per-loop hardware I/O is called explicitly from `Robot.update()`.
-- Group commands aggregate child requirements and take max child priority, so
-  `.until(...)` preserves the wrapped command's requirement.
+SolversLib SubsystemBase and CommandScheduler own requirements and defaults.
+Robot reads sensors and fuses observations before commands, then applies outputs.
+Drive.read captures localization exactly once. BufferedFusionLocalizer.update is intentionally a no-op for the prepared Pedro state.
+Always cancel commands and stop mechanisms before resetting the scheduler.
 
-### Subsystem pattern
+VisionConfig owns all camera, turret encoder and extrinsic calibration. MechanismConfig owns flywheel/hood settings; ShotConfig owns measured shot data. Constants owns Pedro configuration and alliance.
+All angles are radians internally; field distances are inches. Both Axon analog feedback channels measure 1:1 turret position. Never substitute commanded PWM for feedback.
+Explicit Axon PWM limits are 500–2500 microseconds; FTC SDK defaults are 600–2400, not 500–2500.
+Camera is a turret-mounted Limelight, using per-tag camera-space observations. Moving tags cannot use a static botpose map.
+Red and blue HIVE estimates remain independent. No single-tag or uncalibrated fallback may enable automatic feeding.
 
-Plain class owning hardware. Public API is **command factory methods**:
+Hardware names: fl, bl, fr, br, pinpoint, intake1, intake2, turret1, turret2, hood, flywheel1, flywheel2, limelight, turretEncoder1, turretEncoder2.
+The last two analog names are configurable in VisionConfig. Verify them on the robot.
+SWYFT odometry requires CUSTOM Pinpoint scalar tuning.
 
-```java
-public Command intake() {
-    return Command.build()
-            .setStart(() -> motor.setPower(INTAKE))
-            .setEnd(end -> motor.setPower(INTAKE_IDLE))
-            .requiring(this);
-}
-```
-
-`setEnd` must make the mechanism safe on every scheduled exit path — natural,
-interrupted and suspended all route through it. `Scheduler.reset()` is the one
-exception: Ivy clears its collections without calling command end callbacks, so
-use it only at OpMode boundaries where the FTC runtime disables hardware. Leave
-`done()` at its default `false` for hold-to-run mechanisms and bound them at the
-call site with `.until(...)`.
-
-### OpMode pattern
-
-```
-init():  Scheduler.reset(); build Robot; set initial orientation
-start(): Scheduler.schedule(drive.teleopDrive(...))
-loop():  edge-detect buttons -> Scheduler.schedule(...)
-         Scheduler.execute();   // commands compute desired powers
-         mRobot.update();       // pushes them to hardware
-stop():  Scheduler.reset();
-```
-
-`Scheduler.reset()` in `init()` is mandatory — the Scheduler is static state that
-survives OpMode restarts. Loop order is load-bearing: reversing
-`Scheduler.execute()` and `mRobot.update()` applies last loop's powers.
-
-## Layout
-
-```
-teamcode/
-    Constants.java     subsystem values + Pedro tuner config blocks
-    Robot.java         container; update() = drive.update() + telemetry
-    subsystems/        Drive, Intake, Turret, Hood, Flywheel
-    OpModes/           TeleopMain
-    pedro/             Tuning.java, examples/, procedures/  (Pedro's, untouched)
-```
-
-Only one `Constants`, in `org.firstinspires.ftc.teamcode`. Config variable names
-match what the tuners generate verbatim — `localizerConfig`, `drivetrainConfig`,
-`foresightConfig` — so tuner output pastes in with no renaming.
-`createLocalizer(hw)` / `createDrivetrain(hw)` exist so `Tuning.java` can pass
-`Constants::createLocalizer, Constants::createDrivetrain` to ForesightTuner,
-which guarantees the tuner measures the config the robot actually drives.
-
-An OpMode never constructs its own `Follower`. `Drive` builds it, once.
-Teleop driving is always field-oriented using the Pinpoint/localizer heading;
-there is no robot-oriented toggle.
-
-## Hardware
-
-Driver Hub configuration names:
-`fl` `bl` `fr` `br` `pinpoint` `intake1` `intake2` `turret1` `turret2` `hood`
-`flywheel1` `flywheel2`
-
-- Odometry: goBILDA Pinpoint + two **SWYFT** linear pods. SWYFT are third-party,
-  so PinpointTuner must be run with pod type **CUSTOM**. `PinpointLocalizer` only
-  applies `podType` when `ticksPerUnit` is empty, and `podType` defaults to
-  `goBILDA_4_BAR_POD` — leaving `ticksPerUnit` unset silently applies goBILDA's
-  resolution to SWYFT hardware and every distance is wrong with no error.
-- Intake: two goBILDA 1620 RPM motors, same direction, roller and indexer together.
-- Turret: two Axon MAX MK2 servos. Hood: one. Axon MAX is 500–2500µs over 360°,
-  exactly FTC's default `Servo` PWM range, so plain `setPosition()` gets full
-  travel — no `ServoImplEx`/`setPwmRange`. The servos close their own loop, so
-  there is no turret PID in our code.
-- Flywheel: two goBILDA motors, hub velocity control. `setVelocity()` is
-  persistent, so there is no per-loop update.
-
-`turret2` and `flywheel2` are set REVERSE, correct only if each pair is mounted
-facing each other. Same-direction mounting means they fight and stall.
-
-## Drive sign convention
-
-Pedro's mecanum mixing is `fl = axial - lateral - yaw`, `fr = axial + lateral +
-yaw`, `bl = axial + lateral - yaw`, `br = axial - lateral + yaw`. So `+lateral`
-is LEFT and `+yaw` is COUNTERCLOCKWISE. Gamepad sticks are +right and +down, so
-**all three axes are negated** in the OpMode. Pedro's own `Pedro3TeleOp` example
-negates none of them and drives inverted — do not copy it.
-
-## Tuning order
-
-1. MecanumTuner → paste `drivetrainConfig`
-2. PinpointTuner, pod type CUSTOM → paste `localizerConfig`
-3. ForesightTuner → paste `foresightConfig`
-
-`ForesightConfig` has twelve required fields with no library defaults. Everything
-currently in those blocks is a conservative placeholder so an untuned robot
-crawls. Replace generated blocks wholesale; do not hand-edit individual numbers.
-
-## Turret: full revolution, not continuous rotation
-
-Settled: two Axon MAX servos drive the turret 1:1, with one logically reversed
-because the servos face each other. Logical servo position 0.5 is turret zero and
-points straight forward. The full 0.0–1.0 range maps to -180 through +180 degrees.
-The turret can reach every bearing, but it cannot accumulate turns.
-
-The -180/+180 endpoints point in the same direction but are opposite ends of the
-positional servo range. Aiming must manage that wrap seam deliberately so a target
-crossing directly behind the robot does not command an unnecessary full-revolution
-sweep. `Turret.getAngle()` is the commanded angle, not measured turret feedback.
-
-## Open questions
-
-- **Limelight mount offsets are zeros, pending CAD.** `LL_FORWARD_FROM_TURRET_IN`,
-  `TURRET_FORWARD_IN`, `TURRET_LEFT_IN` in Constants. Vision pose is wrong by those
-  offsets until they are measured. **Remind Moazzin once the robot is CADed.**
-- `BiobuzzVision.java` is dead code: it needs a webcam and there is none. Kept only
-  for the HIVE pivot values, which are now copied into Constants.
-
-- `FLYWHEEL_TICKS_PER_REV = 28.0` assumes a bare 1:1 goBILDA motor. If the
-  flywheel motors are geared this is wrong by the gear ratio and every RPM number
-  is off. Needs the part number.
-- Hood travel limits (0.15 / 0.85) are placeholders; measure on the robot.
-- Flywheel velocity PIDF is deliberately at hub defaults — tune it with the
-  shooter work, do not invent values.
-
-## Not yet built
-
-Shooter logic (interpolated distance → hood angle + flywheel RPM map, turret
-aiming off field pose, `readyToShoot` gate), Limelight vision, autos.
-
-When shooter work starts, port from FRC Team 5817's 2026 code
-(https://github.com/5817Programming/2026Code): the interpolated shot map, turret
-aiming, and the readyToShoot gate. NaN/infinity guards on every solver output are
-mandatory — that code threw a logging BufferOverflow from an unguarded NaN.
-Full shoot-on-the-move is an open question, not a decision: FTC robots move far
-slower, so motion compensation buys little while adding a whole class of
-frame-conversion bugs. Default to shooting from rest with an interpolated map.
-
-## How to verify changes without a robot
-
-Pedro `core`, Ivy `core` and Ivy `pedro` are pure Java with no external
-dependencies, so they can be cloned and compiled for real:
-
-```
-git clone --depth 1 https://github.com/Pedro-Pathing/PedroPathing.git
-git clone --depth 1 https://github.com/Pedro-Pathing/Ivy.git
-```
-
-Stub only the FTC SDK types (`DcMotor`, `DcMotorEx`, `Servo`, `HardwareMap`,
-`OpMode`, `Gamepad`, `ElapsedTime`, `Telemetry`) and Pedro's `revhub` classes
-(`Mecanum`, `MecanumConfig`, `PinpointLocalizer`, `PinpointConfig`). Then compile
-team code against them, call `Constants.createFollower()` to force every
-`ConfigVar.required()` to be read — unset required fields throw
-`IllegalStateException: Config variable has not been set` at runtime, not compile
-time — and drive `Scheduler.execute()` with fake motors to verify command
-lifecycles.
+Windows JBR: C:/Program Files/Android/Android Studio/jbr.
+Build: gradlew.bat :TeamCode:assembleDebug :TeamCode:testDebugUnitTest.
+Do not fabricate physical tuning values or report simulation as hardware validation.

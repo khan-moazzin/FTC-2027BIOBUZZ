@@ -1,14 +1,14 @@
-# BioBuzz — Pedro Pathing
+# BioBuzz — SolversLib, Pedro and moving-HIVE vision
 
-FTC SDK 12.0.0 with the full Pedro Pathing 3.0.0 core and REV Hub integration,
-AutoTune 1.0.0, Ivy 1.1.1 commands, and a goBILDA Pinpoint follower setup.
-See [Pedro setup](docs/PEDRO_SETUP.md) for hardware
-configuration, tuning, and building.
+FTC Team 26282 robot code on khan-moazzin/FTC-2027BIOBUZZ.
+SolversLib 0.3.6 commands/mechanisms, Pedro 3.0.0 Pinpoint driving, FTC SDK 12.0.0.
 
-The team code includes `pedro/Constants.java`, registered AutoTune procedures,
-and `BiobuzzVision.java` for moving-HIVE AprilTag localization.
-The `pedro/examples` package demonstrates Pedro 3 paths, pose factories,
-per-path constraints, logging, Ivy autonomous sequences, and field-centric TeleOp.
+- [Runtime, controls and calibration](docs/ROBOT_INTEGRATION.md)
+- [Official BIOBUZZ field geometry](docs/FIELD_GEOMETRY.md)
+- [Seattle DECODE research](docs/SEATTLE_DECODE_REVIEW.md)
+- [Integration contract](docs/INTEGRATION_DESIGN.md)
+
+Hardware calibration flags start false. Desktop tests do not replace on-robot validation.
 
 ## FTC SDK information
 

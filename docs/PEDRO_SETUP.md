@@ -1,3 +1,5 @@
+> Historical setup notes. The current SolversLib architecture, controls and calibration are documented in [ROBOT_INTEGRATION.md](ROBOT_INTEGRATION.md). That guide supersedes obsolete Ivy and webcam instructions below.
+
 # Pedro Pathing setup
 
 This project retains FTC SDK 12.0.0 and adds `com.pedropathing:revhub:3.0.0`

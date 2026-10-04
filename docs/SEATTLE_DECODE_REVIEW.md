@@ -6,10 +6,10 @@ Reference: [FTC-23511/Decode-2026](https://github.com/FTC-23511/Decode-2026/tree
 | --- | --- | --- |
 | `globals/MathFunctions.java`, `VirtualGoalSolver` | Iteratively shift the target by launch delay and flight time; include tangential velocity from the turret offset | Predict the actual moving HIVE cell in 3D. Keep explicit units and an invalid-solution result. |
 | `commandbase/subsystems/Turret.java` | Position servo target plus angular velocity times response lag | Use our two analog sensors at 1:1 ratio, calibrate lag, and retain internal servo control. |
-| `globals/Robot.java`, `getShotSolution` | Compute one solution shared by shooter and turret per loop | Immutable, timestamped snapshot after sensor acquisition and localization. |
-| `globals/Robot.java` | Manual Lynx bulk caches, cached voltage reads | One cache clear before acquisition; reset the voltage poll timer after each refresh. |
+| `globals/Robot.java`, `getShotSolution` | Compute one solution shared by shooter and turret per loop | One shared solution computed after sensor acquisition and localization. |
+| `globals/Robot.java` | Manual Lynx bulk caches, cached voltage reads | One cache clear before acquisition. Voltage polling is not currently used by our controller. |
 | Hardware initialization | Motor/servo write caching | Use SolversLib wrappers, with explicit zero writes on shutdown. |
-| Profiler integration | Named execution stages and exported CSV | Bounded samples, decimated telemetry, stage and loop percentiles; export outside active control. |
+| Profiler integration | Named execution stages and exported CSV | Bounded loop samples and decimated percentile telemetry; calibration observation CSV exports outside active control. |
 | `Launcher.java` | Interpolated wheel-speed and flight-time characterization | Guided trials for our hardware, target height and game piece. Do not copy DECODE constants. |
 
 ## Corrections needed when porting
@@ -24,4 +24,4 @@ Reference: [FTC-23511/Decode-2026](https://github.com/FTC-23511/Decode-2026/tree
 
 ## Attribution
 
-The aiming implementation adapts the iterative virtual-target and positional velocity-lead techniques from Seattle Solvers. Their repository ships the FIRST BSD-3-Clause-Clear license; retained in `docs/licenses/Seattle-DECODE-LICENSE.txt`. Pedro-derived fusion code retains its own source header and license. SolversLib is consumed as a pinned dependency, not copied wholesale.
+The aiming implementation adapts the iterative virtual-target and positional velocity-lead techniques from Seattle Solvers. Their repository ships the FIRST BSD-3-Clause-Clear license; retained in `docs/licenses/Seattle-DECODE-LICENSE.txt`. The replacement buffered fusion implementation uses Pedro public math/localizer APIs. SolversLib is consumed as a pinned dependency, not copied wholesale.
