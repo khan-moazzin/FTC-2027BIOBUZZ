@@ -105,4 +105,10 @@ public class AimingTest {
     assertTrue(moving.angle < stationary.angle);
     assertTrue(moving.angularVelocity < 0);
   }
+
+  @Test
+  public void fullTurnEndpointsRequireAnUnambiguousStartupPosition() {
+    assertTrue(TurretTarget.ambiguous(Math.PI - .001, -Math.PI, Math.PI, .02));
+    assertFalse(TurretTarget.ambiguous(0, -Math.PI, Math.PI, .02));
+  }
 }

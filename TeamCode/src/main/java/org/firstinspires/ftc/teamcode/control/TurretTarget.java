@@ -1,6 +1,15 @@
 package org.firstinspires.ftc.teamcode.control;
 
 public final class TurretTarget {
+  public static boolean ambiguous(double wrapped, double low, double high, double tolerance) {
+    int candidates = 0;
+    for (int k = -2; k <= 2; k++) {
+      double a = wrapped + k * 2 * Math.PI;
+      if (a >= low - tolerance && a <= high + tolerance) candidates++;
+    }
+    return candidates != 1;
+  }
+
   public static double measured(
       double wrapped, double previous, double low, double high, double tolerance) {
     return Angles.clamp(choose(wrapped, previous, low - tolerance, high + tolerance), low, high);

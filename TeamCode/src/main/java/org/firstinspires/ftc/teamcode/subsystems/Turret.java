@@ -14,6 +14,7 @@ public final class Turret extends SubsystemBase {
   public final VisionConfig config;
   public double leftVoltage, rightVoltage;
   private double position = .5, targetAngle, lastCommandAngle;
+  private boolean initialized;
 
   public Turret(HardwareMap hw, VisionConfig c) {
     config = c;
@@ -31,6 +32,19 @@ public final class Turret extends SubsystemBase {
     leftVoltage = le.getVoltage();
     rightVoltage = re.getVoltage();
     feedback.update(leftVoltage, rightVoltage, now, config);
+    if (feedback.healthy && !initialized) {
+      double lo = (config.servoMin - config.servoCenter) * config.radiansPerServo;
+      double hi = (config.servoMax - config.servoCenter) * config.radiansPerServo;
+      if (TurretTarget.ambiguous(feedback.angle, lo, hi, config.feedbackTolerance)) {
+        // A 1:1 absolute encoder cannot distinguish the two ends of a complete turn at startup.
+        feedback.healthy = false;
+        return;
+      }
+      lastCommandAngle = TurretTarget.measured(feedback.angle, 0, lo, hi, config.feedbackTolerance);
+      targetAngle = lastCommandAngle;
+      position = config.servoCenter + lastCommandAngle / config.radiansPerServo;
+      initialized = true;
+    }
   }
 
   public double aim(double angle, double rate, double dt) {
