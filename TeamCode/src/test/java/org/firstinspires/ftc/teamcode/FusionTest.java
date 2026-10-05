@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import com.pedropathing.localization.*;
 import com.pedropathing.math.*;
-import org.firstinspires.ftc.teamcode.localization.BufferedFusionLocalizer;
+import org.firstinspires.ftc.teamcode.lib.localization.BufferedFusionLocalizer;
 import org.junit.Test;
 
 public class FusionTest {

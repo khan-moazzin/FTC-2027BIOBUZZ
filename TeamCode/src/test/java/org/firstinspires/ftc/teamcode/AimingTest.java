@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import static org.junit.Assert.*;
 
 import org.firstinspires.ftc.teamcode.config.*;
-import org.firstinspires.ftc.teamcode.control.*;
+import org.firstinspires.ftc.teamcode.lib.control.*;
 import org.junit.Test;
 
 public class AimingTest {
@@ -85,8 +85,8 @@ public class AimingTest {
           {1, 100, 3000, .5, .5},
           {140, 100, 3000, .5, .5}
         };
-    org.firstinspires.ftc.teamcode.vision.HiveState hive =
-        new org.firstinspires.ftc.teamcode.vision.HiveState();
+    org.firstinspires.ftc.teamcode.lib.vision.HiveState hive =
+        new org.firstinspires.ftc.teamcode.lib.vision.HiveState();
     for (int i = 0; i < 50; i++) hive.update(0, .0001, 1000000000L + i * 20000000L, 0);
     com.pedropathing.math.Pose pose = new com.pedropathing.math.Pose(20, 85, 0);
     MovingShotSolver.Solution stationary =
@@ -96,8 +96,8 @@ public class AimingTest {
             0,
             0,
             hive,
-            org.firstinspires.ftc.teamcode.field.Field.Hive.BLUE,
-            org.firstinspires.ftc.teamcode.field.Field.Cell.SCORING,
+            org.firstinspires.ftc.teamcode.lib.field.Field.Hive.BLUE,
+            org.firstinspires.ftc.teamcode.lib.field.Field.Cell.SCORING,
             1980000000L,
             vision,
             shots);
@@ -108,8 +108,8 @@ public class AimingTest {
             0,
             0,
             hive,
-            org.firstinspires.ftc.teamcode.field.Field.Hive.BLUE,
-            org.firstinspires.ftc.teamcode.field.Field.Cell.SCORING,
+            org.firstinspires.ftc.teamcode.lib.field.Field.Hive.BLUE,
+            org.firstinspires.ftc.teamcode.lib.field.Field.Cell.SCORING,
             1980000000L,
             vision,
             shots);

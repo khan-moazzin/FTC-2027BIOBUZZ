@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import com.pedropathing.math.Pose;
 import java.util.*;
 import org.firstinspires.ftc.teamcode.config.VisionConfig;
-import org.firstinspires.ftc.teamcode.field.Field;
-import org.firstinspires.ftc.teamcode.math.*;
-import org.firstinspires.ftc.teamcode.vision.*;
+import org.firstinspires.ftc.teamcode.lib.field.Field;
+import org.firstinspires.ftc.teamcode.lib.math.*;
+import org.firstinspires.ftc.teamcode.lib.vision.*;
 import org.junit.Test;
 
 public class GeometryTest {

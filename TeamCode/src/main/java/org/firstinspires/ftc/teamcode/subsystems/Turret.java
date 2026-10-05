@@ -5,7 +5,7 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.AbsoluteAnalogEncoder;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 import org.firstinspires.ftc.teamcode.config.*;
-import org.firstinspires.ftc.teamcode.control.*;
+import org.firstinspires.ftc.teamcode.lib.control.*;
 
 public final class Turret extends SubsystemBase {
   private final ServoEx left, right;
@@ -48,12 +48,16 @@ public final class Turret extends SubsystemBase {
   }
 
   public double aim(double angle, double rate, double dt) {
-    if (!feedback.healthy || !Double.isFinite(angle) || !Double.isFinite(rate)) return Double.NaN;
+    if (!initialized
+        || !feedback.healthy
+        || !Double.isFinite(angle)
+        || !Double.isFinite(rate)
+        || !Double.isFinite(dt)) return Double.NaN;
     double lo = (config.servoMin - config.servoCenter) * config.radiansPerServo,
         hi = (config.servoMax - config.servoCenter) * config.radiansPerServo;
     double wanted = Angles.wrap(angle);
     targetAngle =
-        org.firstinspires.ftc.teamcode.control.TurretTarget.choose(
+        org.firstinspires.ftc.teamcode.lib.control.TurretTarget.choose(
             wanted, lastCommandAngle, lo, hi);
     double led = Angles.clamp(targetAngle + rate * config.turretLag, lo, hi);
     lastCommandAngle +=
@@ -66,12 +70,17 @@ public final class Turret extends SubsystemBase {
   }
 
   public boolean ready() {
-    return feedback.healthy
-        && Math.abs(Angles.wrap(targetAngle - feedback.angle)) < MechanismConfig.turretTolerance;
+    double lo = (config.servoMin - config.servoCenter) * config.radiansPerServo;
+    double hi = (config.servoMax - config.servoCenter) * config.radiansPerServo;
+    double measured =
+        TurretTarget.measured(feedback.angle, lastCommandAngle, lo, hi, config.feedbackTolerance);
+    return initialized
+        && feedback.healthy
+        && Math.abs(targetAngle - measured) < MechanismConfig.turretTolerance;
   }
 
   public void write() {
-    if (config.turretCalibrated && feedback.healthy) {
+    if (initialized && config.turretCalibrated && feedback.healthy && Double.isFinite(position)) {
       left.set(position);
       right.set(position);
     }

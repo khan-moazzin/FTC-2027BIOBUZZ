@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import static org.junit.Assert.*;
 
 import java.io.StringWriter;
-import org.firstinspires.ftc.teamcode.control.CachedVoltage;
-import org.firstinspires.ftc.teamcode.control.LoopTiming;
+import org.firstinspires.ftc.teamcode.lib.control.CachedVoltage;
+import org.firstinspires.ftc.teamcode.lib.control.LoopTiming;
 import org.junit.Test;
 
 public class RuntimeTest {

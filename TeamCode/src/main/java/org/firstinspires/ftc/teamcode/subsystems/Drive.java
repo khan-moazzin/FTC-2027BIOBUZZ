@@ -10,7 +10,7 @@ import com.seattlesolvers.solverslib.command.*;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 import java.util.function.DoubleSupplier;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.localization.BufferedFusionLocalizer;
+import org.firstinspires.ftc.teamcode.lib.localization.BufferedFusionLocalizer;
 
 public final class Drive extends SubsystemBase {
   private final BufferedFusionLocalizer localizer;
@@ -60,7 +60,7 @@ public final class Drive extends SubsystemBase {
   }
 
   public Pose getPose() {
-    return follower.pose();
+    return localizer.pose();
   }
 
   public void setPose(Pose p) {

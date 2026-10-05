@@ -6,6 +6,8 @@ import com.seattlesolvers.solverslib.command.CommandScheduler;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.config.VisionConfig;
+import org.firstinspires.ftc.teamcode.lib.control.LoopTiming;
+import org.firstinspires.ftc.teamcode.lib.vision.BiobuzzVision;
 import org.firstinspires.ftc.teamcode.subsystems.*;
 
 public final class Robot implements AutoCloseable {
@@ -15,24 +17,32 @@ public final class Robot implements AutoCloseable {
   public Turret turret;
   public Hood hood;
   public Flywheel flywheel;
-  public org.firstinspires.ftc.teamcode.vision.BiobuzzVision vision;
+  public BiobuzzVision vision;
   public final VisionConfig visionConfig = new VisionConfig();
-  public final org.firstinspires.ftc.teamcode.control.LoopTiming timing =
-      new org.firstinspires.ftc.teamcode.control.LoopTiming();
+  public final LoopTiming timing = new LoopTiming();
   private List<LynxModule> hubs;
   private Telemetry telemetry;
 
   public void init(HardwareMap hw, Telemetry t) {
-    telemetry = t;
-    hubs = hw.getAll(LynxModule.class);
-    for (LynxModule h : hubs) h.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-    drive = new Drive(hw);
-    intake = new Intake(hw);
-    turret = new Turret(hw, visionConfig);
-    hood = new Hood(hw);
-    flywheel = new Flywheel(hw);
-    vision = new org.firstinspires.ftc.teamcode.vision.BiobuzzVision(hw, visionConfig);
-    shooter = new Shooter(this);
+    try {
+      telemetry = t;
+      hubs = hw.getAll(LynxModule.class);
+      for (LynxModule h : hubs) h.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+      drive = new Drive(hw);
+      intake = new Intake(hw);
+      turret = new Turret(hw, visionConfig);
+      hood = new Hood(hw);
+      flywheel = new Flywheel(hw);
+      vision = new BiobuzzVision(hw, visionConfig);
+      shooter = new Shooter(this);
+    } catch (RuntimeException failure) {
+      try {
+        close();
+      } catch (RuntimeException cleanup) {
+        failure.addSuppressed(cleanup);
+      }
+      throw failure;
+    }
   }
 
   public void read(long now) {

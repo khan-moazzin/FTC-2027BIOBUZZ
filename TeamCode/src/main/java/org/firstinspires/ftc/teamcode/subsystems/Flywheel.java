@@ -6,7 +6,7 @@ import com.seattlesolvers.solverslib.controller.PIDFController;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import org.firstinspires.ftc.teamcode.config.MechanismConfig;
-import org.firstinspires.ftc.teamcode.control.*;
+import org.firstinspires.ftc.teamcode.lib.control.*;
 
 public final class Flywheel extends SubsystemBase {
   private final MotorEx[] motors;

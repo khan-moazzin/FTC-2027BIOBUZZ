@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import static org.junit.Assert.*;
 
 import org.firstinspires.ftc.teamcode.config.VisionConfig;
-import org.firstinspires.ftc.teamcode.control.*;
+import org.firstinspires.ftc.teamcode.lib.control.*;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.junit.Test;
 

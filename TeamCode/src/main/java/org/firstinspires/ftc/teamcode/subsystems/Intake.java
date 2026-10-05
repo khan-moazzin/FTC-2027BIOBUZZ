@@ -12,6 +12,7 @@ public final class Intake extends SubsystemBase {
     left = new MotorEx(hw, "intake1");
     right = new MotorEx(hw, "intake2");
     for (MotorEx m : new MotorEx[] {left, right}) {
+      m.motorEx.setMode(com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       m.setRunMode(Motor.RunMode.RawPower);
       m.setInverted(true);
       m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);

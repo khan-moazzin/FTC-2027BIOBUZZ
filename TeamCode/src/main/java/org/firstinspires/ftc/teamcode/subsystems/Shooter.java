@@ -5,9 +5,9 @@ import com.seattlesolvers.solverslib.command.*;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.config.*;
-import org.firstinspires.ftc.teamcode.control.*;
-import org.firstinspires.ftc.teamcode.field.Field;
-import org.firstinspires.ftc.teamcode.vision.HiveState;
+import org.firstinspires.ftc.teamcode.lib.control.*;
+import org.firstinspires.ftc.teamcode.lib.field.Field;
+import org.firstinspires.ftc.teamcode.lib.vision.HiveState;
 
 public final class Shooter extends SubsystemBase {
   private final Robot robot;
