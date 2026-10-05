@@ -12,7 +12,7 @@ Pedro is a library used with the FTC SDK, not a replacement Robot Controller
 SDK. This project uses the published Pedro 3 artifacts directly: the follower
 returned by `Constants.create()` exposes the complete library API.
 
-The `TeamCode/src/main/java/org/firstinspires/ftc/teamcode/pedro` package is
+The `TeamCode/src/main/java/org/firstinspires/ftc/teamcode/lib/pedro` package is
 based on the [official quickstart](https://github.com/Pedro-Pathing/Quickstart/tree/b4312385b7d0cc5e8dd263ec3927c9ef0cb48f36),
 revision `b4312385b7d0cc5e8dd263ec3927c9ef0cb48f36`. `Constants` and `Tuning`
 are customized for a mecanum drivetrain with goBILDA Pinpoint. The upstream
@@ -66,7 +66,7 @@ calibration as described in that class. Vision fusion is not enabled automatical
 ## Pedro 3 features and examples
 
 The examples live in
-`TeamCode/src/main/java/org/firstinspires/ftc/teamcode/pedro/examples`.
+`TeamCode/src/main/java/org/firstinspires/ftc/teamcode/lib/pedro/examples`.
 Remove `@Disabled` from the desired OpMode after tuning and reviewing its route.
 
 | Feature | Where to start |

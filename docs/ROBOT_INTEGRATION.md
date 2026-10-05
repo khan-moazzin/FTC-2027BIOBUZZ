@@ -76,3 +76,10 @@ Tune 3 now records applied **volts**, not duty cycle, and exports `MechanismConf
 `TeleopMain` saves the latest 512 completed loops to `/sdcard/FIRST/biobuzz-logs/teleop-loop.csv` after shutdown. Each row contains read, command, write and total work milliseconds. Start-to-start period also includes telemetry and SDK scheduling time. The final period is blank because there is no next loop. The file replaces the previous run; copy it before another run. Export is best effort within the SDK stop lifecycle, so inspect the Robot Controller log if the file is missing. No background exporter survives into the next OpMode.
 
 SolversLib 0.3.6 `ParallelRaceGroup` omits normal cleanup of a finished child. Do not introduce `withTimeout`/race compositions around hardware-owning commands without a tested lifecycle fix. Current production code uses neither. Keep explicit `cancelAll`, mechanism stops and then scheduler reset. Raw-mode motor `set(0)` also preserves SolversLib's write cache across a same-power restart.
+
+
+## Simplified source layout
+
+Editable code stays in `Robot.java`, `Constants.java`, `config/`, `subsystems/` and `opmodes/`. Reusable support moved into `lib/`, including Pedro tuning infrastructure. See [CODE_STRUCTURE.md](CODE_STRUCTURE.md). Driver Station names, configuration class packages, hardware names and exported configuration filenames are unchanged.
+
+Vision commits a HIVE update only after the matching robot-pose correction passes its innovation gate. Hood readiness starts on an output write and resets after cumulative target movement. Shot-map tuning rejects requests outside configured RPM/hood travel instead of recording silently clamped values. Changing the turret zero invalidates the prior vision calibration, so rerun the vision wizard after Tune 1. Invalid/empty calibration datasets now return a failed fit rather than crashing.

@@ -34,6 +34,10 @@ shooter. Written by one student programmer who also codes FRC Team 5817.
 
 ## Current architecture
 
+Keep the editable surface small: Robot.java, Constants.java, config/, subsystems/, opmodes/.
+Reusable support belongs under lib/. See docs/CODE_STRUCTURE.md for the package map.
+Library placement does not imply physical hardware validation.
+
 See docs/ROBOT_INTEGRATION.md for runtime, controls, units and calibration.
 See docs/FIELD_GEOMETRY.md for official geometry provenance.
 Historical decisions in docs/PROJECT-NOTES.md and docs/PEDRO_SETUP.md may describe the pre-SolversLib code; the integration guide supersedes them.

@@ -32,3 +32,8 @@ See [operating and calibration instructions](ROBOT_INTEGRATION.md) and the [Seat
 Build logs: `build/seattle-audit-validation.log` and `build/seattle-audit-final-checks.log` (local generated files, not committed). Source/API checks confirmed Pedro 3 performs the Pinpoint read and SDK 12 `getDeviceStatus()` reads the cached result without another I2C transaction. The race-command cleanup issue was also verified against the actual cached SolversLib 0.3.6 binary; current production code does not use that composition.
 
 Hardware validation is still required. In particular, test Pinpoint disconnect/recovery and robot-relative fallback; rerun Tune 3 before enabling voltage-based gains, verify loaded flywheel recovery with Tune 5, and collect the loop CSV with the camera and drivetrain active. No physical tuning values or on-robot performance results were invented.
+
+
+## Source simplification and defect fixes — 2026-10-05
+
+Debug build and all 32 unit tests pass after migrating support packages under `lib`. Package/path and import checks pass. Lint reports no errors and 14 warnings (12 dependency native-alignment warnings and two unused SDK resource placeholders); no team Java warnings remain. The Kotlin metadata reader limitation remains as described above. See [CODE_REVIEW_FIXES.md](CODE_REVIEW_FIXES.md) for corrected behavior and [CODE_STRUCTURE.md](CODE_STRUCTURE.md) for the new editing layout. Hardware calibration flags remain unchanged/uncalibrated in the committed configuration.
