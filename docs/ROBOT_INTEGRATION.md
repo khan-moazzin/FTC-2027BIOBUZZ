@@ -62,6 +62,17 @@ The tuning OpModes require operator acknowledgement and physical measurements wh
 
 Desktop tests cover 3D transform inversion, field fixtures, synthetic pose/HIVE recovery, dual-encoder zero/sign/wrap, bounded delayed fusion and resets, old-frame rejection, feedforward direction, shot-map extrapolation, calibration observability, source export completeness, and synthetic recovery of camera geometry/latency.
 
-Run :TeamCode:assembleDebug and :TeamCode:testDebugUnitTest. Loop telemetry reports rolling p50/p95/max execution time; no on-robot performance numbers are claimed. Telemetry updates at 10 Hz. Measure loaded loop timing with the camera before increasing pipeline rate.
+Run :TeamCode:assembleDebug and :TeamCode:testDebugUnitTest. Loop telemetry reports rolling p50/p95/max work time and start-to-start period; no on-robot performance numbers are claimed. Telemetry updates at 10 Hz. Measure loaded loop timing with the camera before increasing pipeline rate.
 
 No robot is connected during this implementation. Physical calibration flags remain false in committed defaults. No claimed match readiness, physical accuracy, or successful shot is inferred from compiling or simulation.
+
+
+## Seattle audit follow-up
+
+Pinpoint must report READY and finite pose/velocity after its normal Pedro bulk update. Startup calibration may finish normally. A later device fault invalidates the fusion history and latches automation off until a verified `Drive.setPose(...)` or OpMode restart. Manual control falls back to robot-relative drive; shooting, yaw assist and path/hold control are blocked. The back-button driver-forward trim does not reset this fault. Diagnose the device and re-establish field pose before continuing automation. A 250 ms freshness deadline also rejects an old state; no unchanged-position heuristic is used because a stationary robot is valid.
+
+Tune 3 now records applied **volts**, not duty cycle, and exports `MechanismConfig.flywheelGainsInVolts=true`. Rerun the tuner to migrate existing gains; never just flip this flag. S has units volts, V has volts/RPM, and P has volts/RPM of error. Controller output is divided by cached measured battery voltage and clamped to [0,1]. Legacy duty-cycle configurations retain `false`. Voltage is read at 5 Hz; invalid or stale voltage inhibits voltage-mode output and readiness. The P estimate remains only a starting point for Tune 5 loaded testing.
+
+`TeleopMain` saves the latest 512 completed loops to `/sdcard/FIRST/biobuzz-logs/teleop-loop.csv` after shutdown. Each row contains read, command, write and total work milliseconds. Start-to-start period also includes telemetry and SDK scheduling time. The final period is blank because there is no next loop. The file replaces the previous run; copy it before another run. Export is best effort within the SDK stop lifecycle, so inspect the Robot Controller log if the file is missing. No background exporter survives into the next OpMode.
+
+SolversLib 0.3.6 `ParallelRaceGroup` omits normal cleanup of a finished child. Do not introduce `withTimeout`/race compositions around hardware-owning commands without a tested lifecycle fix. Current production code uses neither. Keep explicit `cancelAll`, mechanism stops and then scheduler reset. Raw-mode motor `set(0)` also preserves SolversLib's write cache across a same-power restart.

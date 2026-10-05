@@ -1,0 +1,2535 @@
+{
+  "repository": "https://github.com/FTC-23511/Decode-2026",
+  "commit": "02a453104b0b208a885571b5fa93b0465c054b78",
+  "files": [
+    {
+      "path": ".github/CONTRIBUTING.md",
+      "lines": 68,
+      "bytes": 5743,
+      "binary": false,
+      "reviewed_lines": 68,
+      "method": "full source",
+      "sha256": "a713a373f9a7263addfcb20c1655eae1db787cac979f78820a5d27174a5fd885"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "lines": 1,
+      "bytes": 66,
+      "binary": false,
+      "reviewed_lines": 1,
+      "method": "full source",
+      "sha256": "c8ae46a6bd63d4aa6a5150fb2117fb6eb8799215cf8856d850d729c80af13429"
+    },
+    {
+      "path": ".github/workflows/test.yml",
+      "lines": 37,
+      "bytes": 755,
+      "binary": false,
+      "reviewed_lines": 37,
+      "method": "full source",
+      "sha256": "fb39dc119f43bdcb3206ddaa4575d34bcace5bfab7efc64f5ba9c1618d8028d2"
+    },
+    {
+      "path": ".gitignore",
+      "lines": 81,
+      "bytes": 1267,
+      "binary": false,
+      "reviewed_lines": 81,
+      "method": "full source",
+      "sha256": "101f41f5d932c4c1c8161178f14cd16fec570714c534c1c5ae2c463c139798ff"
+    },
+    {
+      "path": "FtcRobotController/build.gradle",
+      "lines": 30,
+      "bytes": 741,
+      "binary": false,
+      "reviewed_lines": 30,
+      "method": "full source",
+      "sha256": "3e5d766a810b3920ad2f996505eb7ce38f0f3ff939ed569bc5bcbcad957153e2"
+    },
+    {
+      "path": "FtcRobotController/src/main/AndroidManifest.xml",
+      "lines": 79,
+      "bytes": 3032,
+      "binary": false,
+      "reviewed_lines": 79,
+      "method": "full source",
+      "sha256": "3cdd602b33eb3630e9b1f5ddbbca115278fcc70cdf038b244c7157ffe4fd99c7"
+    },
+    {
+      "path": "FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/internal/FtcOpModeRegister.java",
+      "lines": 68,
+      "bytes": 3253,
+      "binary": false,
+      "reviewed_lines": 68,
+      "method": "full source",
+      "sha256": "e69bd20603957d0639a17ba133b7d0dd8c0c5f66107187b446a458f5be6d077e"
+    },
+    {
+      "path": "FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/internal/FtcRobotControllerActivity.java",
+      "lines": 845,
+      "bytes": 35354,
+      "binary": false,
+      "reviewed_lines": 845,
+      "method": "full source",
+      "sha256": "79d2040c48af46f49c7ddf2804cf8d3da5da776407241d4f57294cb3828436de"
+    },
+    {
+      "path": "FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/internal/PermissionValidatorWrapper.java",
+      "lines": 91,
+      "bytes": 4261,
+      "binary": false,
+      "reviewed_lines": 91,
+      "method": "full source",
+      "sha256": "686e47c6859ad75680226a34c286169cb159aa75e4a86276b9c8ff3664612b4a"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/drawable-xhdpi/icon_menu.png",
+      "lines": 0,
+      "bytes": 975,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "31ae069627a28b72f30d042b47cd26df40675dd8e6b1b498ad44080819557a1a"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/drawable-xhdpi/icon_robotcontroller.png",
+      "lines": 0,
+      "bytes": 4777,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "c80fedbaed6d542f555d548cf3f05935cedf32c9a910d05840b444074940f106"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/layout/activity_ftc_controller.xml",
+      "lines": 184,
+      "bytes": 7003,
+      "binary": false,
+      "reviewed_lines": 184,
+      "method": "full source",
+      "sha256": "10173266ccaa087f16f51362acb030256d123644810555e0f71e1ec96bd6a0e4"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/menu/ftc_robot_controller.xml",
+      "lines": 78,
+      "bytes": 3077,
+      "binary": false,
+      "reviewed_lines": 78,
+      "method": "full source",
+      "sha256": "69bee070257916f0997f9f549ea1d52ce036c5c60651798ce54b68ed651c85ed"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/raw/gold.wav",
+      "lines": 0,
+      "bytes": 104016,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "3bfc476a2cdb7cf3a439435a653c37315383b8866d19bd5f75dfb89c99a519ac"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/raw/silver.wav",
+      "lines": 0,
+      "bytes": 99068,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "e303c37d570c93a42e220665ab453d465b655e71c2cb41d2512262eb25312320"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/values/dimens.xml",
+      "lines": 40,
+      "bytes": 1893,
+      "binary": false,
+      "reviewed_lines": 40,
+      "method": "full source",
+      "sha256": "afe3e8c3741441a1b9b8de9d6f4edd59abf2d1367bf2465a0aa3b660cc4e62dd"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/values/strings.xml",
+      "lines": 72,
+      "bytes": 3283,
+      "binary": false,
+      "reviewed_lines": 72,
+      "method": "full source",
+      "sha256": "b67ec3ae41bce2f5619b21aeebd0f194beb943522dde3a48cfd98d0eff6e443f"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/values/styles.xml",
+      "lines": 23,
+      "bytes": 621,
+      "binary": false,
+      "reviewed_lines": 23,
+      "method": "full source",
+      "sha256": "373cc48ff6a4788a74426118285ee7ab719766b177bd4c07474ea090b215120b"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/xml/app_settings.xml",
+      "lines": 93,
+      "bytes": 3902,
+      "binary": false,
+      "reviewed_lines": 93,
+      "method": "full source",
+      "sha256": "2fed95fc32ce6f7cbd5533a7182277e3545860ae085548835ab50e47036116b4"
+    },
+    {
+      "path": "FtcRobotController/src/main/res/xml/device_filter.xml",
+      "lines": 49,
+      "bytes": 2317,
+      "binary": false,
+      "reviewed_lines": 49,
+      "method": "full source",
+      "sha256": "281ce37b417edaa68c5bd8c8ff875d19cfb59fe4f4fb7771bd2f9ca617eb0285"
+    },
+    {
+      "path": "LICENSE",
+      "lines": 29,
+      "bytes": 1629,
+      "binary": false,
+      "reviewed_lines": 29,
+      "method": "full source",
+      "sha256": "a3c1c4557b4ca2f0fcad51340e189e754ada2a0223267bb6a356e6683dba4d27"
+    },
+    {
+      "path": "README.md",
+      "lines": 1699,
+      "bytes": 133724,
+      "binary": false,
+      "reviewed_lines": 1699,
+      "method": "full source",
+      "sha256": "bcc44837f4f346e33fa44a91db6568f33337f85d7dc2b7770bfff9b62f7517e8"
+    },
+    {
+      "path": "TeamCode/build.gradle",
+      "lines": 97,
+      "bytes": 2689,
+      "binary": false,
+      "reviewed_lines": 97,
+      "method": "full source",
+      "sha256": "b7d008232adb463a203f488c2ea4256aaf5e67fd8b9eef831e3c22aa9731aa31"
+    },
+    {
+      "path": "TeamCode/lib/OpModeAnnotationProcessor.jar",
+      "lines": 0,
+      "bytes": 6032,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "0b03017a17a9406aa13af6950ce29084284c90143f4eaa126d77db984e158ebb"
+    },
+    {
+      "path": "TeamCode/src/main/AndroidManifest.xml",
+      "lines": 11,
+      "bytes": 505,
+      "binary": false,
+      "reviewed_lines": 11,
+      "method": "full source",
+      "sha256": "913d548c36035de26e0629b679f2dfe3f20535c410b3a582bc39b5ca69378fde"
+    },
+    {
+      "path": "TeamCode/src/main/java/com.outoftheboxrobotics/photoncore/Neutrino/MB1242/MB1242Ex.java",
+      "lines": 253,
+      "bytes": 9887,
+      "binary": false,
+      "reviewed_lines": 253,
+      "method": "full source",
+      "sha256": "bad428cc28045c9fdedfad8e2c0d4061a59ecd3160f04cc2f3758bb0f98cc12e"
+    },
+    {
+      "path": "TeamCode/src/main/java/com.outoftheboxrobotics/photoncore/Neutrino/Rev2MSensor/Rev2mDistanceSensorEx.java",
+      "lines": 70,
+      "bytes": 2370,
+      "binary": false,
+      "reviewed_lines": 70,
+      "method": "full source",
+      "sha256": "561746aa26060ab184fc4f479ccfda11d3f9a7c670a8295d5eea2dfd904740e3"
+    },
+    {
+      "path": "TeamCode/src/main/java/com.outoftheboxrobotics/photoncore/Neutrino/RevColorSensor/BroadcomColorSensorImplEx.java",
+      "lines": 429,
+      "bytes": 15851,
+      "binary": false,
+      "reviewed_lines": 429,
+      "method": "full source",
+      "sha256": "c55868ec684069adeef9f73e320c631898fc4a008f8572d43b0dde27af09a3e7"
+    },
+    {
+      "path": "TeamCode/src/main/java/com.outoftheboxrobotics/photoncore/Neutrino/RevColorSensor/RevColorSensorV3Ex.java",
+      "lines": 169,
+      "bytes": 6645,
+      "binary": false,
+      "reviewed_lines": 169,
+      "method": "full source",
+      "sha256": "e078f31722764838d44a3a652b1b9d2655553bf55eed5a75afbfd0f263773a72"
+    },
+    {
+      "path": "TeamCode/src/main/java/com.outoftheboxrobotics/photoncore/PhotonCore.java",
+      "lines": 436,
+      "bytes": 20107,
+      "binary": false,
+      "reviewed_lines": 436,
+      "method": "full source",
+      "sha256": "70acb350c91db4111c71e11bcb52822639e27324644016c7964ed8bbae29b3fd"
+    },
+    {
+      "path": "TeamCode/src/main/java/com.outoftheboxrobotics/photoncore/PhotonLynxModule.java",
+      "lines": 83,
+      "bytes": 3110,
+      "binary": false,
+      "reviewed_lines": 83,
+      "method": "full source",
+      "sha256": "f63a4ad389559371db3ab76c0a02cac7200186b4aedf42dea420b8561a84e52e"
+    },
+    {
+      "path": "TeamCode/src/main/java/com.outoftheboxrobotics/photoncore/ReflectionUtils.java",
+      "lines": 50,
+      "bytes": 1573,
+      "binary": false,
+      "reviewed_lines": 50,
+      "method": "full source",
+      "sha256": "c989a0a923e02b30cb95f9e179d775ebc77ebb33faa2c79e5a0d9853e40b90e4"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/CallbackCommand.java",
+      "lines": 173,
+      "bytes": 6530,
+      "binary": false,
+      "reviewed_lines": 173,
+      "method": "full source",
+      "sha256": "433a4d4db7d73a9abf51ee39fbb203a5ece99679f1a0afa3660d9e3135548397"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/Command.java",
+      "lines": 352,
+      "bytes": 15239,
+      "binary": false,
+      "reviewed_lines": 352,
+      "method": "full source",
+      "sha256": "75b47daf12de868b78386524aa0941d8024510419bc052916b1c9956c1ba432f"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/CommandBase.java",
+      "lines": 59,
+      "bytes": 1754,
+      "binary": false,
+      "reviewed_lines": 59,
+      "method": "full source",
+      "sha256": "25b7a79b488f4fc69ad1840a1dd1d30ae8a47eaf6185574114de537666083380"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/CommandGroupBase.java",
+      "lines": 89,
+      "bytes": 3355,
+      "binary": false,
+      "reviewed_lines": 89,
+      "method": "full source",
+      "sha256": "de9a98e040545c823612921fed050468631305f86e4ed9552918a282c96410c3"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/CommandOpMode.java",
+      "lines": 87,
+      "bytes": 2098,
+      "binary": false,
+      "reviewed_lines": 87,
+      "method": "full source",
+      "sha256": "0239e339f157142cfe6268e5a2ca9996b0ac40665d7ff15a5ac140d273d1f82e"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/CommandScheduler.java",
+      "lines": 520,
+      "bytes": 20480,
+      "binary": false,
+      "reviewed_lines": 520,
+      "method": "full source",
+      "sha256": "e1760d43330b70b948ee68ad931617010b5adf718742d8fd3a0f2f4d23fc73bc"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/CommandState.java",
+      "lines": 34,
+      "bytes": 1069,
+      "binary": false,
+      "reviewed_lines": 34,
+      "method": "full source",
+      "sha256": "24796ab2a19b7d6a3faa287d9951fc23ee5165ca2694ce5ce9a99f45cbd2de46"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/Commands.java",
+      "lines": 253,
+      "bytes": 8452,
+      "binary": false,
+      "reviewed_lines": 253,
+      "method": "full source",
+      "sha256": "bf185dc93a12a3bb037c1289c7838ce57f62699da6a5732024ca8001fa4b2956"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/ConditionalCommand.java",
+      "lines": 86,
+      "bytes": 3174,
+      "binary": false,
+      "reviewed_lines": 86,
+      "method": "full source",
+      "sha256": "4c09aa86424dfecea02001aeb4173175adb9c6a53d57cce82d9e45d570e37cff"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/DeferredCommand.java",
+      "lines": 77,
+      "bytes": 2962,
+      "binary": false,
+      "reviewed_lines": 77,
+      "method": "full source",
+      "sha256": "6a0f07537d407c3c41e15a0137f97a90c2c8c935a7a032179768815e9ff66726"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/FunctionalCommand.java",
+      "lines": 67,
+      "bytes": 2387,
+      "binary": false,
+      "reviewed_lines": 67,
+      "method": "full source",
+      "sha256": "96a23b4bb99b9b306cb77f0aa1ccf1ec5450fb333c85e5e53acbe471436c12f0"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/InstantCommand.java",
+      "lines": 52,
+      "bytes": 1717,
+      "binary": false,
+      "reviewed_lines": 52,
+      "method": "full source",
+      "sha256": "8686a52a5776dd4ab84a381a5a0b53a1395e18b4ee34c54aebac6ab675b956e7"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/LambdaCommand.java",
+      "lines": 209,
+      "bytes": 6493,
+      "binary": false,
+      "reviewed_lines": 209,
+      "method": "full source",
+      "sha256": "415ffd4f0459a8188f43f35f9f479da9760cc1dbe53bfdf1bf41a55f3895bbdf"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/LogCatCommand.java",
+      "lines": 39,
+      "bytes": 1234,
+      "binary": false,
+      "reviewed_lines": 39,
+      "method": "full source",
+      "sha256": "686f7af8720ca25f64c50860e3c395ce99878f37ddc55ee9916b097664be9d1f"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/MecanumControllerCommand.java",
+      "lines": 326,
+      "bytes": 15351,
+      "binary": false,
+      "reviewed_lines": 326,
+      "method": "full source",
+      "sha256": "3757c5df6765eb864e427d9b5216f045fe5e6ee08ef22b5b880d24a0373679cd"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/OdometrySubsystem.java",
+      "lines": 38,
+      "bytes": 858,
+      "binary": false,
+      "reviewed_lines": 38,
+      "method": "full source",
+      "sha256": "1339e6b31b5a018a345b38b0ecc955162d0cbfef0eaf2c14e6024882680d0d27"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/ParallelCommandGroup.java",
+      "lines": 103,
+      "bytes": 3678,
+      "binary": false,
+      "reviewed_lines": 103,
+      "method": "full source",
+      "sha256": "3d9ba0750bd91284aa51533457f9609c4f9b5d82cf17d93b8d81b4a2ebc6f0c4"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/ParallelDeadlineGroup.java",
+      "lines": 125,
+      "bytes": 4598,
+      "binary": false,
+      "reviewed_lines": 125,
+      "method": "full source",
+      "sha256": "cf5274c607cf4f0a8aad3fbae697cd0fb1b1a0b1b43b5905896b92268e0d3fc4"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/ParallelRaceGroup.java",
+      "lines": 98,
+      "bytes": 3181,
+      "binary": false,
+      "reviewed_lines": 98,
+      "method": "full source",
+      "sha256": "4d0dd1573a6dc86304e9d3756ec125cc513a26b1831641a8a1febebaa1b834fd"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/PerpetualCommand.java",
+      "lines": 60,
+      "bytes": 2198,
+      "binary": false,
+      "reviewed_lines": 60,
+      "method": "full source",
+      "sha256": "ceb5ec2f3362b4bc4466740c6b3e70841e90f9eb92fcf4a359889de7d13057fd"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/PrintCommand.java",
+      "lines": 27,
+      "bytes": 956,
+      "binary": false,
+      "reviewed_lines": 27,
+      "method": "full source",
+      "sha256": "5c040454feb762f519682a4222a7449f953b0dcc2b3ad0b46a4193d90819bbf2"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/ProfiledPIDCommand.java",
+      "lines": 133,
+      "bytes": 5779,
+      "binary": false,
+      "reviewed_lines": 133,
+      "method": "full source",
+      "sha256": "0195996e83c7e2c695ff407bca9306bf89515e916d6243a1ebbfb1baacab5824"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/ProxyScheduleCommand.java",
+      "lines": 63,
+      "bytes": 2040,
+      "binary": false,
+      "reviewed_lines": 63,
+      "method": "full source",
+      "sha256": "ddc950125a1cba1e3bd8169a20ecb724572dcfe6578996751bf90507d67912ea"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/PurePursuitCommand.java",
+      "lines": 61,
+      "bytes": 1665,
+      "binary": false,
+      "reviewed_lines": 61,
+      "method": "full source",
+      "sha256": "205dbcf6980d7dd99f0ae96a47235833fd925c8cf56e6e17a42b8b61552a324b"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/RamseteCommand.java",
+      "lines": 186,
+      "bytes": 8169,
+      "binary": false,
+      "reviewed_lines": 186,
+      "method": "full source",
+      "sha256": "461fa2ea61304b9f5a76acbe18cab32ef21902993e2d52703b8306d46ce73626"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/RepeatCommand.java",
+      "lines": 119,
+      "bytes": 4260,
+      "binary": false,
+      "reviewed_lines": 119,
+      "method": "full source",
+      "sha256": "d5e12ed88ec676aefef665c8a93f0831ca302c788e42bc5ee16771268b6de7ff"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/RetryCommand.java",
+      "lines": 96,
+      "bytes": 3527,
+      "binary": false,
+      "reviewed_lines": 96,
+      "method": "full source",
+      "sha256": "194bf2853573295c30130a1b3a3320e530676b99c061c2201b8aa9b32b4ebb3c"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/Robot.java",
+      "lines": 64,
+      "bytes": 2066,
+      "binary": false,
+      "reviewed_lines": 64,
+      "method": "full source",
+      "sha256": "3aefc4d1177b7076f8c0186f51b23e12d080ec3a8bfedf0b03779094c4ef50a8"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/RunCommand.java",
+      "lines": 42,
+      "bytes": 1511,
+      "binary": false,
+      "reviewed_lines": 42,
+      "method": "full source",
+      "sha256": "f1d7f9a6917399a337eff48e5a2309e1de9194c10d4be3d7f7ba87548fb41119"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/ScheduleCommand.java",
+      "lines": 51,
+      "bytes": 1657,
+      "binary": false,
+      "reviewed_lines": 51,
+      "method": "full source",
+      "sha256": "0eb8ec630b06efa9dbdb8523d0df11a7934b20822cceacdb6d0be9f41fcd00a1"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/SelectCommand.java",
+      "lines": 108,
+      "bytes": 3973,
+      "binary": false,
+      "reviewed_lines": 108,
+      "method": "full source",
+      "sha256": "e6baa50f174269006f5eaea9869b561c15253fed84c8ddd17ce6d0d28454d57a"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/SequentialCommandGroup.java",
+      "lines": 109,
+      "bytes": 3376,
+      "binary": false,
+      "reviewed_lines": 109,
+      "method": "full source",
+      "sha256": "65fc79df73b903e096b73ac38c09158276c5b9b555e6dfe7678518bee342fc99"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/StartEndCommand.java",
+      "lines": 42,
+      "bytes": 1307,
+      "binary": false,
+      "reviewed_lines": 42,
+      "method": "full source",
+      "sha256": "2207094095a93a02e469368d284c25b1b174b9b384ff2dde4a47b5c8f4a7a676"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/Subsystem.java",
+      "lines": 155,
+      "bytes": 6262,
+      "binary": false,
+      "reviewed_lines": 155,
+      "method": "full source",
+      "sha256": "d9b9c8ff278b1d03ff84cc6b8dc6855e3c95e96540fc953e882af5f79319291c"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/SubsystemBase.java",
+      "lines": 40,
+      "bytes": 1210,
+      "binary": false,
+      "reviewed_lines": 40,
+      "method": "full source",
+      "sha256": "4cc04d21f3d2d91fc95aeffb4f57207a0e954ba65da357ceef763ad29019a5be"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/TrapezoidProfileCommand.java",
+      "lines": 62,
+      "bytes": 1933,
+      "binary": false,
+      "reviewed_lines": 62,
+      "method": "full source",
+      "sha256": "ba4153846276281da4512e69ac95699957498881a74ee04ff8e8a3d5cfd6e8c5"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/UninterruptibleCommand.java",
+      "lines": 30,
+      "bytes": 822,
+      "binary": false,
+      "reviewed_lines": 30,
+      "method": "full source",
+      "sha256": "83f50a7f6bb26d66d1e85bb26b7006f254af29f5452ccad025d773686757c8a1"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/WaitCommand.java",
+      "lines": 54,
+      "bytes": 1654,
+      "binary": false,
+      "reviewed_lines": 54,
+      "method": "full source",
+      "sha256": "05a2a42ba1cb6a8abf9213c24e1db3f16813814dee477a75ec91aba26b95b5cc"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/WaitUntilCommand.java",
+      "lines": 41,
+      "bytes": 1298,
+      "binary": false,
+      "reviewed_lines": 41,
+      "method": "full source",
+      "sha256": "9704277f9f4031f4710c193b14f131f97c137d044a3bf534c3dbcfccab730395"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/button/Button.java",
+      "lines": 255,
+      "bytes": 9079,
+      "binary": false,
+      "reviewed_lines": 255,
+      "method": "full source",
+      "sha256": "f895daa85c5fa1a7831963854a6ee10b37fbf3c2a8f712b610e65ac7ed8c345d"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/button/GamepadButton.java",
+      "lines": 42,
+      "bytes": 1127,
+      "binary": false,
+      "reviewed_lines": 42,
+      "method": "full source",
+      "sha256": "983ac49da8d684ef599addc771b76b5053744e029d085d58abad51cf39116dc8"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/button/Trigger.java",
+      "lines": 406,
+      "bytes": 14200,
+      "binary": false,
+      "reviewed_lines": 406,
+      "method": "full source",
+      "sha256": "5db9d568514807d7bdfa0e75e12728c5963a2e6ec34bd6e46bbbca7a18ccfc7d"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/old/Command.java",
+      "lines": 29,
+      "bytes": 678,
+      "binary": false,
+      "reviewed_lines": 29,
+      "method": "full source",
+      "sha256": "a027065c61f4ff30238cd65c1f296e41981043caabf23ed351496e73f81c5076"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/old/CommandOpMode.java",
+      "lines": 106,
+      "bytes": 3308,
+      "binary": false,
+      "reviewed_lines": 106,
+      "method": "full source",
+      "sha256": "d1e3fa9a3deca1d5ae165c3f40a5b361556d78a95b2997c4b143f8021a317e80"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/old/SequentialCommandGroup.java",
+      "lines": 52,
+      "bytes": 1279,
+      "binary": false,
+      "reviewed_lines": 52,
+      "method": "full source",
+      "sha256": "a6b771ab231abfd9d9564b1801df57527ab5019ef388d43af3dced4fbd4dba3f"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/command/old/Subsystem.java",
+      "lines": 40,
+      "bytes": 1099,
+      "binary": false,
+      "reviewed_lines": 40,
+      "method": "full source",
+      "sha256": "c6e050cc194b9e40b3cc8556ce42d34260135be1b61567b3da34567c95ed05c9"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/CascadeController.java",
+      "lines": 56,
+      "bytes": 1714,
+      "binary": false,
+      "reviewed_lines": 56,
+      "method": "full source",
+      "sha256": "9d82eae84163d2931c3ee3bdef75294d5df1c893446e92d6c0e26dae17fb86f3"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/Controller.java",
+      "lines": 215,
+      "bytes": 6513,
+      "binary": false,
+      "reviewed_lines": 215,
+      "method": "full source",
+      "sha256": "79e8dd74ae99dfc96b5e7dba99ac4a17c01e210db536b4563e244d470694f260"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/PController.java",
+      "lines": 21,
+      "bytes": 460,
+      "binary": false,
+      "reviewed_lines": 21,
+      "method": "full source",
+      "sha256": "ae36c026ddb5e034039dfea414525ebd7a7a9562c34b09e7a6e634ae157b114e"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/PDController.java",
+      "lines": 18,
+      "bytes": 432,
+      "binary": false,
+      "reviewed_lines": 18,
+      "method": "full source",
+      "sha256": "0323071312e2374cd33805c548e3324e51affd5ddd5dda0a35ab2e94bdcc8aad"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/PIDController.java",
+      "lines": 23,
+      "bytes": 569,
+      "binary": false,
+      "reviewed_lines": 23,
+      "method": "full source",
+      "sha256": "449e08a6d9ebde9127740f75b83c255fc4e560d6d31c6c238d2b10bc31bac226"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/PIDFController.java",
+      "lines": 244,
+      "bytes": 7781,
+      "binary": false,
+      "reviewed_lines": 244,
+      "method": "full source",
+      "sha256": "eea63e88c787813898ba8cf03696b7d41fafda9d16e58243e702d95515a948ee"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/SquIDFController.java",
+      "lines": 83,
+      "bytes": 3347,
+      "binary": false,
+      "reviewed_lines": 83,
+      "method": "full source",
+      "sha256": "e3929f83d129eff68025a52acade19f7f5b1476ec093da8ebc527b17be082914"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/wpilibcontroller/ArmFeedforward.java",
+      "lines": 142,
+      "bytes": 6462,
+      "binary": false,
+      "reviewed_lines": 142,
+      "method": "full source",
+      "sha256": "f3a67849c645d1f1d938da6b4af5448c9e770f8c9ec4a923116ab6d0a20117b1"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/wpilibcontroller/ElevatorFeedforward.java",
+      "lines": 135,
+      "bytes": 5862,
+      "binary": false,
+      "reviewed_lines": 135,
+      "method": "full source",
+      "sha256": "387d4f3fca78e9262f61071e1153a53b63675a5f0889495625f8cbe3bd1fb455"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/wpilibcontroller/ProfiledPIDController.java",
+      "lines": 299,
+      "bytes": 9341,
+      "binary": false,
+      "reviewed_lines": 299,
+      "method": "full source",
+      "sha256": "e033c3beaf0dc4be94a7076eb6f6869d0b94a5ff57112c9715a8c0eb3729ce08"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/wpilibcontroller/RamseteController.java",
+      "lines": 153,
+      "bytes": 6923,
+      "binary": false,
+      "reviewed_lines": 153,
+      "method": "full source",
+      "sha256": "1569882b939e4c40cf8fa614fd7fc3fcca010e707d14e857b2a59e378feb3883"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/controller/wpilibcontroller/SimpleMotorFeedforward.java",
+      "lines": 130,
+      "bytes": 5639,
+      "binary": false,
+      "reviewed_lines": 130,
+      "method": "full source",
+      "sha256": "dacb3def43d7c35cc2da3c93b5a7eb2b46ad3ed949b9ec228c79b57f06202cc8"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/drivebase/DifferentialDrive.java",
+      "lines": 181,
+      "bytes": 6717,
+      "binary": false,
+      "reviewed_lines": 181,
+      "method": "full source",
+      "sha256": "46d567262766dd551673e5ba2e290c4655081b6444258342af0a63097ac0cd2c"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/drivebase/HDrive.java",
+      "lines": 154,
+      "bytes": 6133,
+      "binary": false,
+      "reviewed_lines": 154,
+      "method": "full source",
+      "sha256": "ba69d98691a715c2fea59b30826d1d65317119dd7384f97a3708c38bd6f0e341"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/drivebase/MecanumDrive.java",
+      "lines": 210,
+      "bytes": 8764,
+      "binary": false,
+      "reviewed_lines": 210,
+      "method": "full source",
+      "sha256": "f3e62f19486eab1629d829370d6119736fd7631691516b854ac662b7ca544158"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/drivebase/RobotDrive.java",
+      "lines": 134,
+      "bytes": 3896,
+      "binary": false,
+      "reviewed_lines": 134,
+      "method": "full source",
+      "sha256": "04143844290d394ae7ba1d2af28031335f3df8ee561016752f061e0a068ea551"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/drivebase/swerve/coaxial/CoaxialSwerveDrivetrain.java",
+      "lines": 156,
+      "bytes": 8072,
+      "binary": false,
+      "reviewed_lines": 156,
+      "method": "full source",
+      "sha256": "1d8fafe620fa194236998e2b9ab45b32fc61b58514c07193be79e69e25ccce30"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/drivebase/swerve/coaxial/CoaxialSwerveModule.java",
+      "lines": 133,
+      "bytes": 6054,
+      "binary": false,
+      "reviewed_lines": 133,
+      "method": "full source",
+      "sha256": "6c2d9e67f92092a91bba183962394ccd7847ef6a12fb3b0daec5c29ee36182b4"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/gamepad/ButtonReader.java",
+      "lines": 79,
+      "bytes": 1817,
+      "binary": false,
+      "reviewed_lines": 79,
+      "method": "full source",
+      "sha256": "6509534d69f3ddbbc7cd15c0676906369a8520d424ea8709a5c59d4e7e212c2b"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/gamepad/GamepadEx.java",
+      "lines": 264,
+      "bytes": 8198,
+      "binary": false,
+      "reviewed_lines": 264,
+      "method": "full source",
+      "sha256": "9c22d484b4d96bdfa1571ca64118eb2b0d1b19b578308d6579d4a889ccc42c10"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/gamepad/GamepadKeys.java",
+      "lines": 22,
+      "bytes": 585,
+      "binary": false,
+      "reviewed_lines": 22,
+      "method": "full source",
+      "sha256": "24ebebf5db7dfc07b750d013b5611b5eb7bd85029542fc0efdd3f78c238a51f7"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/gamepad/KeyReader.java",
+      "lines": 28,
+      "bytes": 532,
+      "binary": false,
+      "reviewed_lines": 28,
+      "method": "full source",
+      "sha256": "9d9f679f02f126b81c47063107a46c896a81975db2725a68fe8ffba4d60ac075"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/gamepad/SlewRateLimiter.java",
+      "lines": 49,
+      "bytes": 1625,
+      "binary": false,
+      "reviewed_lines": 49,
+      "method": "full source",
+      "sha256": "80c47553c6caba652c246b39940cb01e78444134cef39991c60030e55f3655ca"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/gamepad/ToggleButtonReader.java",
+      "lines": 46,
+      "bytes": 1191,
+      "binary": false,
+      "reviewed_lines": 46,
+      "method": "full source",
+      "sha256": "f29179c439bc652e8328870f44e4c79caf324a7f13e6246564b79c7e5d6eeab0"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/gamepad/TriggerReader.java",
+      "lines": 88,
+      "bytes": 2015,
+      "binary": false,
+      "reviewed_lines": 88,
+      "method": "full source",
+      "sha256": "5d6bd0be046cf9cd9f2d1bdf9e3b499fcfce4be64e31dabe40e71752f3fae09d"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/geometry/DashPose2d.java",
+      "lines": 24,
+      "bytes": 614,
+      "binary": false,
+      "reviewed_lines": 24,
+      "method": "full source",
+      "sha256": "b0742e2ec10c28eaedee1d23d2f68178aa3bbf8dccc3e343df1b1413c0446bb3"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/geometry/Pose2d.java",
+      "lines": 287,
+      "bytes": 10660,
+      "binary": false,
+      "reviewed_lines": 287,
+      "method": "full source",
+      "sha256": "92603836ecb61a686fede267cab051f3d1ad40c36d46f5aa7f09e76eebcc1884"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/geometry/Rotation2d.java",
+      "lines": 216,
+      "bytes": 6346,
+      "binary": false,
+      "reviewed_lines": 216,
+      "method": "full source",
+      "sha256": "9f4f9cdf67d206c6dc099d63fcfa930de35bf65238ff4bb7f389b69554f17cc6"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/geometry/Transform2d.java",
+      "lines": 107,
+      "bytes": 3504,
+      "binary": false,
+      "reviewed_lines": 107,
+      "method": "full source",
+      "sha256": "f3a1117f00ed33fba5c1f80da1f31b0ff28496dd3369f43a2d6d4903b30e4a92"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/geometry/Translation2d.java",
+      "lines": 170,
+      "bytes": 5260,
+      "binary": false,
+      "reviewed_lines": 170,
+      "method": "full source",
+      "sha256": "129fe1da3cc7e9b34fa07311bbcb35e638b78f5449285aa8f8c49314e0d438ba"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/geometry/Twist2d.java",
+      "lines": 62,
+      "bytes": 1672,
+      "binary": false,
+      "reviewed_lines": 62,
+      "method": "full source",
+      "sha256": "fdbf33db5509e00a0778f0cc4f4f01afa15c17924e4f95553156a95ddd1b63e3"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/geometry/Vector2d.java",
+      "lines": 204,
+      "bytes": 5548,
+      "binary": false,
+      "reviewed_lines": 204,
+      "method": "full source",
+      "sha256": "2a706f56e7fb4d4a0d15aaa6d7349ebdc3cda8f5f649e7530b944f4364672cfc"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/AbsoluteAnalogEncoder.java",
+      "lines": 127,
+      "bytes": 4045,
+      "binary": false,
+      "reviewed_lines": 127,
+      "method": "full source",
+      "sha256": "2386702bfbfdf6deb7c252e356e54f440d074173439469138eff82f7bca03628"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/GyroEx.java",
+      "lines": 22,
+      "bytes": 457,
+      "binary": false,
+      "reviewed_lines": 22,
+      "method": "full source",
+      "sha256": "253be99f7413d6a36e3b6a87f6196f6f1b7ae7e2c0201d7c75871edaf40c0b7f"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/HardwareDevice.java",
+      "lines": 9,
+      "bytes": 145,
+      "binary": false,
+      "reviewed_lines": 9,
+      "method": "full source",
+      "sha256": "59c8169534c1133e9ae3bf11723d6709e36adfa4a48b381ce7a7edb73ec8dc08"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/RevIMU.java",
+      "lines": 137,
+      "bytes": 3385,
+      "binary": false,
+      "reviewed_lines": 137,
+      "method": "full source",
+      "sha256": "b5e7ef1137d02e11afcca061d753f416cf16eb525588b0bf70042d3a91ec8f71"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/SensorColor.java",
+      "lines": 91,
+      "bytes": 2247,
+      "binary": false,
+      "reviewed_lines": 91,
+      "method": "full source",
+      "sha256": "3458f8427756f48caaa6e2b8c6a4eea084b8e1567c30bb73614c0900737cb9fd"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/SensorDigitalDevice.java",
+      "lines": 87,
+      "bytes": 2407,
+      "binary": false,
+      "reviewed_lines": 87,
+      "method": "full source",
+      "sha256": "6a1d1fa6cbd251519455a9f3ebfdc93607f40746672c04893e8b815d66ba17ba"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/SensorDistance.java",
+      "lines": 15,
+      "bytes": 417,
+      "binary": false,
+      "reviewed_lines": 15,
+      "method": "full source",
+      "sha256": "41ecd426fbeb2833a43bd52747adcd7cf1f8e22e4066fd3a2e5126889eb7ae61"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/SensorDistanceEx.java",
+      "lines": 222,
+      "bytes": 7129,
+      "binary": false,
+      "reviewed_lines": 222,
+      "method": "full source",
+      "sha256": "bde23147f3a6e563da7b38f69f9569013d08e7835f00ec06981df2c9f2ec2e9a"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/SensorRevColorV3.java",
+      "lines": 135,
+      "bytes": 3602,
+      "binary": false,
+      "reviewed_lines": 135,
+      "method": "full source",
+      "sha256": "f22d0e6d5bd4447bc07f949d15eb34e7050b2a9c2668956b3105377678fc75ca"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/SensorRevTOFDistance.java",
+      "lines": 116,
+      "bytes": 3790,
+      "binary": false,
+      "reviewed_lines": 116,
+      "method": "full source",
+      "sha256": "390bf7906d28b80221ae1e10d9ef436d3e20f6309d34f2308fe7e0705ffd52fe"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/ServoEx.java",
+      "lines": 105,
+      "bytes": 3119,
+      "binary": false,
+      "reviewed_lines": 105,
+      "method": "full source",
+      "sha256": "659394c660c2d71764a132e242ffd6ba16a82d936f33577b2feea5feaa0126dc"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/SimpleServo.java",
+      "lines": 128,
+      "bytes": 3829,
+      "binary": false,
+      "reviewed_lines": 128,
+      "method": "full source",
+      "sha256": "c55f21bb26c72ee92d7576c19f7d5abee323a6e26c4398af93135badca5c3abc"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/motors/CRServo.java",
+      "lines": 75,
+      "bytes": 1847,
+      "binary": false,
+      "reviewed_lines": 75,
+      "method": "full source",
+      "sha256": "3901e938f1e171c462658c55fa613a208d8848ebcfa89512309ad13b544142b4"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/motors/CRServoEx.java",
+      "lines": 187,
+      "bytes": 6604,
+      "binary": false,
+      "reviewed_lines": 187,
+      "method": "full source",
+      "sha256": "7c19c210018c08fe1d6e094f6f431b83df191059651e6b38b3e8dde9e3939423"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/motors/CRServoGroup.java",
+      "lines": 155,
+      "bytes": 4013,
+      "binary": false,
+      "reviewed_lines": 155,
+      "method": "full source",
+      "sha256": "b636d048291d8980be8bb0904e112359fd5868133686d9dabdba590cc8805a31"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/motors/Motor.java",
+      "lines": 606,
+      "bytes": 18312,
+      "binary": false,
+      "reviewed_lines": 606,
+      "method": "full source",
+      "sha256": "70a3b0f0225bb3fd779e66dd2e023710f7795fbe39f084be06afa2bc1483c3cd"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/motors/MotorEx.java",
+      "lines": 172,
+      "bytes": 5701,
+      "binary": false,
+      "reviewed_lines": 172,
+      "method": "full source",
+      "sha256": "38fffee8c94f29ad2facacf33e92224191fe93dcc622f0d2eba4f23b0dab9701"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/motors/MotorGroup.java",
+      "lines": 244,
+      "bytes": 6347,
+      "binary": false,
+      "reviewed_lines": 244,
+      "method": "full source",
+      "sha256": "2814fe3f575728e64a654bd9bbe773c9eb72c3af58007f2b7cb15d0a4b9bc89d"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/servos/ServoEx.java",
+      "lines": 177,
+      "bytes": 5499,
+      "binary": false,
+      "reviewed_lines": 177,
+      "method": "full source",
+      "sha256": "e030d05a0cf4e94a3ce915c2a972ffd50ccbf8953593ac39eb5a0cb3004f2623"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/hardware/servos/ServoExGroup.java",
+      "lines": 109,
+      "bytes": 2949,
+      "binary": false,
+      "reviewed_lines": 109,
+      "method": "full source",
+      "sha256": "0b092d78152f3af72d88ff61a7df359df8d51c57f958b4a345a1195449782e0d"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/DifferentialOdometry.java",
+      "lines": 103,
+      "bytes": 3242,
+      "binary": false,
+      "reviewed_lines": 103,
+      "method": "full source",
+      "sha256": "9af0bcd49c9c6f891e1122df906c315ce3d420cc824a70aa28595b7ee128d62b"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/HolonomicOdometry.java",
+      "lines": 83,
+      "bytes": 2858,
+      "binary": false,
+      "reviewed_lines": 83,
+      "method": "full source",
+      "sha256": "71d75195bacff96bcdb1d70cd0b34d496fca773adc61773cecb099f7f94831b5"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/Odometry.java",
+      "lines": 54,
+      "bytes": 1260,
+      "binary": false,
+      "reviewed_lines": 54,
+      "method": "full source",
+      "sha256": "57fd4e8ce5adc2f4577ee0e350253950aba529c622442f93d520f12da4058dec"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/ChassisSpeeds.java",
+      "lines": 142,
+      "bytes": 6528,
+      "binary": false,
+      "reviewed_lines": 142,
+      "method": "full source",
+      "sha256": "fada15dc84ae8244cbbac9e94079353b0dd177dab6396248b73672345bc228fb"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/DifferentialDriveKinematics.java",
+      "lines": 65,
+      "bytes": 2961,
+      "binary": false,
+      "reviewed_lines": 65,
+      "method": "full source",
+      "sha256": "54c9888271400a835662fa40f45a8bd62d6c3013b97f705beaadceff24dbbb71"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/DifferentialDriveOdometry.java",
+      "lines": 117,
+      "bytes": 4783,
+      "binary": false,
+      "reviewed_lines": 117,
+      "method": "full source",
+      "sha256": "13287c7b241fc25c85b71a27fdbef94cfe98e942330a0197438e294ada69e591"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/DifferentialDriveWheelSpeeds.java",
+      "lines": 68,
+      "bytes": 2815,
+      "binary": false,
+      "reviewed_lines": 68,
+      "method": "full source",
+      "sha256": "940756b59d9f53fc6e7be4e8d1bc933e34df013d84eff5d5af3e3d270fa42191"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/MecanumDriveKinematics.java",
+      "lines": 170,
+      "bytes": 8874,
+      "binary": false,
+      "reviewed_lines": 170,
+      "method": "full source",
+      "sha256": "2b08fac13e754533aebc892e370ad3ba3bd00768c5179dbe7ea38c42653b4828"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/MecanumDriveMotorVoltages.java",
+      "lines": 65,
+      "bytes": 2378,
+      "binary": false,
+      "reviewed_lines": 65,
+      "method": "full source",
+      "sha256": "8df4f33624c132b6052a66f2d4c2ebe235fca310a0edcc278d4e24ac8b1c6de0"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/MecanumDriveOdometry.java",
+      "lines": 112,
+      "bytes": 4884,
+      "binary": false,
+      "reviewed_lines": 112,
+      "method": "full source",
+      "sha256": "09c7049441b74f2f42c42961b344e3146fa010fbe9e3fde7d74e552f6ffd5a27"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/MecanumDriveWheelSpeeds.java",
+      "lines": 91,
+      "bytes": 4008,
+      "binary": false,
+      "reviewed_lines": 91,
+      "method": "full source",
+      "sha256": "2d59da3c311d6a1eb7592a524996c9d7ebe9b3506b9e3f8036073a38d59de016"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/MecanumOdoKinematics.java",
+      "lines": 141,
+      "bytes": 7210,
+      "binary": false,
+      "reviewed_lines": 141,
+      "method": "full source",
+      "sha256": "472c0d5669cc12eb3fe233a75b6a20d560fa30e2ba8198fcc8962b9a306e522b"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/OdoWheelSpeeds.java",
+      "lines": 65,
+      "bytes": 2527,
+      "binary": false,
+      "reviewed_lines": 65,
+      "method": "full source",
+      "sha256": "d518839a8fcfe2dd1b74a860b13260cbf8d91e7954c2b3f6a71651f1685f694e"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/SwerveDriveKinematics.java",
+      "lines": 197,
+      "bytes": 10075,
+      "binary": false,
+      "reviewed_lines": 197,
+      "method": "full source",
+      "sha256": "8bb310ca7a6cd0c8cf6100f042b2efa65e03037a54e2f1d56467d26f3618719d"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/SwerveDriveOdometry.java",
+      "lines": 117,
+      "bytes": 5040,
+      "binary": false,
+      "reviewed_lines": 117,
+      "method": "full source",
+      "sha256": "1c95c7f4f55048f93ecbe2d4a4ba56313b7dde8c5f2e6a7f06bb71144e53b4a6"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/kinematics/wpilibkinematics/SwerveModuleState.java",
+      "lines": 75,
+      "bytes": 2749,
+      "binary": false,
+      "reviewed_lines": 75,
+      "method": "full source",
+      "sha256": "616f6b6390d58774d01eec8aa47a1a6a12f857b548c486c559fee5d518cb3f71"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/p2p/P2PController.java",
+      "lines": 160,
+      "bytes": 6668,
+      "binary": false,
+      "reviewed_lines": 160,
+      "method": "full source",
+      "sha256": "f1551d8ce9711381e0a7ae3407376211b69174ba4dc1899033b03135af21a8ef"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/DecelerationController.java",
+      "lines": 55,
+      "bytes": 2834,
+      "binary": false,
+      "reviewed_lines": 55,
+      "method": "full source",
+      "sha256": "45e2c23345ba823b000817cee5d064c6f18fa050b319f5ad2cbce56547165e52"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/Path.java",
+      "lines": 973,
+      "bytes": 45812,
+      "binary": false,
+      "reviewed_lines": 973,
+      "method": "full source",
+      "sha256": "6ace283086cb8a3431ff8bc12e8d766c1bc9c5644c346e6f308bc1ebe0bce9aa"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/PathMotionProfile.java",
+      "lines": 94,
+      "bytes": 4814,
+      "binary": false,
+      "reviewed_lines": 94,
+      "method": "full source",
+      "sha256": "0d2dca0462206189260137d793dd0e175ecab2548c93678a01a4e751de74cd8f"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/PurePursuitUtil.java",
+      "lines": 191,
+      "bytes": 7643,
+      "binary": false,
+      "reviewed_lines": 191,
+      "method": "full source",
+      "sha256": "2a3ac4cae7590387649c59b82d3c5a7c79a31f752429d76f25f45d9eba971da5"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/Waypoint.java",
+      "lines": 45,
+      "bytes": 1233,
+      "binary": false,
+      "reviewed_lines": 45,
+      "method": "full source",
+      "sha256": "bf09faca160b32b70c779439487ecccde87e759eaf3ea7d8ee25efff4ac9d774"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/actions/InterruptAction.java",
+      "lines": 20,
+      "bytes": 473,
+      "binary": false,
+      "reviewed_lines": 20,
+      "method": "full source",
+      "sha256": "fe03480fe91658985f9ff3ac54decc3b5d7d1a3743dc5df74fce5f613decffbf"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/actions/TriggeredAction.java",
+      "lines": 50,
+      "bytes": 1537,
+      "binary": false,
+      "reviewed_lines": 50,
+      "method": "full source",
+      "sha256": "b69f34ced84047bddec53e9edfc07b15fce8fc8d4dcdf4c9c87e19b1300c886a"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/types/PathType.java",
+      "lines": 17,
+      "bytes": 337,
+      "binary": false,
+      "reviewed_lines": 17,
+      "method": "full source",
+      "sha256": "a4de370732a19645f417f864dbd8f681cabd3e1d65ccc6befe5e43c75fffb784"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/types/WaypointType.java",
+      "lines": 20,
+      "bytes": 362,
+      "binary": false,
+      "reviewed_lines": 20,
+      "method": "full source",
+      "sha256": "2bbb28a564dfa34f91b65994c50ac3445184c77660e1204851f8c1198422bfa0"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/waypoints/EndWaypoint.java",
+      "lines": 135,
+      "bytes": 6464,
+      "binary": false,
+      "reviewed_lines": 135,
+      "method": "full source",
+      "sha256": "00d86a9a7e19ee26fc4f25a1cea9baa561949b99548721e368f95d8fcef5bb41"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/waypoints/GeneralWaypoint.java",
+      "lines": 319,
+      "bytes": 11425,
+      "binary": false,
+      "reviewed_lines": 319,
+      "method": "full source",
+      "sha256": "700015633c414f721e273be8a826486691a71d71f7b263a431ede74ff62057d8"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/waypoints/InterruptWaypoint.java",
+      "lines": 156,
+      "bytes": 8185,
+      "binary": false,
+      "reviewed_lines": 156,
+      "method": "full source",
+      "sha256": "2c063f621891a6411633a058d1edf5fc04a31912566df0ac94f39e709776f46c"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/waypoints/PointTurnWaypoint.java",
+      "lines": 188,
+      "bytes": 8792,
+      "binary": false,
+      "reviewed_lines": 188,
+      "method": "full source",
+      "sha256": "2b2007449abce3bd7683d043076fbd1ffa87cfcc4ba29f494063ff583afda8c6"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/purepursuit/waypoints/StartWaypoint.java",
+      "lines": 82,
+      "bytes": 2344,
+      "binary": false,
+      "reviewed_lines": 82,
+      "method": "full source",
+      "sha256": "bb5d54ef8beb61d5e382bfb190947e1026136a8cb07e46818856a1f141e96820"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/spline/CubicHermiteSpline.java",
+      "lines": 115,
+      "bytes": 5234,
+      "binary": false,
+      "reviewed_lines": 115,
+      "method": "full source",
+      "sha256": "abc7ec11c8869e3820adb6174dcd9c05e39f00ee9980d5fbe91f823922434335"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/spline/PoseWithCurvature.java",
+      "lines": 41,
+      "bytes": 1375,
+      "binary": false,
+      "reviewed_lines": 41,
+      "method": "full source",
+      "sha256": "b6d0beff4457ab689e6608eb43aed335e3022fd2cd4f6267d1c703bcce2b9ccd"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/spline/QuinticHermiteSpline.java",
+      "lines": 116,
+      "bytes": 5546,
+      "binary": false,
+      "reviewed_lines": 116,
+      "method": "full source",
+      "sha256": "26dbbd174b5ea249096d746e95fcb821e4746e3256c06ccc7962fee5fd3ae48a"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/spline/Spline.java",
+      "lines": 118,
+      "bytes": 3944,
+      "binary": false,
+      "reviewed_lines": 118,
+      "method": "full source",
+      "sha256": "76005dce73176b81b8e9790ebd98d15a2ea18a5d3bf29b4c7b08939acef503f2"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/spline/SplineHelper.java",
+      "lines": 277,
+      "bytes": 12213,
+      "binary": false,
+      "reviewed_lines": 277,
+      "method": "full source",
+      "sha256": "79ba881ffb00d4949f2eb8b82a31b208a0f55441dcb70bec00baebe515a3e42c"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/spline/SplineParameterizer.java",
+      "lines": 154,
+      "bytes": 6654,
+      "binary": false,
+      "reviewed_lines": 154,
+      "method": "full source",
+      "sha256": "c8159b018157b7255c4c0fa2e3f350f5a17167c54177cf36bd2374757c49a88b"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/Trajectory.java",
+      "lines": 331,
+      "bytes": 13516,
+      "binary": false,
+      "reviewed_lines": 331,
+      "method": "full source",
+      "sha256": "53e8b566fa2bdc48864fd5f82e63528cd93c5f1328b7f85b700ef1ac3d2899cb"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/TrajectoryConfig.java",
+      "lines": 195,
+      "bytes": 7202,
+      "binary": false,
+      "reviewed_lines": 195,
+      "method": "full source",
+      "sha256": "c7404c7392f5e62f2bba74eda7b884e79a0fa367397cb878431c7cbf77d31ea3"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/TrajectoryGenerator.java",
+      "lines": 259,
+      "bytes": 11313,
+      "binary": false,
+      "reviewed_lines": 259,
+      "method": "full source",
+      "sha256": "7b1faf578a515872df46e860acbe6902e2a01b84a7500250ac20dd05c52f6845"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/TrajectoryParameterizer.java",
+      "lines": 304,
+      "bytes": 15102,
+      "binary": false,
+      "reviewed_lines": 304,
+      "method": "full source",
+      "sha256": "ae01414b58401fd75ac50a4e1bd8f0598eb794555cd37f56698a3963752998d4"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/TrapezoidProfile.java",
+      "lines": 300,
+      "bytes": 11295,
+      "binary": false,
+      "reviewed_lines": 300,
+      "method": "full source",
+      "sha256": "dfbc37e1eb30b4432d68ea386695d8b5aa10c8e7582da87e02a5bf6b7c6afd85"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/constraint/CentripetalAccelerationConstraint.java",
+      "lines": 76,
+      "bytes": 3459,
+      "binary": false,
+      "reviewed_lines": 76,
+      "method": "full source",
+      "sha256": "70b8b212042743653b62ead20f5bd17e37fce300a1855f599f92fe5b08e193a2"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/constraint/DifferentialDriveKinematicsConstraint.java",
+      "lines": 79,
+      "bytes": 3969,
+      "binary": false,
+      "reviewed_lines": 79,
+      "method": "full source",
+      "sha256": "ef977726e82e4780266729efe819603d37f6e06cbb0b42db96acee68ff875045"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/constraint/DifferentialDriveVoltageConstraint.java",
+      "lines": 105,
+      "bytes": 5473,
+      "binary": false,
+      "reviewed_lines": 105,
+      "method": "full source",
+      "sha256": "ee47391182c60e0d805bd6939a5a21d51c022f6fa78e9720f4dc8aafcde322dd"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/constraint/MecanumDriveKinematicsConstraint.java",
+      "lines": 87,
+      "bytes": 4307,
+      "binary": false,
+      "reviewed_lines": 87,
+      "method": "full source",
+      "sha256": "5f16ff873a23afa0daf91d2e0bd5031e0bbcf1fe0b1f423c986c3e129ee4d1eb"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/constraint/SwerveDriveKinematicsConstraint.java",
+      "lines": 87,
+      "bytes": 4330,
+      "binary": false,
+      "reviewed_lines": 87,
+      "method": "full source",
+      "sha256": "85d8909b6500807d447423c266cb8c3c199a480ad128f74c635aa36e14f2df11"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/trajectory/constraint/TrajectoryConstraint.java",
+      "lines": 68,
+      "bytes": 3053,
+      "binary": false,
+      "reviewed_lines": 68,
+      "method": "full source",
+      "sha256": "907381a6beb528d1bdf6e5089c0051e9fb671d10af1db42bf349357f08f8ad40"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/Debouncer.java",
+      "lines": 103,
+      "bytes": 3443,
+      "binary": false,
+      "reviewed_lines": 103,
+      "method": "full source",
+      "sha256": "4bf88bf8f4b4eeb7df480e94913beafe9bc0a310035ddf8043692b01843c109d"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/Direction.java",
+      "lines": 5,
+      "bytes": 122,
+      "binary": false,
+      "reviewed_lines": 5,
+      "method": "full source",
+      "sha256": "49ed93093ab2c595da61596feb279436e49bf5d23b263c21bb78522214e5a5da"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/GenericDebouncer.java",
+      "lines": 61,
+      "bytes": 1611,
+      "binary": false,
+      "reviewed_lines": 61,
+      "method": "full source",
+      "sha256": "6e24adcb57cc4fa0eee54d5de5f28d3fcbfb1150311e0243a6e33b1fa43fb443"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/InterpLUT.java",
+      "lines": 173,
+      "bytes": 5740,
+      "binary": false,
+      "reviewed_lines": 173,
+      "method": "full source",
+      "sha256": "e09f07c1118647253044fb35a758eaa4c5725bf4e82fea07caa7b8eb75ef744d"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/LUT.java",
+      "lines": 38,
+      "bytes": 1089,
+      "binary": false,
+      "reviewed_lines": 38,
+      "method": "full source",
+      "sha256": "6c10beb8356100aa088eaf0cc6272b1c8a65a763c0dd206e19d4ec6402c75edb"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/MathUtils.java",
+      "lines": 117,
+      "bytes": 4219,
+      "binary": false,
+      "reviewed_lines": 117,
+      "method": "full source",
+      "sha256": "07af801e6409edcbd3af5b6a09dcc40fb236cde115f01ef09790eae1ad3f6478"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/MovingAverageFilter.java",
+      "lines": 57,
+      "bytes": 1594,
+      "binary": false,
+      "reviewed_lines": 57,
+      "method": "full source",
+      "sha256": "f4fba64eb428dbe342a217063b2ca16aa36e8f0044015b2193fa7f6ede714d2f"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/TelemetryEx.java",
+      "lines": 34,
+      "bytes": 875,
+      "binary": false,
+      "reviewed_lines": 34,
+      "method": "full source",
+      "sha256": "0d02a73bf1f68d004b411a60e088f8f8065e745a6e03573e0077a1fdbafad0fc"
+    },
+    {
+      "path": "TeamCode/src/main/java/com/seattlesolvers/solverslib/util/Timing.java",
+      "lines": 196,
+      "bytes": 5977,
+      "binary": false,
+      "reviewed_lines": 196,
+      "method": "full source",
+      "sha256": "c55d6cc1629a225e4c167bc5ed5ddf57cc7cf19c6696fb970fb9d40544ed4518"
+    },
+    {
+      "path": "TeamCode/src/main/java/dev/nullftc/profiler/Profiler.java",
+      "lines": 92,
+      "bytes": 3190,
+      "binary": false,
+      "reviewed_lines": 92,
+      "method": "full source",
+      "sha256": "59aa5978b0398f9cae22c917b5504b6e3a84fbe0aef6fd53b7c8794fb9b53227"
+    },
+    {
+      "path": "TeamCode/src/main/java/dev/nullftc/profiler/entry/BasicProfilerEntry.java",
+      "lines": 21,
+      "bytes": 537,
+      "binary": false,
+      "reviewed_lines": 21,
+      "method": "full source",
+      "sha256": "412fe16c9865a37a1983f869b3d8338959db4277eee29ac0051eb1b37a39a94a"
+    },
+    {
+      "path": "TeamCode/src/main/java/dev/nullftc/profiler/entry/BasicProfilerEntryFactory.java",
+      "lines": 12,
+      "bytes": 430,
+      "binary": false,
+      "reviewed_lines": 12,
+      "method": "full source",
+      "sha256": "3093865d42e5632865985a0e3d3a99d5f65e13d1b567093adc9894e667d54fca"
+    },
+    {
+      "path": "TeamCode/src/main/java/dev/nullftc/profiler/entry/ProfilerEntry.java",
+      "lines": 20,
+      "bytes": 621,
+      "binary": false,
+      "reviewed_lines": 20,
+      "method": "full source",
+      "sha256": "1f281356f57a6e1bafaae6e471fc2a7b656dfef633ae24c5adb9e4f640c8760a"
+    },
+    {
+      "path": "TeamCode/src/main/java/dev/nullftc/profiler/entry/ProfilerEntryFactory.java",
+      "lines": 7,
+      "bytes": 197,
+      "binary": false,
+      "reviewed_lines": 7,
+      "method": "full source",
+      "sha256": "16bae5ac6aabfdfe44cafd6ecd89da10ac2b4ad827162b0f1ca0f4b7cf8f41d7"
+    },
+    {
+      "path": "TeamCode/src/main/java/dev/nullftc/profiler/exporter/CSVProfilerExporter.java",
+      "lines": 48,
+      "bytes": 1338,
+      "binary": false,
+      "reviewed_lines": 48,
+      "method": "full source",
+      "sha256": "89dc35f9e139d7b9d70079c9fe187322c90c02e76098e67d51947559b21a7942"
+    },
+    {
+      "path": "TeamCode/src/main/java/dev/nullftc/profiler/exporter/ProfilerExporter.java",
+      "lines": 9,
+      "bytes": 207,
+      "binary": false,
+      "reviewed_lines": 9,
+      "method": "full source",
+      "sha256": "821aa87430cb8a1a928f22157233a2fac5afc0e98abe39fcd8a1347fc2437075"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/CancelCommand.java",
+      "lines": 41,
+      "bytes": 1338,
+      "binary": false,
+      "reviewed_lines": 41,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "7f736040491dfd807b8c60b4178245254e6018ea0a7f4731e82ed4cb1eceb003"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/ClearLaunch.java",
+      "lines": 78,
+      "bytes": 2768,
+      "binary": false,
+      "reviewed_lines": 78,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "b29de060c5a5ae349065cdee483f73d2540b17e553c80dfd2671c6287ab8359d"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/ContinuousClearLaunch.java",
+      "lines": 67,
+      "bytes": 2406,
+      "binary": false,
+      "reviewed_lines": 67,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "3259cab092ba4366865280d7a3791ee005fdcec49d9ae2590a31a753af9bc3f1"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/DriveTo.java",
+      "lines": 89,
+      "bytes": 3206,
+      "binary": false,
+      "reviewed_lines": 89,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "25198d745c95cab4cc435b65f8c26eb865ffac6feb323f213f52d67f8aef57fb"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/ExampleCommand.java",
+      "lines": 34,
+      "bytes": 738,
+      "binary": false,
+      "reviewed_lines": 34,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "02bfe57b6c203ea83798065ffebe60eaef0f71c380eed186bf5de3876a81bc06"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/FullAim.java",
+      "lines": 106,
+      "bytes": 4232,
+      "binary": false,
+      "reviewed_lines": 106,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "32d375b9ccaac0e9b1c83ed0b76ce791efde51790dd4aa9409dbda14192f11fe"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/PrepDriveTo.java",
+      "lines": 45,
+      "bytes": 1395,
+      "binary": false,
+      "reviewed_lines": 45,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "47dec41e1b44ed404fd3d12f5b9e447d27bed592b63b39381b2ac86b2bfcd2eb"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/SetIntake.java",
+      "lines": 54,
+      "bytes": 1350,
+      "binary": false,
+      "reviewed_lines": 54,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "bf1682405a6b6ca8fc4d66d1bcb37ee6141479ca071ceb389d8684a7f0af3c57"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/SlowClearLaunch.java",
+      "lines": 69,
+      "bytes": 2206,
+      "binary": false,
+      "reviewed_lines": 69,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "2883db10d7ec08ae7cefcb69055a7ae2cb656a1c91f8700608d315228ab1a75a"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/commands/StationaryAimbotFullLaunch.java",
+      "lines": 25,
+      "bytes": 877,
+      "binary": false,
+      "reviewed_lines": 25,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "b12f98ff592363d8adedf766b72eb2099726fd529158ef28d9fae416fa865bbf"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/Camera.java",
+      "lines": 527,
+      "bytes": 20705,
+      "binary": false,
+      "reviewed_lines": 527,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "39c0dd1937c2f0708f032c00a6ea73a0e0eb024901793496cf34c3beb717fed0"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/Drive.java",
+      "lines": 249,
+      "bytes": 10932,
+      "binary": false,
+      "reviewed_lines": 249,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "4e6f1c9bacc2ef37aea42156cca48318d7c5b5a56b440a766fb1e18028664792"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/Intake.java",
+      "lines": 180,
+      "bytes": 5394,
+      "binary": false,
+      "reviewed_lines": 180,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "4c194d3c3f0b69d2e2f4477fe98beee5c1f0775127c670e9ba30c335031bf2b2"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/Launcher.java",
+      "lines": 245,
+      "bytes": 8898,
+      "binary": false,
+      "reviewed_lines": 245,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "fe0b202c50f29c5d20a9bc35dbe7e2147baa6858c68af18960cf87814d255c3b"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/Turret.java",
+      "lines": 262,
+      "bytes": 10450,
+      "binary": false,
+      "reviewed_lines": 262,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "48bbbfc8f2695e62b02e57c4e7b16d31e74c1b792a1dbf63281a61f485a7b6ec"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/vision/AprilTagCanvasAnnotator.java",
+      "lines": 293,
+      "bytes": 13317,
+      "binary": false,
+      "reviewed_lines": 293,
+      "method": "full source",
+      "sha256": "5fadabb127d07eb29caf1434238f07b2775f5383c8045ac17955422b248aed70"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/vision/AprilTagProcessor.java",
+      "lines": 354,
+      "bytes": 14423,
+      "binary": false,
+      "reviewed_lines": 354,
+      "method": "full source",
+      "sha256": "52be1828bf58770e9f146e63ebf3812d5d352521d291cefc7cc4a2bb679b5743"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/vision/AprilTagProcessorImpl.java",
+      "lines": 684,
+      "bytes": 28767,
+      "binary": false,
+      "reviewed_lines": 684,
+      "method": "full source",
+      "sha256": "88254b52b18ba78342e7746535a4fe08ee11e05c5933da59cdfd29b2b63768ce"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commandbase/subsystems/vision/RectProcessor.java",
+      "lines": 62,
+      "bytes": 2146,
+      "binary": false,
+      "reviewed_lines": 62,
+      "method": "full source",
+      "sha256": "613fb41a34ab8adf30d65e8b7fda89abf84a841195e3c1db87bb3adc7c3d45a1"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/globals/Constants.java",
+      "lines": 189,
+      "bytes": 10071,
+      "binary": false,
+      "reviewed_lines": 189,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "09a61970bdd3c6d2db0369e9cb32c5a8ed95f8edd83bd2d5b724a831d829709f"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/globals/GoBildaPinpointDriver.java",
+      "lines": 1104,
+      "bytes": 46125,
+      "binary": false,
+      "reviewed_lines": 1104,
+      "method": "full source",
+      "sha256": "79e4189e18526f026a232e47e0eccfc024765286e2da420664096e6dba93c730"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/globals/MathFunctions.java",
+      "lines": 519,
+      "bytes": 21873,
+      "binary": false,
+      "reviewed_lines": 519,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "ccdf7401ff0885fa52bf6be2d04a61e78134fb7a165b222d69b34f781b7c8ec4"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/globals/OctoQuadFWv3.java",
+      "lines": 1400,
+      "bytes": 57368,
+      "binary": false,
+      "reviewed_lines": 1400,
+      "method": "full source",
+      "sha256": "fec6dc4f77d427119738e06265f61adb012cd62d7dc980c8e84e5841dbd3d0f5"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/globals/Robot.java",
+      "lines": 403,
+      "bytes": 17095,
+      "binary": false,
+      "reviewed_lines": 403,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "f1d47bfe6c886325b54e2eed29edc496703f373162d75e3935d9b70450a4421d"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/Auto/EighteenPlayoffs.java",
+      "lines": 296,
+      "bytes": 13662,
+      "binary": false,
+      "reviewed_lines": 296,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "4e8b4f9656c1539fa5dd5cb7c057b2e632127654a3abc53916cddb841465ea5d"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/Auto/EighteenQuals.java",
+      "lines": 291,
+      "bytes": 13342,
+      "binary": false,
+      "reviewed_lines": 291,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "82cf9d4f1b5f5ff7ac38a810e5a6031f91043836481ab8716d4e50e42770a846"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/Auto/NineFar.java",
+      "lines": 289,
+      "bytes": 13646,
+      "binary": false,
+      "reviewed_lines": 289,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "c5eaf69498adbe6cae74b796046ef1bea2ac7e9967e48a95df1b62352f6ca984"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/Auto/TwentyFourFar.java",
+      "lines": 306,
+      "bytes": 14922,
+      "binary": false,
+      "reviewed_lines": 306,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "e9424bdefadb7e3055d5c11250d0455fdfc83963b5912e278b69e20a2aab3ce5"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/Auto/TwentyOneClose.java",
+      "lines": 302,
+      "bytes": 13804,
+      "binary": false,
+      "reviewed_lines": 302,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "e345ab23aca046dda57f9f435de01f2f80dd15ee5d068ff95fd5c9279b7683a2"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/Auto/TwentyOneFar.java",
+      "lines": 331,
+      "bytes": 16049,
+      "binary": false,
+      "reviewed_lines": 331,
+      "method": "full source",
+      "sha256": "a7b45d27bfcf574aff9599e8cf66b00c596691e7a836e34cabbc7bd7e6c2c23d"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/TeleOp/AlliancePoseSelector.java",
+      "lines": 56,
+      "bytes": 2173,
+      "binary": false,
+      "reviewed_lines": 56,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "76f91b7e8f3c345300f44c82b223482d72425d74b6d5207103461a11edefcb7c"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/TeleOp/EventTeleop.java",
+      "lines": 265,
+      "bytes": 12837,
+      "binary": false,
+      "reviewed_lines": 265,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "794e3c94e5dc28205ad6baabebbbe7643256336f251bf5f9b4c1e315ade954a1"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/TeleOp/ExampleTeleOp.java",
+      "lines": 71,
+      "bytes": 2296,
+      "binary": false,
+      "reviewed_lines": 71,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "9d665a7f2ba747b36c191284e98abd4b4dd6f9701511e186e560457663c1639e"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/TeleOp/FullTeleOp.java",
+      "lines": 360,
+      "bytes": 17730,
+      "binary": false,
+      "reviewed_lines": 360,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "850d98e5af93bc7b43371104f447f07d7f82b66feca054704aefdf92991a0f71"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/TeleOp/SwerveTeleOp.java",
+      "lines": 137,
+      "bytes": 6781,
+      "binary": false,
+      "reviewed_lines": 137,
+      "method": "full source / verified diff against reviewed source",
+      "sha256": "183c49e972a3fcbae3b0fb56e7fecc26cddad68a4ea2d701ea40919cdf2eb1fc"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/readme.md",
+      "lines": 131,
+      "bytes": 6257,
+      "binary": false,
+      "reviewed_lines": 131,
+      "method": "full source",
+      "sha256": "cb33f794d3fe42bea3f8c54a67222f12b17fe75404f512a095cf1749406efaf3"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/camera/ArducamTest.java",
+      "lines": 151,
+      "bytes": 6578,
+      "binary": false,
+      "reviewed_lines": 151,
+      "method": "full source",
+      "sha256": "92cec57c1cf74fd35ff6f183ce1032290cdd7b73eab983040c126c62cfd3a48c"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/camera/ArducamTuner.java",
+      "lines": 113,
+      "bytes": 4420,
+      "binary": false,
+      "reviewed_lines": 113,
+      "method": "full source",
+      "sha256": "f2b5d1427e62e2dbffcdb7ef21ea5b40207fb10515996ade94b48a86b59ab169"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/camera/CameraAngle.java",
+      "lines": 128,
+      "bytes": 5519,
+      "binary": false,
+      "reviewed_lines": 128,
+      "method": "full source",
+      "sha256": "cd92f28f9c3ed37fdd3a6bbe8ea51e96a98694d6d332dd9f78b9cf04b9177007"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/camera/CameraTuner.java",
+      "lines": 111,
+      "bytes": 4217,
+      "binary": false,
+      "reviewed_lines": 111,
+      "method": "full source",
+      "sha256": "4918b40caa25aede44b047e9718f53a303b5f06e794343d8fe671be2144d79d6"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/drive/FLSwervoTuner.java",
+      "lines": 65,
+      "bytes": 2522,
+      "binary": false,
+      "reviewed_lines": 65,
+      "method": "full source",
+      "sha256": "b951d33d13baa6e1492247c4caad26f6725b41c6bb27cc194d0e492ee3eeeed5"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/drive/SwerveModeTuner.java",
+      "lines": 65,
+      "bytes": 2269,
+      "binary": false,
+      "reviewed_lines": 65,
+      "method": "full source",
+      "sha256": "109c35f0b7b9006a0db77c98b0cf24050c1e8e70a3d785fbd0e3928ed098822d"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/drive/SwervePathingTest.java",
+      "lines": 137,
+      "bytes": 5814,
+      "binary": false,
+      "reviewed_lines": 137,
+      "method": "full source",
+      "sha256": "1c7dfb5b06713321e2002b1c2469b47080a0ea718ed06f073f626752b95b9eb5"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/drive/SwerveTuner.java",
+      "lines": 90,
+      "bytes": 3699,
+      "binary": false,
+      "reviewed_lines": 90,
+      "method": "full source",
+      "sha256": "37ed4a477f0953ae3c1cfab415278a9bfcf841ca676f8912f0f245437a7d3324"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/example/ServoTuningGuide.md",
+      "lines": 20,
+      "bytes": 1545,
+      "binary": false,
+      "reviewed_lines": 20,
+      "method": "full source",
+      "sha256": "0cb22d88c340c3ccba4ee47d353c863791663d6833f1be33d6876d6a1a77a265"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/example/TuningGuidePIDF.md",
+      "lines": 28,
+      "bytes": 2466,
+      "binary": false,
+      "reviewed_lines": 28,
+      "method": "full source",
+      "sha256": "f7714aa51be6b8eabee9c99d0521025c010762edda5d879d9d5d230c70189853"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/intake/DistanceSensorTest.java",
+      "lines": 73,
+      "bytes": 3045,
+      "binary": false,
+      "reviewed_lines": 73,
+      "method": "full source",
+      "sha256": "0794e4b7dc44373bba235c7183acb230fac899492d129a338cdc9c57c3a09e69"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/intake/IntakeMotorTuner.java",
+      "lines": 135,
+      "bytes": 5660,
+      "binary": false,
+      "reviewed_lines": 135,
+      "method": "full source",
+      "sha256": "8870c5b116a501b7d5b04683aee9d8bde1928f16ec5e74d8cadda2905194d3d9"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/launcher/HoodServoTuner.java",
+      "lines": 77,
+      "bytes": 2760,
+      "binary": false,
+      "reviewed_lines": 77,
+      "method": "full source",
+      "sha256": "2436d0bd03027bcb014495195f7187e2334e252c65c2d35704d7cd79d1b08be5"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/launcher/LaunchMotorEncoder.java",
+      "lines": 87,
+      "bytes": 3217,
+      "binary": false,
+      "reviewed_lines": 87,
+      "method": "full source",
+      "sha256": "382d62de612e4007a299a3f65a1a99627f85f5128cf6cb7af94c3229b3ac104d"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/launcher/LauncherMotorTuner.java",
+      "lines": 87,
+      "bytes": 3339,
+      "binary": false,
+      "reviewed_lines": 87,
+      "method": "full source",
+      "sha256": "3fa702423ca17f00a0ae73d020e7cca427c01367a080d855c8f5f17199bd2cf7"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/launcher/RampServoTuner.java",
+      "lines": 77,
+      "bytes": 2760,
+      "binary": false,
+      "reviewed_lines": 77,
+      "method": "full source",
+      "sha256": "ed7502d8015b282ad6df7ce3046120dd7a5549f38bb5d8962ec74f14aa2968ad"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/launcher/TransferMotorTuner.java",
+      "lines": 87,
+      "bytes": 2992,
+      "binary": false,
+      "reviewed_lines": 87,
+      "method": "full source",
+      "sha256": "fe31e509e453ed7ee8637b7affa05016109f7e01e91a7d7be144e5d1d1bd53dd"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/octoquad/DeadwheelCalibrator.java",
+      "lines": 128,
+      "bytes": 4888,
+      "binary": false,
+      "reviewed_lines": 128,
+      "method": "full source",
+      "sha256": "cd259ec41d159653d575d75be9485c8f467506678ead8110923b66f5dc557cff"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/octoquad/HeadingScalarCalibrator.java",
+      "lines": 172,
+      "bytes": 6445,
+      "binary": false,
+      "reviewed_lines": 172,
+      "method": "full source",
+      "sha256": "ad92a92879bc768eea8617a93ffc6c2796905028734d1a44bebcb5729f5d946f"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/octoquad/LocalizerTest.java",
+      "lines": 198,
+      "bytes": 9075,
+      "binary": false,
+      "reviewed_lines": 198,
+      "method": "full source",
+      "sha256": "c772fd0015766dfc2f31e3e70eaf1d7c872917480049b5821bb9afc87860ab81"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/photon/PhotonTest.java",
+      "lines": 95,
+      "bytes": 4386,
+      "binary": false,
+      "reviewed_lines": 95,
+      "method": "full source",
+      "sha256": "9fb225e844357fb87f51e2ba9dc4f26bb5a561c23645959e785042e4f529b324"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/subsystem/FullLaunchTuner.java",
+      "lines": 114,
+      "bytes": 4475,
+      "binary": false,
+      "reviewed_lines": 114,
+      "method": "full source",
+      "sha256": "4bb9432431978da296f9fbc3c3792dd02ab7b6ee72af1264d9758e0248574627"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/subsystem/MathLaunchTuner.java",
+      "lines": 126,
+      "bytes": 5756,
+      "binary": false,
+      "reviewed_lines": 126,
+      "method": "full source",
+      "sha256": "c888abf0b098ad9ba5e99cb4b01816b6247753aeaf1fd550dce2ceff4269b87a"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/turret/SingleTurretServo.java",
+      "lines": 69,
+      "bytes": 3272,
+      "binary": false,
+      "reviewed_lines": 69,
+      "method": "full source",
+      "sha256": "04dbb12f65a47e3a4a3cf36f26f43532b918f15c088bc476dff4810f1669ce2b"
+    },
+    {
+      "path": "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/tuning/turret/TurretServosTuner.java",
+      "lines": 63,
+      "bytes": 2493,
+      "binary": false,
+      "reviewed_lines": 63,
+      "method": "full source",
+      "sha256": "b33da56666d3a7690ef80e7bbfb9848390fecb0fed766402f6d5aac40a6b0287"
+    },
+    {
+      "path": "TeamCode/src/main/res/raw/readme.md",
+      "lines": 1,
+      "bytes": 71,
+      "binary": false,
+      "reviewed_lines": 1,
+      "method": "full source",
+      "sha256": "b3284e413aa57b33ea86b60101d75d2981293a65b5d10b90a2592afc46d2187b"
+    },
+    {
+      "path": "TeamCode/src/main/res/values/strings.xml",
+      "lines": 4,
+      "bytes": 69,
+      "binary": false,
+      "reviewed_lines": 4,
+      "method": "full source",
+      "sha256": "9b2cc18bdb30605b127da15d3ea23b39a9233a2a945e4f85a2a8b89b246c7688"
+    },
+    {
+      "path": "TeamCode/src/main/res/xml/decode.xml",
+      "lines": 47,
+      "bytes": 2188,
+      "binary": false,
+      "reviewed_lines": 47,
+      "method": "full source",
+      "sha256": "dc7c03259b099565fc82a87734628ea479ed533d29047681f7442720e1cd3331"
+    },
+    {
+      "path": "TeamCode/src/main/res/xml/servotest.xml",
+      "lines": 21,
+      "bytes": 820,
+      "binary": false,
+      "reviewed_lines": 21,
+      "method": "full source",
+      "sha256": "ffd5f2c84a7076f9f2f674855a85419b0b560979d471546eb2417b7c6ffb1730"
+    },
+    {
+      "path": "TeamCode/src/main/res/xml/swervemodetest.xml",
+      "lines": 44,
+      "bytes": 2084,
+      "binary": false,
+      "reviewed_lines": 44,
+      "method": "full source",
+      "sha256": "e3e33aea763b190de92534d9468e9030ace2a2d54f7c350b0db4a5ba2355ba4b"
+    },
+    {
+      "path": "TeamCode/src/main/res/xml/taro.xml",
+      "lines": 43,
+      "bytes": 2128,
+      "binary": false,
+      "reviewed_lines": 43,
+      "method": "full source",
+      "sha256": "ac32b8da6b1147f9ca35e7843f607a0004b0b6cdcffe4f7a0754462c923d64b5"
+    },
+    {
+      "path": "TeamCode/src/main/res/xml/teamwebcamcalibrations.xml",
+      "lines": 161,
+      "bytes": 7688,
+      "binary": false,
+      "reviewed_lines": 161,
+      "method": "full source",
+      "sha256": "135b7a9a4ca25a186151b0b84ab21f807fac1ce1e3357e33df3c5874343a0ecd"
+    },
+    {
+      "path": "TeamCode/src/test/java/org/firstinspires/ftc/teamcode/junit/GoalZoneTest.java",
+      "lines": 45,
+      "bytes": 1122,
+      "binary": false,
+      "reviewed_lines": 45,
+      "method": "full source",
+      "sha256": "aca59b73ee864574d564cfb34812c98261c1b2c88df869fc3ba85e6e504f29a1"
+    },
+    {
+      "path": "TeamCode/src/test/java/org/firstinspires/ftc/teamcode/junit/LauncherMathTest.java",
+      "lines": 74,
+      "bytes": 2504,
+      "binary": false,
+      "reviewed_lines": 74,
+      "method": "full source",
+      "sha256": "c5cd2d37e8d0d2cb077792e0b69478059e77eea7722c07ce5f141ffecf93e0da"
+    },
+    {
+      "path": "TeamCode/src/test/java/org/firstinspires/ftc/teamcode/junit/TurretMathTest.java",
+      "lines": 38,
+      "bytes": 1217,
+      "binary": false,
+      "reviewed_lines": 38,
+      "method": "full source",
+      "sha256": "1d27b3050e74fb9b196e960745e8124d48e7992798b002f62e5ee6f66ead2b68"
+    },
+    {
+      "path": "TeamCode/src/test/java/org/firstinspires/ftc/teamcode/junit/VirtualGoalSolverTest.java",
+      "lines": 127,
+      "bytes": 5998,
+      "binary": false,
+      "reviewed_lines": 127,
+      "method": "full source",
+      "sha256": "0357a0fd03f10824e3ca7152bfbf3b08ec8d2143295c4e4c18670228844597f7"
+    },
+    {
+      "path": "build.common.gradle",
+      "lines": 117,
+      "bytes": 4121,
+      "binary": false,
+      "reviewed_lines": 117,
+      "method": "full source",
+      "sha256": "809c34132e31e02be7ba4df5bef7515ac95cdc4ce5c7c07be40d3f724f07d0d4"
+    },
+    {
+      "path": "build.dependencies.gradle",
+      "lines": 20,
+      "bytes": 711,
+      "binary": false,
+      "reviewed_lines": 20,
+      "method": "full source",
+      "sha256": "d3e041ba458af818e928e38fa59b7b1daab6a3026abaf1f7ca3854f01c94a4bb"
+    },
+    {
+      "path": "build.gradle",
+      "lines": 29,
+      "bytes": 648,
+      "binary": false,
+      "reviewed_lines": 29,
+      "method": "full source",
+      "sha256": "de573bf09be8086fb3c4a5755313d308142e3e13e9ec3c2fd30787dc205b62a0"
+    },
+    {
+      "path": "doc/legal/AudioBlocksSounds.txt",
+      "lines": 21,
+      "bytes": 1025,
+      "binary": false,
+      "reviewed_lines": 21,
+      "method": "full source",
+      "sha256": "1531fa6c4c7841ed3166b6bd702e88102d7ff1cc68eda174c2255b1287bcb2a9"
+    },
+    {
+      "path": "doc/legal/Exhibit A - LEGO Open Source License Agreement.txt",
+      "lines": 15,
+      "bytes": 869,
+      "binary": false,
+      "reviewed_lines": 15,
+      "method": "full source",
+      "sha256": "ad34c2518a3be4cceebecfbc9fbb5c8d1ed52beacb960b631760d9ba9807021d"
+    },
+    {
+      "path": "doc/legal/LEGO Open Source License.pdf",
+      "lines": 0,
+      "bytes": 34100,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "984a2fe7793f662610c6335528b828752e67fd2245e1d063e3ff05bb90ef832e"
+    },
+    {
+      "path": "doc/media/PullRequest.PNG",
+      "lines": 0,
+      "bytes": 19655,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "c4cc93c9451426d265aeb61d5b5aa5b842ae7b46e0198a5c53fce3c5932cb3d5"
+    },
+    {
+      "path": "gradle.properties",
+      "lines": 14,
+      "bytes": 588,
+      "binary": false,
+      "reviewed_lines": 14,
+      "method": "full source",
+      "sha256": "5518a35a81d8cece75079fb3dcca75fde40c314b63e51b0f909465fa96c930eb"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "lines": 0,
+      "bytes": 58695,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "96f793a18e056c23ffeec67c1f3bb8eccff5a4a407fc9ceac183527e7eedf4b6"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "lines": 5,
+      "bytes": 205,
+      "binary": false,
+      "reviewed_lines": 5,
+      "method": "full source",
+      "sha256": "1c93d228b651727919c7a46764f069fb38e54db91325033bdd09e82eeda7192d"
+    },
+    {
+      "path": "gradlew",
+      "lines": 164,
+      "bytes": 5244,
+      "binary": false,
+      "reviewed_lines": 164,
+      "method": "full source",
+      "sha256": "b1f7bbd6029d20bafae22755bf7c2ea3782bcf5251991694e1318a2d1943fd09"
+    },
+    {
+      "path": "gradlew.bat",
+      "lines": 90,
+      "bytes": 2404,
+      "binary": false,
+      "reviewed_lines": 90,
+      "method": "full source",
+      "sha256": "c13c6e91b9a517783976de213d46398c661ea9e17651376d7301e839eaedcc62"
+    },
+    {
+      "path": "libs/README.txt",
+      "lines": 1,
+      "bytes": 27,
+      "binary": false,
+      "reviewed_lines": 1,
+      "method": "full source",
+      "sha256": "1590737110f6fb68370e4e357085149103beecdfc5b67054f1c7ead48e12794e"
+    },
+    {
+      "path": "libs/ftc.debug.keystore",
+      "lines": 0,
+      "bytes": 2146,
+      "binary": true,
+      "reviewed_lines": 0,
+      "method": "binary inventoried; no line review",
+      "sha256": "a0250b88796e15c18a0cc840e979c7ad9247e0014fe3ef3ca2e1834c7387cc5e"
+    },
+    {
+      "path": "settings.gradle",
+      "lines": 2,
+      "bytes": 52,
+      "binary": false,
+      "reviewed_lines": 2,
+      "method": "full source",
+      "sha256": "d4e1400d0f37ac6599eb52dce41fcc3934957ac9a615fd4c7f7297fbf1648bfe"
+    }
+  ]
+}

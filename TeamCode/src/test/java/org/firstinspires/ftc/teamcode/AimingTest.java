@@ -8,6 +8,19 @@ import org.junit.Test;
 
 public class AimingTest {
   @Test
+  public void angularFeedforwardMatchesFiniteDifferenceAcrossQuadrants() {
+    double dt = 1e-6;
+    for (double x : new double[] {-100, 100})
+      for (double y : new double[] {-60, 60}) {
+        double vx = 12, vy = -7, omega = .3;
+        double before = Math.atan2(y, x);
+        double after = Math.atan2(y + vy * dt, x + vx * dt);
+        double measured = Angles.wrap(after - before) / dt - omega;
+        assertEquals(measured, MovingShotSolver.lineOfSightRate(x, y, vx, vy, omega), 1e-7);
+      }
+  }
+
+  @Test
   public void angularFeedforwardUsesRelativeVelocity() {
     assertEquals(-.1, MovingShotSolver.lineOfSightRate(100, 0, 0, -10, 0), 1e-10);
     assertEquals(.1, MovingShotSolver.lineOfSightRate(100, 0, 0, 10, 0), 1e-10);

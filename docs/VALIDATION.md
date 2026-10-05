@@ -18,3 +18,17 @@ No connected robot or field was available. Encoder wiring/direction, safe mechan
 The vision wizard automates an observable extrinsic/COR/latency fit and noise estimate with held-out checks. It cannot infer a physical forward mark, pivot height, projectile success or flight time from the available tag measurements. Those guided inputs remain explicit. The flywheel tuner's P gain is a starting value derived from measured feedforward, and requires loaded-response validation.
 
 See [operating and calibration instructions](ROBOT_INTEGRATION.md) and the [Seattle DECODE review](SEATTLE_DECODE_REVIEW.md).
+
+
+## Complete Seattle audit follow-up — 2026-10-05
+
+- Audited Seattle commit `02a453104b0b208a885571b5fa93b0465c054b78`: 272 text files, 38,845 lines, plus nine inventoried binary files. Full-source/verified-diff coverage and hashes are recorded in `SEATTLE_AUDIT_COVERAGE.json`.
+- Added Pinpoint status/finite-velocity gates with explicit recovery, voltage-based flywheel characterization/control, readiness reset on stop, and bounded stage/period CSV profiling.
+- `:TeamCode:assembleDebug`: PASS with the final production changes.
+- `:TeamCode:testDebugUnitTest`: **27 tests, zero failures/errors/skips**. Additional regressions cover odometry fault/recovery, invalid velocity, voltage polling/freshness/compensation, chronological bounded profiling including telemetry gaps, and finite-difference angular feedforward across all quadrants.
+- `:TeamCode:lintDebug`: completed, **zero reported errors, 18 warnings**. One additional warning is the already-present local `Robot.java` KITKAT annotation, which was preserved and excluded from these commits. The Kotlin metadata compatibility diagnostics described above remain; lint dependency analysis is limited.
+- `git diff --check`: PASS. A fresh fetch showed no new origin/main commit beyond `d54f419`.
+
+Build logs: `build/seattle-audit-validation.log` and `build/seattle-audit-final-checks.log` (local generated files, not committed). Source/API checks confirmed Pedro 3 performs the Pinpoint read and SDK 12 `getDeviceStatus()` reads the cached result without another I2C transaction. The race-command cleanup issue was also verified against the actual cached SolversLib 0.3.6 binary; current production code does not use that composition.
+
+Hardware validation is still required. In particular, test Pinpoint disconnect/recovery and robot-relative fallback; rerun Tune 3 before enabling voltage-based gains, verify loaded flywheel recovery with Tune 5, and collect the loop CSV with the camera and drivetrain active. No physical tuning values or on-robot performance results were invented.
