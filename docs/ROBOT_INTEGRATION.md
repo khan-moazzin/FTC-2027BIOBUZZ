@@ -83,3 +83,7 @@ SolversLib 0.3.6 `ParallelRaceGroup` omits normal cleanup of a finished child. D
 Editable code stays in `Robot.java`, `Constants.java`, `config/`, `subsystems/` and `opmodes/`. Reusable support moved into `lib/`, including Pedro tuning infrastructure. See [CODE_STRUCTURE.md](CODE_STRUCTURE.md). Driver Station names, configuration class packages, hardware names and exported configuration filenames are unchanged.
 
 Vision commits a HIVE update only after the matching robot-pose correction passes its innovation gate. Hood readiness starts on an output write and resets after cumulative target movement. Shot-map tuning rejects requests outside configured RPM/hood travel instead of recording silently clamped values. Changing the turret zero invalidates the prior vision calibration, so rerun the vision wizard after Tune 1. Invalid/empty calibration datasets now return a failed fit rather than crashing.
+
+## Full robot logging
+
+`TeleopMain` now also records uniquely named AdvantageScope-compatible CSV sessions with calibration metadata and completion summaries, and publishes matching live data through FTC Dashboard. This runs alongside the older last-512-cycle timing CSV. See [LOGGING.md](LOGGING.md) for connection steps, field meanings, storage limits and hardware validation.

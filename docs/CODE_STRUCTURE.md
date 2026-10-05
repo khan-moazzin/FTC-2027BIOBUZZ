@@ -6,12 +6,13 @@ The editable robot surface is under `TeamCode/src/main/java/org/firstinspires/ft
 | --- | --- |
 | `Robot.java` | Construct hardware once; acquire/fuse, run commands, then apply outputs; clean up partial initialization and shutdown. |
 | `Constants.java` | Alliance and Pedro/Pinpoint configuration produced by tuners. |
-| `config/` | Copy generated `VisionConfig`, `MechanismConfig`, and `ShotConfig` here. Their package names and export destinations are unchanged. |
+| `config/` | Copy generated `VisionConfig`, `MechanismConfig`, and `ShotConfig` here. Their package names and export destinations are unchanged. `LoggingConfig` sets file/live recording limits. |
 | `subsystems/` | Robot-specific behavior, hardware names, control policy and SolversLib requirements. |
 | `opmodes/TeleOp.java` | Driver controls and the competition loop. Driver Station name remains `TeleopMain`. |
 | `opmodes/tuning/` | All six guided calibration/verification OpModes. Driver Station names remain unchanged. |
 | `lib/control/` | Tested angle/target math, shot solver/map, readiness, voltage cache and profiling. |
 | `lib/vision/` | Limelight observations, transforms, per-HIVE state and pose fitting. |
+| `lib/logging/` | Immutable snapshots, bounded asynchronous CSV recording and live AdvantageScope via FTC Dashboard. |
 | `lib/localization/` | Buffered delayed fusion and sensor health gates. |
 | `lib/math/`, `lib/field/` | Numerical helpers and sourced field geometry. |
 | `lib/calibration/` | Shared calibration lifecycle, fit and configuration export support. |

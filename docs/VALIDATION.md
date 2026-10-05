@@ -37,3 +37,13 @@ Hardware validation is still required. In particular, test Pinpoint disconnect/r
 ## Source simplification and defect fixes — 2026-10-05
 
 Debug build and all 32 unit tests pass after migrating support packages under `lib`. Package/path and import checks pass. Lint reports no errors and 14 warnings (12 dependency native-alignment warnings and two unused SDK resource placeholders); no team Java warnings remain. The Kotlin metadata reader limitation remains as described above. See [CODE_REVIEW_FIXES.md](CODE_REVIEW_FIXES.md) for corrected behavior and [CODE_STRUCTURE.md](CODE_STRUCTURE.md) for the new editing layout. Hardware calibration flags remain unchanged/uncalibrated in the committed configuration.
+
+## AdvantageScope logging — 2026-10-05
+
+Added per-cycle full-robot snapshots, bounded asynchronous CSV writing, live FTC Dashboard packets, unique run files, config/completion JSON, per-HIVE vision diagnostics and explicit shot-readiness blockers. Loop timing remains available in the full log and the legacy export. See [logging setup and field semantics](LOGGING.md).
+
+- `:TeamCode:testDebugUnitTest`: 40 tests, zero failures/errors/skips (8 new logging tests).
+- `:TeamCode:assembleDebug`: passed.
+- `:TeamCode:lintDebug`: completed, zero reported errors and 16 warnings: 12 native-library alignment warnings, 2 SDK placeholder resources and 2 suggestions to use Android allocatable-space APIs. Logging deliberately checks current usable bytes and does not reclaim other cached storage. The existing Kotlin dependency-metadata mismatch still limits dependency lint analysis.
+- Synthetic CSV successfully decoded with the actual upstream AdvantageScope `CSVDecoder` pinned at `abb616bdd575dfa27f5794ed6be427ffd0209897`, using a stub log receiver. Values, timestamps, field names and escaped messages round-trip. This validates parser compatibility, not the desktop UI.
+- Hardware/GUI checks remaining: connect live, inspect a real recorded run in AdvantageScope, compare loaded loop periods with logging on/off, check free-space/size-limit reporting, and confirm shutdown completion on the Robot Controller. No measured overhead or field performance is claimed.

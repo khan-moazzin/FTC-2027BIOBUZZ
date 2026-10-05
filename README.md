@@ -27,6 +27,8 @@ Use Android Studio's bundled JBR and run:
 
 On Windows use `gradlew.bat`. Keep the pinned Gradle/AGP versions.
 
+- [AdvantageScope logging and connection guide](docs/LOGGING.md)
+- [Code-page copy: vision, aiming and logging](docs/CODE_PAGES.md)
 - [Controls and calibration](docs/ROBOT_INTEGRATION.md)
 - [Validation and remaining hardware checks](docs/VALIDATION.md)
 - [Official field geometry](docs/FIELD_GEOMETRY.md)
