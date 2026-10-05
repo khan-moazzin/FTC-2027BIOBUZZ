@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.RobotLog;
 import com.seattlesolvers.solverslib.command.*;
+import java.io.*;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.control.Angles;
@@ -34,6 +37,7 @@ public final class TeleOp extends OpMode {
     telemetry.addData("Alliance (dpad left/right)", Constants.ALLIANCE);
     telemetry.addData("Initial pose", robot.drive.getPose());
     telemetry.addData("Vision", robot.vision.status);
+    telemetry.addData("Odometry", robot.drive.localizer().healthStatus);
     telemetry.update();
   }
 
@@ -48,12 +52,31 @@ public final class TeleOp extends OpMode {
     robot.write();
     if (now - telemetryAt > 100000000L) {
       robot.sendTelemetry();
+      telemetry.addData("Odometry", robot.drive.localizer().healthStatus);
+      telemetry.addData("Flywheel volts", robot.flywheel.getVoltage());
       telemetry.update();
       telemetryAt = now;
     }
   }
 
   public void stop() {
-    if (robot != null) robot.close();
+    if (robot == null) return;
+    try {
+      robot.close();
+    } finally {
+      // Bounded export after actuator shutdown; overwrites the previous TeleOp trace.
+      try {
+        File directory = new File(AppUtil.FIRST_FOLDER, "biobuzz-logs");
+        if (!directory.isDirectory() && !directory.mkdirs())
+          throw new IOException("Cannot create " + directory);
+        try (Writer writer =
+            new OutputStreamWriter(
+                new FileOutputStream(new File(directory, "teleop-loop.csv")), "UTF-8")) {
+          robot.timing.writeCsv(writer);
+        }
+      } catch (IOException e) {
+        RobotLog.ee("BioBuzz", e, "Could not export loop timing");
+      }
+    }
   }
 }
