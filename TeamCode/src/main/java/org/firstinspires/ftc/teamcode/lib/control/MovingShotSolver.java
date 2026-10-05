@@ -15,6 +15,9 @@ public final class MovingShotSolver {
   public static final class Solution {
     public boolean valid;
     public String reason = "No solution";
+    public Vec3 predictedTarget, muzzle, launchVelocity;
+    public int iterations;
+    public double impactVariance = Double.NaN;
     public double angle, angularVelocity, rpm, hood, flight, distance, height;
   }
 
@@ -56,6 +59,8 @@ public final class MovingShotSolver {
             velocity.vx - velocity.omega * offset.y - turretRate * arm.y,
             velocity.vy + velocity.omega * offset.x + turretRate * arm.x,
             0);
+    s.muzzle = muzzle;
+    s.launchVelocity = launchVelocity;
     double tof = .4;
     Vec3 delta = null, goalVelocity = null;
     boolean converged = false;
@@ -63,6 +68,8 @@ public final class MovingShotSolver {
       double t = shots.transferDelay + tof;
       double a = hive.angle(now + (long) (t * 1e9));
       Vec3 goal = Field.cell(alliance, cell, a);
+      s.predictedTarget = goal;
+      s.iterations = i + 1;
       goalVelocity =
           Field.cellVelocity(cell, a, Math.abs(a) >= Field.MAX_ANGLE - 1e-6 ? 0 : hive.rate());
       delta = goal.minus(muzzle).minus(launchVelocity.times(t));
@@ -82,11 +89,10 @@ public final class MovingShotSolver {
       }
       tof = s.flight;
     }
-    if (Math.sqrt(
-            hive.variance(
-                now + (long) ((shots.transferDelay + s.flight) * 1e9),
-                vision.hiveAccelerationNoise))
-        > vision.maxHiveSigma) {
+    s.impactVariance =
+        hive.variance(
+            now + (long) ((shots.transferDelay + s.flight) * 1e9), vision.hiveAccelerationNoise);
+    if (Math.sqrt(s.impactVariance) > vision.maxHiveSigma) {
       s.reason = "Impact HIVE prediction uncertain";
       return s;
     }

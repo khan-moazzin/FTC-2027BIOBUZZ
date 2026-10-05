@@ -20,6 +20,8 @@ public final class TeleOp extends OpMode {
     CommandScheduler.getInstance().reset();
     robot = new Robot();
     robot.init(hardwareMap, telemetry);
+    robot.driver1 = gamepad1;
+    robot.driver2 = gamepad2;
     robot.drive.setDefaultCommand(
         robot.drive.teleopDrive(
             () -> -Angles.deadband(gamepad1.left_stick_y),
@@ -38,7 +40,13 @@ public final class TeleOp extends OpMode {
     telemetry.addData("Initial pose", robot.drive.getPose());
     telemetry.addData("Vision", robot.vision.status);
     telemetry.addData("Odometry", robot.drive.localizer().healthStatus);
+    telemetry.addData("Logging", robot.logging.status());
+    robot.logging.capture(robot, System.nanoTime(), gamepad1, gamepad2);
     telemetry.update();
+  }
+
+  public void start() {
+    robot.logging.mode("ACTIVE");
   }
 
   public void loop() {

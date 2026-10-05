@@ -98,6 +98,14 @@ public final class Turret extends SubsystemBase {
     return Math.toDegrees(feedback.angle);
   }
 
+  public double getTargetAngle() {
+    return targetAngle;
+  }
+
+  public double getCommandAngle() {
+    return lastCommandAngle;
+  }
+
   public double getPosition() {
     return position;
   }

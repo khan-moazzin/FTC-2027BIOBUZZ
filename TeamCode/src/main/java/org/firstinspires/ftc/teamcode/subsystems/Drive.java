@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.lib.localization.BufferedFusionLocalizer;
 public final class Drive extends SubsystemBase {
   private final BufferedFusionLocalizer localizer;
   private final Follower follower;
+  public double commandForward, commandStrafe, commandYaw;
   private double headingOffset;
   private boolean robotOriented;
 
@@ -40,6 +41,9 @@ public final class Drive extends SubsystemBase {
   }
 
   public void drive(double x, double y, double yaw) {
+    commandForward = x;
+    commandStrafe = y;
+    commandYaw = yaw;
     if (robotOriented || !localizer.healthy(System.nanoTime())) follower.manual(x, y, yaw);
     else
       follower.manual(ManualDrive.fieldCentric(x, y, yaw, getPose().heading(), -driverForward()));
@@ -80,6 +84,7 @@ public final class Drive extends SubsystemBase {
   }
 
   public void stop() {
+    commandForward = commandStrafe = commandYaw = 0;
     follower.stop();
     follower.update();
   }

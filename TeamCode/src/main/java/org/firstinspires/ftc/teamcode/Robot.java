@@ -20,6 +20,9 @@ public final class Robot implements AutoCloseable {
   public BiobuzzVision vision;
   public final VisionConfig visionConfig = new VisionConfig();
   public final LoopTiming timing = new LoopTiming();
+  public org.firstinspires.ftc.teamcode.lib.logging.RobotLogging logging;
+  public com.qualcomm.robotcore.hardware.Gamepad driver1, driver2;
+  private long cycleTime;
   private List<LynxModule> hubs;
   private Telemetry telemetry;
 
@@ -35,6 +38,7 @@ public final class Robot implements AutoCloseable {
       flywheel = new Flywheel(hw);
       vision = new BiobuzzVision(hw, visionConfig);
       shooter = new Shooter(this);
+      logging = new org.firstinspires.ftc.teamcode.lib.logging.RobotLogging(this);
     } catch (RuntimeException failure) {
       try {
         close();
@@ -46,6 +50,7 @@ public final class Robot implements AutoCloseable {
   }
 
   public void read(long now) {
+    cycleTime = now;
     timing.start(now);
     for (LynxModule h : hubs) h.clearBulkCache();
     turret.read(now);
@@ -67,10 +72,15 @@ public final class Robot implements AutoCloseable {
     hood.write();
     flywheel.write();
     timing.finish(started);
+    if (logging != null) logging.capture(this, cycleTime, driver1, driver2);
   }
 
   public void sendTelemetry() {
     telemetry.addData("Loop", timing.summary());
+    if (logging != null) {
+      telemetry.addData("Logging", logging.status());
+      telemetry.addData("Log file", logging.path());
+    }
     telemetry.addData("Shooter", shooter.status);
     telemetry.addData("Vision", vision.status);
     telemetry.addData("Pose", drive.getPose());
@@ -101,7 +111,20 @@ public final class Robot implements AutoCloseable {
       () -> {
         if (vision != null) vision.close();
       },
-      () -> CommandScheduler.getInstance().reset()
+      () -> CommandScheduler.getInstance().reset(),
+      () -> {
+        if (logging != null) {
+          logging.mode("STOP");
+          if (shooter != null) {
+            shooter.ready = shooter.preparing = shooter.feedRequested = false;
+            shooter.solution.valid = false;
+            shooter.readinessBlockers = 255;
+            shooter.status = "Stopped";
+          }
+          if (shooter != null) logging.capture(this, System.nanoTime(), driver1, driver2);
+          logging.close();
+        }
+      }
     };
     for (Runnable action : stops)
       try {

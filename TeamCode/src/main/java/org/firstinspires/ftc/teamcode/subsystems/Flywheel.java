@@ -16,6 +16,12 @@ public final class Flywheel extends SubsystemBase {
   };
   private final Readiness gate = new Readiness();
   private final double[] rpm = new double[2];
+  private final double[] duty = new double[2];
+
+  public double duty(int wheel) {
+    return duty[wheel];
+  }
+
   private double target;
   private boolean ready;
 
@@ -63,12 +69,16 @@ public final class Flywheel extends SubsystemBase {
                   + MechanismConfig.flywheelV[i] * target
               : 0;
       if (MechanismConfig.flywheelGainsInVolts) p = CachedVoltage.duty(p, getVoltage());
-      motors[i].set(Double.isFinite(p) ? Angles.clamp(p, 0, 1) : 0);
+      duty[i] = Double.isFinite(p) ? Angles.clamp(p, 0, 1) : 0;
+      motors[i].set(duty[i]);
     }
   }
 
   public void characterize(double p) {
-    for (MotorEx m : motors) m.set(Double.isFinite(p) ? Angles.clamp(p, 0, 1) : 0);
+    for (int i = 0; i < 2; i++) {
+      duty[i] = Double.isFinite(p) ? Angles.clamp(p, 0, 1) : 0;
+      motors[i].set(duty[i]);
+    }
   }
 
   public void stop() {
@@ -76,7 +86,10 @@ public final class Flywheel extends SubsystemBase {
     ready = false;
     gate.update(false, 0, 0);
     for (PIDFController controller : pid) controller.reset();
-    for (MotorEx m : motors) m.set(0);
+    for (int i = 0; i < 2; i++) {
+      duty[i] = 0;
+      motors[i].set(0);
+    }
   }
 
   public boolean atSpeed() {

@@ -13,10 +13,13 @@ public final class LoopTiming {
   private int count, index;
   private long start, readEnd;
   private boolean completed;
-  public double readMs, writeMs;
+  public double readMs, writeMs, commandMs, workMs, periodMs = Double.NaN;
 
   public void start(long now) {
-    if (completed && now >= start) samples[(index + CAPACITY - 1) % CAPACITY][5] = now - start;
+    if (completed && now >= start) {
+      samples[(index + CAPACITY - 1) % CAPACITY][5] = now - start;
+      periodMs = (now - start) * 1e-6;
+    }
     start = now;
     completed = false;
   }
@@ -44,6 +47,8 @@ public final class LoopTiming {
     row[4] = now - start;
     row[5] = -1; // Last loop has no following start; export it as blank.
     writeMs = row[3] * 1e-6;
+    commandMs = row[2] * 1e-6;
+    workMs = row[4] * 1e-6;
     index = (index + 1) % CAPACITY;
     count = Math.min(CAPACITY, count + 1);
     completed = true;

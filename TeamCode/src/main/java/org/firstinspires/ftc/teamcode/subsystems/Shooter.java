@@ -17,7 +17,23 @@ public final class Shooter extends SubsystemBase {
   private long lastTime;
   public MovingShotSolver.Solution solution = new MovingShotSolver.Solution();
   public String status = "Idle";
-  public boolean ready;
+  public boolean ready, preparing, feedRequested;
+  // Bitmask: calibration, RPM range, pose, reachability, turret, flywheels, hood settle, hood
+  // range.
+  public int readinessBlockers = 255;
+
+  public String selectedCell() {
+    return selection == null ? "AUTO_RAISED" : selection.name();
+  }
+
+  public boolean cancelled() {
+    return cancelled;
+  }
+
+  public double overflow() {
+    return overflow;
+  }
+
   private double overflow;
 
   public Shooter(Robot r) {
@@ -43,6 +59,9 @@ public final class Shooter extends SubsystemBase {
     if (g2.b) cancelled = true;
     else if (g2.left_trigger < .1 && g2.right_trigger < .1) cancelled = false;
     boolean prepare = !cancelled && (g2.left_trigger > .5 || g2.right_trigger > .5);
+    preparing = prepare;
+    feedRequested = g2.right_trigger > .5;
+    readinessBlockers = 255;
     ready = false;
     overflow = 0;
     if (prepare && !robot.drive.localizer().healthy(now)) {
@@ -73,17 +92,23 @@ public final class Shooter extends SubsystemBase {
         robot.hood.setAngle(solution.hood);
         double hoodPosition =
             MechanismConfig.hoodZero + solution.hood / MechanismConfig.hoodRadiansPerUnit;
-        ready =
-            robot.visionConfig.calibrated
-                && solution.rpm <= MechanismConfig.maxRpm
-                && robot.drive.localizer().positionSigma() <= robot.visionConfig.maxPoseSigma
-                && Double.isFinite(overflow)
-                && Math.abs(overflow) < MechanismConfig.turretTolerance
-                && robot.turret.ready()
-                && robot.flywheel.atSpeed()
-                && robot.hood.ready(now)
-                && hoodPosition >= MechanismConfig.hoodMin
-                && hoodPosition <= MechanismConfig.hoodMax;
+        readinessBlockers =
+            (robot.visionConfig.calibrated ? 0 : 1)
+                | (solution.rpm <= MechanismConfig.maxRpm ? 0 : 2)
+                | (robot.drive.localizer().positionSigma() <= robot.visionConfig.maxPoseSigma
+                    ? 0
+                    : 4)
+                | (Double.isFinite(overflow) && Math.abs(overflow) < MechanismConfig.turretTolerance
+                    ? 0
+                    : 8)
+                | (robot.turret.ready() ? 0 : 16)
+                | (robot.flywheel.atSpeed() ? 0 : 32)
+                | (robot.hood.ready(now) ? 0 : 64)
+                | (hoodPosition >= MechanismConfig.hoodMin
+                        && hoodPosition <= MechanismConfig.hoodMax
+                    ? 0
+                    : 128);
+        ready = readinessBlockers == 0;
         status = ready ? "Ready" : "Waiting for mechanisms/pose";
       } else {
         robot.flywheel.setTargetRpm(0);

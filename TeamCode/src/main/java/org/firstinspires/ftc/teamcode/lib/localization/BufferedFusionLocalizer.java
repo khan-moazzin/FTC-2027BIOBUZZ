@@ -121,7 +121,11 @@ public final class BufferedFusionLocalizer implements Localizer {
   }
 
   public boolean addMeasurement(Pose z, long t, Matrix r, double gate) {
-    if (!healthy || needsReset || !Double.isFinite(gate) || gate <= 0) return false;
+    lastInnovation = Double.NaN;
+    if (!healthy || needsReset || !Double.isFinite(gate) || gate <= 0) {
+      status = "Unhealthy odometry / invalid gate";
+      return false;
+    }
     // A late older frame must not erase a newer accepted correction.
     if (t < lastMeasurement || !finite(z)) {
       status = "Out of order/nonfinite frame";
@@ -133,13 +137,17 @@ public final class BufferedFusionLocalizer implements Localizer {
       return false;
     }
     Matrix inv = m.covariance.plus(r).invert();
-    if (inv == null) return false;
+    if (inv == null) {
+      status = "Singular innovation covariance";
+      return false;
+    }
     com.pedropathing.math.Vector e =
         new com.pedropathing.math.Vector(
             z.x() - m.pose.x(), z.y() - m.pose.y(), Angles.wrap(z.heading() - m.pose.heading()));
     com.pedropathing.math.Vector w = inv.times(e);
     double score = 0;
     for (int i = 0; i < 3; i++) score += e.get(i) * w.get(i);
+    lastInnovation = score;
     if (!Double.isFinite(score) || score < 0 || score > gate) {
       status = "Innovation rejected";
       return false;
@@ -175,6 +183,16 @@ public final class BufferedFusionLocalizer implements Localizer {
     status = "Accepted";
     return true;
   }
+
+  public Pose rawPose() {
+    return lastRaw;
+  }
+
+  public double covariance(int row, int col) {
+    return covariance.get(row, col);
+  }
+
+  public double lastInnovation = Double.NaN;
 
   public double positionSigma() {
     return Math.sqrt(Math.max(covariance.get(0, 0), covariance.get(1, 1)));

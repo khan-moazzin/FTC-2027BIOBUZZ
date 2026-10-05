@@ -13,6 +13,18 @@ public final class BiobuzzVision implements AutoCloseable {
   public final AngleHistory turretHistory = new AngleHistory();
   public final LimelightSource source;
   private final VisionConfig c;
+  public LimelightSource.Frame lastFrame;
+  public long frameSequence;
+
+  public static final class Diagnostic {
+    public String result = "No frame";
+    public int tagCount;
+    public double rms = Double.NaN, innovation = Double.NaN;
+    public double x = Double.NaN, y = Double.NaN, heading = Double.NaN, angle = Double.NaN;
+    public boolean accepted;
+  }
+
+  public final Diagnostic redDiagnostic = new Diagnostic(), blueDiagnostic = new Diagnostic();
   public String status = "Uncalibrated";
 
   public BiobuzzVision(HardwareMap hw, VisionConfig c) {
@@ -29,26 +41,40 @@ public final class BiobuzzVision implements AutoCloseable {
     turretHistory.add(now, turret);
     LimelightSource.Frame frame = source.poll(now);
     if (frame == null) return;
+    lastFrame = frame;
+    frameSequence++;
+    reset(redDiagnostic);
+    reset(blueDiagnostic);
     if (!c.calibrated || !c.turretCalibrated) {
       status = "Run vision/turret calibration";
+      redDiagnostic.result = blueDiagnostic.result = status;
       return;
     }
     double captureTurret = turretHistory.at(frame.timestamp);
     Pose prior = localizer.sample(frame.timestamp);
     if (!Double.isFinite(captureTurret) || prior == null) {
       status = "No capture-time history";
+      redDiagnostic.result = blueDiagnostic.result = status;
       return;
     }
     for (Field.Hive h : Field.Hive.values()) {
       List<TagObservation> tags = new ArrayList<>();
       for (TagObservation t : frame.tags) if (Field.hive(t.id) == h) tags.add(t);
+      Diagnostic diagnostic = h == Field.Hive.RED ? redDiagnostic : blueDiagnostic;
+      diagnostic.tagCount = tags.size();
       HiveState state = hive(h);
       double seed = state.fresh(now, c.hiveMaxAge) ? state.angle(frame.timestamp) : 0;
       LeastSquares.Fit fit = VisionPoseSolver.solve(tags, captureTurret, prior, seed, c);
       if (fit == null) {
         status = "Insufficient geometry / fit rejected";
+        diagnostic.result = status;
         continue;
       }
+      diagnostic.rms = fit.rms;
+      diagnostic.x = fit.parameters[0];
+      diagnostic.y = fit.parameters[1];
+      diagnostic.heading = fit.parameters[2];
+      diagnostic.angle = fit.parameters[3];
       // Tag errors within a frame share range/extrinsic error: do not divide by tag count.
       double range = 0;
       for (TagObservation t : tags) range = Math.max(range, t.camera.norm());
@@ -61,6 +87,7 @@ public final class BiobuzzVision implements AutoCloseable {
       if (!candidate.update(
           fit.parameters[3], angleVar, frame.timestamp, c.hiveAccelerationNoise)) {
         status = "HIVE innovation rejected";
+        diagnostic.result = status;
         continue;
       }
       // Moving target/exposure uncertainty propagated through the geometric roll sensitivity.
@@ -82,8 +109,18 @@ public final class BiobuzzVision implements AutoCloseable {
               new Matrix(r),
               c.innovationGate);
       if (ok) state.update(fit.parameters[3], angleVar, frame.timestamp, c.hiveAccelerationNoise);
-      status = h + ": " + (ok ? "fused" : localizer.status);
+      diagnostic.accepted = ok;
+      diagnostic.innovation = localizer.lastInnovation;
+      diagnostic.result = ok ? "fused" : localizer.status;
+      status = h + ": " + diagnostic.result;
     }
+  }
+
+  private static void reset(Diagnostic d) {
+    d.result = "No fit";
+    d.tagCount = 0;
+    d.accepted = false;
+    d.rms = d.innovation = d.x = d.y = d.heading = d.angle = Double.NaN;
   }
 
   @Override

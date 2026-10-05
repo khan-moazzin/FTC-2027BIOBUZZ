@@ -26,6 +26,15 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+    implementation 'com.acmerobotics.dashboard:dashboard:0.6.0'
 }
 
 dependencies { testImplementation 'junit:junit:4.13.2' }
+
+// Dashboard is published by ACME Robotics, not Maven Central.
+repositories {
+    exclusiveContent {
+        forRepository { maven { url 'https://maven.brott.dev/' } }
+        filter { includeGroup 'com.acmerobotics.dashboard' }
+    }
+}
