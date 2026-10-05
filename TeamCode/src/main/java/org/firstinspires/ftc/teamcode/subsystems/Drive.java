@@ -4,6 +4,7 @@ import com.pedropathing.follower.*;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.revhub.localizers.PinpointLocalizer;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.*;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
@@ -18,7 +19,13 @@ public final class Drive extends SubsystemBase {
   private boolean robotOriented;
 
   public Drive(HardwareMap hw) {
-    localizer = new BufferedFusionLocalizer(new PinpointLocalizer(hw, Constants.localizerConfig));
+    PinpointLocalizer raw = new PinpointLocalizer(hw, Constants.localizerConfig);
+    GoBildaPinpointDriver pinpoint =
+        hw.get(GoBildaPinpointDriver.class, Constants.localizerConfig.name.get());
+    // getDeviceStatus reads the cached status from Pedro's one bulk update; no second I2C poll.
+    localizer =
+        new BufferedFusionLocalizer(
+            raw, () -> pinpoint.getDeviceStatus() == GoBildaPinpointDriver.DeviceStatus.READY);
     follower = Constants.createFollower(hw, localizer);
   }
 
@@ -33,7 +40,7 @@ public final class Drive extends SubsystemBase {
   }
 
   public void drive(double x, double y, double yaw) {
-    if (robotOriented) follower.manual(x, y, yaw);
+    if (robotOriented || !localizer.healthy(System.nanoTime())) follower.manual(x, y, yaw);
     else
       follower.manual(ManualDrive.fieldCentric(x, y, yaw, getPose().heading(), -driverForward()));
   }
@@ -43,6 +50,8 @@ public final class Drive extends SubsystemBase {
   }
 
   public void update() {
+    if (!localizer.healthy(System.nanoTime()) && (follower.following() || follower.holding()))
+      follower.stop();
     follower.update();
   }
 

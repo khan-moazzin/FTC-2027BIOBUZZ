@@ -45,7 +45,13 @@ public final class Shooter extends SubsystemBase {
     boolean prepare = !cancelled && (g2.left_trigger > .5 || g2.right_trigger > .5);
     ready = false;
     overflow = 0;
-    if (prepare) {
+    if (prepare && !robot.drive.localizer().healthy(now)) {
+      solution.valid = false;
+      robot.flywheel.setTargetRpm(0);
+      robot.turret.hold();
+      robot.hood.stow();
+      status = robot.drive.localizer().healthStatus;
+    } else if (prepare) {
       Field.Hive alliance =
           Constants.ALLIANCE == Constants.Alliance.RED ? Field.Hive.RED : Field.Hive.BLUE;
       HiveState hive = robot.vision.hive(alliance);
@@ -101,7 +107,10 @@ public final class Shooter extends SubsystemBase {
   }
 
   public double yaw(double manual, boolean assist) {
-    if (Math.abs(manual) > .001 || !assist || !solution.valid) return manual;
+    if (Math.abs(manual) > .001
+        || !assist
+        || !solution.valid
+        || !robot.drive.localizer().healthy(System.nanoTime())) return manual;
     double error = Math.abs(overflow) > MechanismConfig.turretTolerance ? overflow : solution.angle;
     return Double.isFinite(error)
         ? Angles.clamp(

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.localization;
 import com.pedropathing.localization.*;
 import com.pedropathing.math.*;
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import org.firstinspires.ftc.teamcode.control.Angles;
 
 /**
@@ -23,6 +24,11 @@ public final class BufferedFusionLocalizer implements Localizer {
   }
 
   private final Localizer raw;
+  private final BooleanSupplier deviceReady;
+  private boolean healthy, needsReset;
+  public String healthStatus = "Waiting for odometry";
+  // Control freshness deadline, not a measured sensor tuning coefficient.
+  private static final long MAX_AGE_NS = 250000000L;
   private final NavigableMap<Long, Sample> history = new TreeMap<>();
   private MotionState state = MotionState.zero();
   private Pose lastRaw = Pose.zero();
@@ -35,19 +41,32 @@ public final class BufferedFusionLocalizer implements Localizer {
   }
 
   public BufferedFusionLocalizer(Localizer raw) {
+    this(raw, () -> true);
+  }
+
+  public BufferedFusionLocalizer(Localizer raw, BooleanSupplier deviceReady) {
     this.raw = raw;
+    this.deviceReady = deviceReady;
     covariance = Matrix.diag(72 * 72, 72 * 72, Math.PI * Math.PI);
-    lastRaw = raw.pose();
+    lastRaw = finite(raw.pose()) ? raw.pose() : Pose.zero();
     state = MotionState.ofVelocity(lastRaw, Velocity.zero());
   }
 
   public void capture(long now) {
     raw.update();
     Pose current = raw.pose();
-    if (!finite(current)) {
-      status = "Nonfinite odometry";
+    Velocity velocity = raw.velocity();
+    if (!deviceReady.getAsBoolean() || !finite(current) || !finite(velocity)) {
+      needsReset |= healthy;
+      healthy = false;
+      history.clear();
+      state = MotionState.ofVelocity(state.pose(), Velocity.zero());
+      healthStatus =
+          needsReset ? "Odometry fault: reset verified pose/restart" : "Pinpoint not ready";
       return;
     }
+    if (needsReset) return;
+    if (lastTime >= 0 && now <= lastTime) return;
     Pose next = state.pose().compose(lastRaw.invert().compose(current));
     double dt = lastTime < 0 ? 0 : (now - lastTime) * 1e-9;
     covariance = propagate(covariance, state.pose(), next, dt);
@@ -55,8 +74,10 @@ public final class BufferedFusionLocalizer implements Localizer {
     lastTime = now;
     state =
         MotionState.ofVelocity(
-            next, rotated(raw.velocity(), Angles.wrap(next.heading() - current.heading())));
-    history.put(now, new Sample(current, next, raw.velocity(), covariance));
+            next, rotated(velocity, Angles.wrap(next.heading() - current.heading())));
+    healthy = true;
+    healthStatus = "Ready";
+    history.put(now, new Sample(current, next, velocity, covariance));
     prune(now);
   }
 
@@ -100,6 +121,7 @@ public final class BufferedFusionLocalizer implements Localizer {
   }
 
   public boolean addMeasurement(Pose z, long t, Matrix r, double gate) {
+    if (!healthy || needsReset) return false;
     // A late older frame must not erase a newer accepted correction.
     if (t < lastMeasurement || !finite(z)) {
       status = "Out of order/nonfinite frame";
@@ -163,7 +185,18 @@ public final class BufferedFusionLocalizer implements Localizer {
   }
 
   public static boolean finite(Pose p) {
-    return Double.isFinite(p.x()) && Double.isFinite(p.y()) && Double.isFinite(p.heading());
+    return p != null
+        && Double.isFinite(p.x())
+        && Double.isFinite(p.y())
+        && Double.isFinite(p.heading());
+  }
+
+  private static boolean finite(Velocity v) {
+    return v != null && Double.isFinite(v.vx) && Double.isFinite(v.vy) && Double.isFinite(v.omega);
+  }
+
+  public boolean healthy(long now) {
+    return healthy && !needsReset && now >= lastTime && now - lastTime <= MAX_AGE_NS;
   }
 
   @Override
@@ -182,11 +215,14 @@ public final class BufferedFusionLocalizer implements Localizer {
 
   @Override
   public void setPose(Pose p) {
+    if (!finite(p)) throw new IllegalArgumentException("Pose must be finite");
     raw.setPose(p);
     lastRaw = p;
     state = MotionState.ofVelocity(p, Velocity.zero());
     covariance = initial();
     history.clear();
     lastTime = lastMeasurement = -1;
+    healthy = needsReset = false;
+    healthStatus = "Waiting for odometry";
   }
 }
