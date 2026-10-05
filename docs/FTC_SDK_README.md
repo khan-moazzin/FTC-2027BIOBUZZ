@@ -64,12 +64,12 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 ### Breaking Changes
 * The new AprilTag Cluster capability breaks legacy AprilTag OpModes resulting in compile errors for software that uses AprilTagDetection objects in both Android Studio and OnBot Java.
   * Legacy AprilTag OpModes must be updated to check whether the returned AprilTag is a cluster or singleton,
-     and cast the returned detection into the correct type to access its elements.  See below:    
-     
+     and cast the returned detection into the correct type to access its elements.  See below:
+
 	 **Old method for AprilTag processing**
     ```
      for (AprilTagDetection detection : currentDetections) {
-       // Do single Tag processing here  
+       // Do single Tag processing here
      }
     ```
 
@@ -79,24 +79,24 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
      for (AprilTagDetection detection : currentDetections) {
        if (detection instanceof AprilTagSingleDetection) {
          AprilTagSingleDetection singleDet = (AprilTagSingleDetection) detection;
-         // Do single Tag processing here  
+         // Do single Tag processing here
        } else {
          AprilTagClusterDetection clusterDet = (AprilTagClusterDetection) detection;
-         // Do cluster Tag processing here  
+         // Do cluster Tag processing here
        }
      }
      ```
     For more information about how to update your OpModes to fix the breaking change see: https://ftc-docs.firstinspires.org/apriltag-clusters
-    
-  * About AprilTag clusters:  
+
+  * About AprilTag clusters:
     * Clusters are co-planar groups of two or more AprilTags wherein the position of each member tag is defined relative to a common origin
     * This origin may be placed outside the bounds of the tags themselves to provide a more suitable "aiming" target
     * Clusters are resilient to partial occlusion. Full 6DOF pose can be estimated from a cluster even if only a single member tag is visible. Of course, the more tags that are visible, the better and more stable the pose estimate will be
     * All AprilTag samples have been updated to differentiate between standalone tags and clusters
-  
+
 ### Enhancements
 * Adds a tree view for robot configurations [issue 1821](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1821)
-* Gamepad indicators on the Driver Station are now colored orange if the respective gamepads are connected to the Android generic gamepad driver instead of the Driver Station's usermode USB driver 
+* Gamepad indicators on the Driver Station are now colored orange if the respective gamepads are connected to the Android generic gamepad driver instead of the Driver Station's usermode USB driver
 * Updated AprilTag Library for BIOBUZZ. Notably, getCurrentGameTagLibrary() now returns BIOBUZZ tags.
   * In BIOBUZZ, the Origin of each cluster is located in the center of the Cell opening for easy aiming.
   * The Origin X,Y & Z Axes are now displayed by default on the preview image.
@@ -111,7 +111,7 @@ voltage was not updated on driver station if OpMode did not send any telemetry.
 
 ### Bug Fixes
 * Fixes issue [2099](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/2099). Gradle and the AGP are now updated to 9.1 and 8.13.2 respectively.
- 
+
 ## Version 11.2 (20260707-102819)
 
 ### Breaking Changes
@@ -119,12 +119,12 @@ voltage was not updated on driver station if OpMode did not send any telemetry.
 
 ### Enhancements
 * New type of OpMode is now available. (`@Utility`)
-   * Utility opmodes that are not disabled will show up in the Utility menu (requires 11.2 or later DS and RC) 
+   * Utility opmodes that are not disabled will show up in the Utility menu (requires 11.2 or later DS and RC)
 * TestHardware Utility now available
   * It allows you to test all servos, CR servos, motors, Color sensors, distance sensors, touch sensors, IMUs, webcams, and analog sensors in the config
 * TestGamepad Utility now available
-  * It allows you to see the results of your two gamepads to make sure it is what you expect and find problems with your gamepads. 
-* Adds methods to PwmControl interface to allow you to setPulseWidth and getPulseWidth 
+  * It allows you to see the results of your two gamepads to make sure it is what you expect and find problems with your gamepads.
+* Adds methods to PwmControl interface to allow you to setPulseWidth and getPulseWidth
    * Both of these are in microseconds (uSeconds)
    * This is an ADVANCED feature.   There is not a supporting sample.
    * NOTE: You may see a slight difference since the hardware is not accurate to the microsecond
@@ -137,8 +137,8 @@ voltage was not updated on driver station if OpMode did not send any telemetry.
 
 ### Bug Fixes
 * Fixes issue [1949](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1949) overwriting the group with the default group when registering a OpMode with OpModeManager.register(OpModeMeta name, Class<? extends OpMode> clazz)
-* Fixes issue mentioned in [1890](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1890) where if 
-  for a servo you change the direction or scaleRange and send the same setPosition that was sent 
+* Fixes issue mentioned in [1890](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1890) where if
+  for a servo you change the direction or scaleRange and send the same setPosition that was sent
   before, then it wouldn't update the servo.
 * Fixes an issue where Self-Inspect doesn't flag a driver station using -RC in it's name. The message is now:
   * The team numbers in the robot controller and driver station names do not match, or a device name is invalid. Refer to the FTC Competition Manual for device naming rules.
@@ -162,11 +162,11 @@ voltage was not updated on driver station if OpMode did not send any telemetry.
 
 ### Enhancements
 
-* OnBotJava now has the concept of a project.  
+* OnBotJava now has the concept of a project.
   A project is a collection of related files.  A project may be chosen by selecting 'Example Project'
-  from the 'File type:' dropdown.  Doing so will populate the dropdown to the immediate right with 
+  from the 'File type:' dropdown.  Doing so will populate the dropdown to the immediate right with
   a list of projects to choose from.
-  When selecting a project all of the related files appear in the left pane of the workspace 
+  When selecting a project all of the related files appear in the left pane of the workspace
   underneath a directory with the chosen project name.
   This is useful for example for ConceptExternalHardwareClass which has a dependency upon
   RobotHardware.  This feature simplifies the usage of this Concept example by automatically
@@ -184,7 +184,7 @@ voltage was not updated on driver station if OpMode did not send any telemetry.
   * the timer is enabled (for an Autonomous OpMode)
 * Updated AprilTag Library for DECODE. Notably, getCurrentGameTagLibrary() now returns DECODE tags.
   * Since the AprilTags on the Obelisk should not be used for localization, the ConceptAprilTagLocalization samples only use those tags without the name 'Obelisk' in them.
-* OctoQuad I2C driver updated to support firmware v3.x 
+* OctoQuad I2C driver updated to support firmware v3.x
   * Adds support for odometry localizer on MK2 hardware revision
   * Adds ability to track position for an absolute encoder across multiple rotations
   * Note that some driver APIs have changed; minor updates to user software may be required
@@ -195,14 +195,14 @@ voltage was not updated on driver station if OpMode did not send any telemetry.
 ## Version 10.3 (20250625-090416)
 
 ### Breaking Changes
-* The behavior of setGlobalErrorMsg() is changed.  Note that this is an SDK internal method that is not 
+* The behavior of setGlobalErrorMsg() is changed.  Note that this is an SDK internal method that is not
   meant to be used by team software or third party libraries.  Teams or libraries using this method should
-  find another means to communicate failure.  The design intent of setGlobalErrorMsg() is to report an 
+  find another means to communicate failure.  The design intent of setGlobalErrorMsg() is to report an
   error and force the user to restart the robot, which in certain circumstances when used inappropriately
   could cause a robot to continue running while Driver Station controls are disabled.  To prevent this,
   processing of a call to setGlobalErrorMsg() is deferred until the robot is in a known safe state.  This may
   mean that a call to setGlobalErrorMsg() that does not also result in stopping a running OpMode will appear
-  as though nothing happened until the robot is stopped, at which point, if clearGlobalErrorMsg() has not 
+  as though nothing happened until the robot is stopped, at which point, if clearGlobalErrorMsg() has not
   been called the message will appear on the Driver Station and a restart will be required.
   Addresses issue [1381](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1381)
 * Fixes getLatestResult in Limelight3A so if the Limelight hasn't provided data yet, it still returns an LLResult but valid will be false
@@ -222,7 +222,7 @@ voltage was not updated on driver station if OpMode did not send any telemetry.
   * A new sample program `ConceptGamepadEdgeDetection` demonstrates its use.
 * Adds a blackboard member to the Opmode that maintains state between opmodes (but not between robot resets).  See the ConceptBlackboard sample for how to use it.
 * Updated PredominantColorProcessor to also return the predominant color in RGB, HSV and YCrCb color spaces.  Updated ConceptVisionColorSensor sample OpMode to display the getAnalysis() result in all three color spaces.
-* Adds support for the GoBilda Pinpoint 
+* Adds support for the GoBilda Pinpoint
   * Also adds `SensorGoBildaPinpoint` sample to show how to use it
 * Added `getArcLength()` and `getCircularity()` to ColorBlobLocatorProcessor.Blob.  Added BY_ARC_LENGTH and BY_CIRCULARITY as additional BlobCriteria.
 * Added `filterByCriteria()` and `sortByCriteria()` to ColorBlobLocatorProcessor.Util.
@@ -257,14 +257,14 @@ voltage was not updated on driver station if OpMode did not send any telemetry.
 
 ### Breaking Changes
 
-* Support for Android Studio Ladybug.  Requires Android Studio Ladybug.  
+* Support for Android Studio Ladybug.  Requires Android Studio Ladybug.
 
 ### Known Issues
 
 * Android Studio Ladybug's bundled JDK is version 21.  JDK 21 has deprecated support for Java 1.8, and Ladybug will warn on this deprecation.
-  OnBotJava only supports Java 1.8, therefore, in order to ensure that software developed using Android Studio will 
+  OnBotJava only supports Java 1.8, therefore, in order to ensure that software developed using Android Studio will
   run within the OnBotJava environment, the targetCompatibility and sourceCompatibility versions for the SDK have been left at VERSION_1_8.
-  FIRST has decided that until it can devote the resources to migrating OnBotJava to a newer version of Java, the deprecation is the 
+  FIRST has decided that until it can devote the resources to migrating OnBotJava to a newer version of Java, the deprecation is the
   lesser of two non-optimal situations.
 
 ### Enhancements
