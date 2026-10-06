@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.shooter;
 
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.commands.Commands;
@@ -7,29 +7,29 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import static org.firstinspires.ftc.teamcode.ShooterConstants.*;
+import static org.firstinspires.ftc.teamcode.planners.ShooterConstants.*;
 
 public class Turret {
 
     private static final double COMMAND_EPSILON_DEGREES = 0.50;
 
-    private final ServoImplEx left;
-    private final ServoImplEx right;
+    private final ServoImplEx turret1;
+    private final ServoImplEx turret2;
 
     private double position;
     private long estimatedReadyNanos;
 
     public Turret(HardwareMap hw) {
-        left = hw.get(ServoImplEx.class, "turret1");
-        right = hw.get(ServoImplEx.class, "turret2");
+        turret1 = hw.get(ServoImplEx.class, "turret1");
+        turret2 = hw.get(ServoImplEx.class, "turret2");
 
         PwmControl.PwmRange axonRange =
                 new PwmControl.PwmRange(AXON_PWM_MIN_US, AXON_PWM_MAX_US);
-        left.setPwmRange(axonRange);
-        right.setPwmRange(axonRange);
+        turret1.setPwmRange(axonRange);
+        turret2.setPwmRange(axonRange);
 
-        left.setDirection(Servo.Direction.FORWARD);
-        right.setDirection(Servo.Direction.REVERSE);
+        turret1.setDirection(Servo.Direction.FORWARD);
+        turret2.setDirection(Servo.Direction.REVERSE);
 
         position = TURRET_CENTER_POSITION;
         apply(position);
@@ -152,8 +152,8 @@ public class Turret {
     }
 
     private void apply(double p) {
-        left.setPosition(p);
-        right.setPosition(p);
+        turret1.setPosition(p);
+        turret2.setPosition(p);
     }
 
     private static double clamp(double v, double min, double max) {

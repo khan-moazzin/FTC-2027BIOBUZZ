@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.Collections;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.ShooterConstants.LIMELIGHT_PIPELINE;
+import static org.firstinspires.ftc.teamcode.planners.ShooterConstants.LIMELIGHT_PIPELINE;
 
 /** Turret-mounted Limelight 3A running the HIVE AprilTag pipeline. */
 public class Limelight {
@@ -34,12 +34,10 @@ public class Limelight {
         return result != null && result.isValid();
     }
 
-    /** SDK receive timestamp for detecting duplicate getLatestResult() frames. */
     public long frameTimestampMillis() {
         return result == null ? Long.MIN_VALUE : result.getControlHubTimeStamp();
     }
 
-    /** Frame age including image capture and pipeline processing latency. */
     public double frameAgeMs() {
         if (result == null) return Double.POSITIVE_INFINITY;
         return Math.max(0.0, result.getStaleness())

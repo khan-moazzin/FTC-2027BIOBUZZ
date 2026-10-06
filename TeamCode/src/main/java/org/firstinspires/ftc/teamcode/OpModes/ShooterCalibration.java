@@ -5,13 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Aiming;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.HiveTracker;
+import org.firstinspires.ftc.teamcode.planners.HiveTracker;
 import org.firstinspires.ftc.teamcode.Robot;
 
 import java.util.Locale;
 
 import static org.firstinspires.ftc.teamcode.Constants.*;
-import static org.firstinspires.ftc.teamcode.ShooterConstants.*;
+import static org.firstinspires.ftc.teamcode.planners.ShooterConstants.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(
         name = "Shooter Calibration",
@@ -22,8 +22,10 @@ public class ShooterCalibration extends OpMode {
     private static final double DRIVE_ROTATION_SCALE = 0.6;
     private static final double DRIVE_DEADBAND = 0.05;
 
-    private static final double COARSE_RPM_STEP = 100.0;
-    private static final double FINE_RPM_STEP = 25.0;
+    private static final double COARSE_SPEED_STEP = 2.0;
+    private static final double FINE_SPEED_STEP = 0.5;
+    private static final double COARSE_HOOD_STEP_DEGREES = 1.0;
+    private static final double FINE_HOOD_STEP_DEGREES = 0.25;
     private static final double COARSE_SERVO_STEP = 0.01;
     private static final double FINE_SERVO_STEP = 0.0025;
 
@@ -36,8 +38,8 @@ public class ShooterCalibration extends OpMode {
     private Robot robot;
     private ServoTarget selectedServo = ServoTarget.HOOD;
 
-    private double flywheelTargetRpm = 0.0;
-    private double hoodTarget = HOOD_STOW;
+    private double flywheelTargetPercent = 0.0;
+    private double hoodTargetDegrees = HOOD_STOW_DEGREES;
     private double indexerRetracted = INDEXER_RETRACTED;
     private double indexerDeployed = INDEXER_DEPLOYED;
 
@@ -73,17 +75,21 @@ public class ShooterCalibration extends OpMode {
 
     @Override
     public void loop() {
-        double rpmStep = fineAdjustment ? FINE_RPM_STEP : COARSE_RPM_STEP;
+        double speedStep = fineAdjustment ? FINE_SPEED_STEP : COARSE_SPEED_STEP;
+        double hoodStep = fineAdjustment
+                ? FINE_HOOD_STEP_DEGREES : COARSE_HOOD_STEP_DEGREES;
         double servoStep = fineAdjustment ? FINE_SERVO_STEP : COARSE_SERVO_STEP;
 
         if (gamepad2.dpadUpWasPressed()) {
-            flywheelTargetRpm = clamp(flywheelTargetRpm + rpmStep, 0.0, FLYWHEEL_MAX_RPM);
+            flywheelTargetPercent = clamp(
+                    flywheelTargetPercent + speedStep, 0.0, FLYWHEEL_MAX_PERCENT);
         }
         if (gamepad2.dpadDownWasPressed()) {
-            flywheelTargetRpm = clamp(flywheelTargetRpm - rpmStep, 0.0, FLYWHEEL_MAX_RPM);
+            flywheelTargetPercent = clamp(
+                    flywheelTargetPercent - speedStep, 0.0, FLYWHEEL_MAX_PERCENT);
         }
-        if (gamepad2.dpadRightWasPressed()) adjustSelectedServo(servoStep);
-        if (gamepad2.dpadLeftWasPressed()) adjustSelectedServo(-servoStep);
+        if (gamepad2.dpadRightWasPressed()) adjustSelected(hoodStep, servoStep);
+        if (gamepad2.dpadLeftWasPressed()) adjustSelected(-hoodStep, -servoStep);
 
         if (gamepad2.aWasPressed()) flywheelEnabled = !flywheelEnabled;
         if (gamepad2.xWasPressed()) fineAdjustment = !fineAdjustment;
@@ -102,8 +108,8 @@ public class ShooterCalibration extends OpMode {
             shotDistanceInches = Double.NaN;
         }
 
-        robot.hood.setPosition(hoodTarget);
-        robot.flywheel.setTargetRpm(flywheelEnabled ? flywheelTargetRpm : 0.0);
+        robot.hood.setAngle(hoodTargetDegrees);
+        robot.flywheel.setSpeed(flywheelEnabled ? flywheelTargetPercent : 0.0);
         robot.indexer.setPosition(manualFeed ? indexerDeployed : indexerRetracted);
         robot.intake.setPower(manualFeed ? INTAKE : INTAKE_IDLE);
 
@@ -119,16 +125,17 @@ public class ShooterCalibration extends OpMode {
         if (robot != null) robot.stop();
     }
 
-    private void adjustSelectedServo(double amount) {
+    private void adjustSelected(double hoodAmount, double servoAmount) {
         switch (selectedServo) {
             case HOOD:
-                hoodTarget = clamp(hoodTarget + amount, HOOD_MIN, HOOD_MAX);
+                hoodTargetDegrees = clamp(
+                        hoodTargetDegrees + hoodAmount, 0.0, HOOD_MAX_DEGREES);
                 break;
             case INDEXER_RETRACTED:
-                indexerRetracted = clamp(indexerRetracted + amount, 0.0, 1.0);
+                indexerRetracted = clamp(indexerRetracted + servoAmount, 0.0, 1.0);
                 break;
             case INDEXER_DEPLOYED:
-                indexerDeployed = clamp(indexerDeployed + amount, 0.0, 1.0);
+                indexerDeployed = clamp(indexerDeployed + servoAmount, 0.0, 1.0);
                 break;
         }
     }
@@ -140,19 +147,20 @@ public class ShooterCalibration extends OpMode {
 
     private void emergencyStop() {
         flywheelEnabled = false;
-        hoodTarget = HOOD_STOW;
+        hoodTargetDegrees = HOOD_STOW_DEGREES;
     }
 
     private void sendCalibrationTelemetry(boolean manualFeed) {
         telemetry.addLine("GAMEPAD 2");
-        telemetry.addLine("dpad UP/DOWN: RPM | dpad LEFT/RIGHT: selected servo");
+        telemetry.addLine("dpad UP/DOWN: flywheel % | dpad LEFT/RIGHT: selected value");
         telemetry.addLine("A: flywheel | B: stop | X: fine | Y: select servo");
         telemetry.addLine("Hold RIGHT BUMPER: intake + deploy indexer (flywheel must be enabled)");
         telemetry.addData("Adjustment", fineAdjustment ? "FINE" : "COARSE");
         telemetry.addData("Selected Servo", selectedServo);
         telemetry.addData("Flywheel Enabled", flywheelEnabled);
-        telemetry.addData("Flywheel Target RPM", flywheelTargetRpm);
-        telemetry.addData("Hood Target Position", hoodTarget);
+        telemetry.addData("Flywheel Target %", flywheelTargetPercent);
+        telemetry.addData("Flywheel Measured RPM", robot.flywheel.getRpm());
+        telemetry.addData("Hood Target deg", hoodTargetDegrees);
         telemetry.addData("Indexer Retracted", indexerRetracted);
         telemetry.addData("Indexer Deployed", indexerDeployed);
         telemetry.addData("Manual Feed", manualFeed);
@@ -162,9 +170,11 @@ public class ShooterCalibration extends OpMode {
         telemetry.addData("Shot Map Distance Entry",
                 Double.isFinite(shotDistanceInches)
                         ? String.format(Locale.US, "%.2f", shotDistanceInches) : "--");
-        telemetry.addData("Shot Map Hood Entry", String.format(Locale.US, "%.4f", hoodTarget));
-        telemetry.addData("Shot Map RPM Entry", String.format(Locale.US, "%.0f", flywheelTargetRpm));
-        telemetry.addLine("Copy successful distance/hood/RPM points into ShooterConstants.");
+        telemetry.addData("HOOD_ANGLE_MAP value",
+                String.format(Locale.US, "%.2f", hoodTargetDegrees));
+        telemetry.addData("FLYWHEEL_SPEED_MAP value",
+                String.format(Locale.US, "%.1f", flywheelTargetPercent));
+        telemetry.addLine("Copy successful distance/hood/speed points into ShooterConstants.");
     }
 
     private static double deadband(double value) {

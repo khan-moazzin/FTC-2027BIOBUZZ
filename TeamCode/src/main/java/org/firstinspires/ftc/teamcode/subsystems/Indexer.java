@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import static org.firstinspires.ftc.teamcode.ShooterConstants.*;
+import static org.firstinspires.ftc.teamcode.planners.ShooterConstants.*;
 
 public class Indexer {
 

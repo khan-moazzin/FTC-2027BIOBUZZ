@@ -3,13 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.planners.HiveTracker;
+import org.firstinspires.ftc.teamcode.planners.ShootingController;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
-import org.firstinspires.ftc.teamcode.subsystems.Hood;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Hood;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Limelight;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Turret;
 
 
 public class Robot {
@@ -64,9 +66,11 @@ public class Robot {
         telemetry.addData("Intake", intake.getPower());
         telemetry.addData("Turret Target Degrees", turret.getAngle());
         telemetry.addData("Turret Target Position", turret.getPosition());
-        telemetry.addData("Hood", hood.getPosition());
+        telemetry.addData("Hood Target deg", hood.getAngle());
+        telemetry.addData("Hood Servo Position", hood.getPosition());
         telemetry.addData("Flywheel RPM", flywheel.getRpm());
-        telemetry.addData("Flywheel Target", flywheel.getTargetRpm());
+        telemetry.addData("Flywheel Speed %", flywheel.getSpeedPercent());
+        telemetry.addData("Flywheel Target %", flywheel.getTargetPercent());
         telemetry.addData("Flywheel At Speed", flywheel.atSpeed());
         telemetry.addData("Indexer", indexer.getPosition());
         shooting.addTelemetry(telemetry);

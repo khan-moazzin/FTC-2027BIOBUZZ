@@ -1,21 +1,21 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.planners;
 
 import java.util.Map;
 import java.util.NavigableMap;
 
-import static org.firstinspires.ftc.teamcode.ShooterConstants.*;
+import static org.firstinspires.ftc.teamcode.planners.ShooterConstants.*;
 
-/** Looks up the empirical hood position and flywheel RPM for a distance in inches. */
+/** Independently looks up hood angle and flywheel speed for a distance in inches. */
 public final class ShootingPlanner {
 
     public static final class Shot {
-        public final double hoodPosition;
-        public final double flywheelRpm;
+        public final double hoodDegrees;
+        public final double flywheelPercent;
         public final boolean clamped;
 
-        private Shot(double hoodPosition, double flywheelRpm, boolean clamped) {
-            this.hoodPosition = hoodPosition;
-            this.flywheelRpm = flywheelRpm;
+        private Shot(double hoodDegrees, double flywheelPercent, boolean clamped) {
+            this.hoodDegrees = hoodDegrees;
+            this.flywheelPercent = flywheelPercent;
             this.clamped = clamped;
         }
     }
@@ -24,18 +24,19 @@ public final class ShootingPlanner {
         if (!isReady() || !Double.isFinite(distanceInches) || distanceInches < 0.0) return null;
 
         return new Shot(
-                interpolate(HOOD_MAP, distanceInches),
-                interpolate(FLYWHEEL_MAP, distanceInches),
-                outside(HOOD_MAP, distanceInches) || outside(FLYWHEEL_MAP, distanceInches));
+                interpolate(HOOD_ANGLE_MAP, distanceInches),
+                interpolate(FLYWHEEL_SPEED_MAP, distanceInches),
+                outside(HOOD_ANGLE_MAP, distanceInches)
+                        || outside(FLYWHEEL_SPEED_MAP, distanceInches));
     }
 
     public boolean isReady() {
-        return validMap(HOOD_MAP, HOOD_MIN, HOOD_MAX)
-                && validMap(FLYWHEEL_MAP, 0.0, FLYWHEEL_MAX_RPM);
+        return validMap(HOOD_ANGLE_MAP, 0.0, HOOD_MAX_DEGREES)
+                && validMap(FLYWHEEL_SPEED_MAP, 0.0, FLYWHEEL_MAX_PERCENT);
     }
 
     public String status() {
-        return isReady() ? "READY" : "ADD HOOD/RPM MAP POINTS";
+        return isReady() ? "READY" : "CHECK HOOD/SPEED MAPS";
     }
 
     private static double interpolate(NavigableMap<Double, Double> map, double distance) {

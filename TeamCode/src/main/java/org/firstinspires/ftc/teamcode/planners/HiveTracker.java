@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.planners;
 
 import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -6,13 +6,14 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.ShooterConstants.*;
+import static org.firstinspires.ftc.teamcode.planners.ShooterConstants.*;
 
 /**
  * Tracks the selected alliance HIVE from the plane normals of its AprilTags.

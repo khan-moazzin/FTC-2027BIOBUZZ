@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.math.Pose;
 
+import org.firstinspires.ftc.teamcode.planners.ShooterConstants;
+
 /** Aiming math. Degrees, CCW positive, 0 = robot forward. */
 public final class Aiming {
 

@@ -1,19 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.planners;
 
 import com.pedropathing.ivy.Command;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Aiming;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
-import org.firstinspires.ftc.teamcode.subsystems.Hood;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Hood;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Turret;
 
 import java.util.Locale;
 
 import static org.firstinspires.ftc.teamcode.Constants.*;
-import static org.firstinspires.ftc.teamcode.ShooterConstants.*;
+import static org.firstinspires.ftc.teamcode.planners.ShooterConstants.*;
 
 /** Owns the coordinated aim/spin/readiness/feed sequence while shoot is held. */
 public final class ShootingController {
@@ -114,11 +115,11 @@ public final class ShootingController {
         shot = planner.getShot(distanceInches);
 
         if (shot != null) {
-            hood.setPosition(shot.hoodPosition);
-            flywheel.setTargetRpm(shot.flywheelRpm);
+            hood.setAngle(shot.hoodDegrees);
+            flywheel.setSpeed(shot.flywheelPercent);
         } else {
-            hood.setPosition(HOOD_STOW);
-            flywheel.setTargetRpm(0.0);
+            hood.setAngle(HOOD_STOW_DEGREES);
+            flywheel.setSpeed(0.0);
         }
 
         readiness.turretSettled = readiness.turretReachable && turret.isSettled();
@@ -174,8 +175,8 @@ public final class ShootingController {
         readiness.clear();
         indexer.setPosition(INDEXER_RETRACTED);
         intake.setPower(INTAKE_IDLE);
-        hood.setPosition(HOOD_STOW);
-        flywheel.setTargetRpm(0.0);
+        hood.setAngle(HOOD_STOW_DEGREES);
+        flywheel.setSpeed(0.0);
     }
 
     private void finish() {
@@ -202,10 +203,10 @@ public final class ShootingController {
         telemetry.addData("HIVE Time To Stable s", finite(hiveTracker.timeToStableSeconds(), "%.3f"));
         telemetry.addData("Shot Distance in", finite(distanceInches, "%.2f"));
         telemetry.addData("Shot Distance Clamped", shot != null && shot.clamped);
-        telemetry.addData("Shot Hood Target",
-                shot != null ? String.format(Locale.US, "%.4f", shot.hoodPosition) : "--");
-        telemetry.addData("Shot RPM Target",
-                shot != null ? String.format(Locale.US, "%.0f", shot.flywheelRpm) : "--");
+        telemetry.addData("Shot Hood Target deg",
+                shot != null ? String.format(Locale.US, "%.2f", shot.hoodDegrees) : "--");
+        telemetry.addData("Shot Flywheel Target %",
+                shot != null ? String.format(Locale.US, "%.1f", shot.flywheelPercent) : "--");
         telemetry.addData("Turret Bearing deg", finite(targetBearingDegrees, "%.2f"));
         telemetry.addData("Ready/Map", shot != null);
         telemetry.addData("Ready/Turret Reachable", readiness.turretReachable);

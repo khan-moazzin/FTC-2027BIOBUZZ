@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.planners;
 
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -23,31 +23,40 @@ public final class ShooterConstants {
     public static final double TURRET_FORWARD_IN = 0.0;
     public static final double TURRET_LEFT_IN = 0.0;
 
-    // Hood: Axon MINI MK2, 30T servo gear driving the 173T hood gear.
-    public static final double HOOD_MIN = 0.15;  // PLACEHOLDER
-    public static final double HOOD_MAX = 0.85;  // PLACEHOLDER
-    public static final double HOOD_STOW = 0.15; // PLACEHOLDER
+    // Hood: 30T Axon MINI MK2 gear driving the 173T hood gear.
+    // Zero degrees is the lowest hood position; positive angles raise it.
+    public static final double HOOD_MIN_POSITION = 0.15; // PLACEHOLDER
+    public static final double HOOD_MAX_POSITION = 0.85; // PLACEHOLDER
+    public static final double HOOD_STOW_DEGREES = 0.0;
+    public static final double HOOD_SERVO_GEAR_TEETH = 30.0;
+    public static final double HOOD_GEAR_TEETH = 173.0;
+    public static final double HOOD_MAX_DEGREES =
+            (HOOD_MAX_POSITION - HOOD_MIN_POSITION)
+                    * 360.0 * HOOD_SERVO_GEAR_TEETH / HOOD_GEAR_TEETH;
     public static final double HOOD_SECONDS_PER_60_DEGREES = 0.110;
 
-    // Indexer Axon MINI MK2 positions. PLACEHOLDERS until assembled calibration.
+    // Placeholders
     public static final double INDEXER_RETRACTED = 0.15;
     public static final double INDEXER_DEPLOYED = 0.85;
 
     // One direct-drive goBILDA 5000 Series motor.
     public static final double FLYWHEEL_TICKS_PER_REV = 28.0;
     public static final double FLYWHEEL_MAX_RPM = 5800.0;
-    public static final double FLYWHEEL_TOLERANCE_RPM = 75.0;
+    public static final double FLYWHEEL_MAX_PERCENT = 100.0;
+    public static final double FLYWHEEL_TOLERANCE_PERCENT = 2.0;
 
-    // Trial-derived distance (inches) -> mechanism setpoint maps.
-    // Add matching or independent points here; lookup clamps to each map's nearest endpoint.
-    public static final NavigableMap<Double, Double> HOOD_MAP = new TreeMap<>();
-    public static final NavigableMap<Double, Double> FLYWHEEL_MAP = new TreeMap<>();
+    // These are two independent trial-derived maps. Their distance keys do not have to match.
+    public static final NavigableMap<Double, Double> HOOD_ANGLE_MAP = new TreeMap<>();
+    public static final NavigableMap<Double, Double> FLYWHEEL_SPEED_MAP = new TreeMap<>();
 
     static {
-        // Example format after ShooterCalibration testing:
-        // HOOD_MAP.put(48.0, 0.32);
-        // FLYWHEEL_MAP.put(48.0, 3600.0);
+        // distance inches -> hood degrees
+        HOOD_ANGLE_MAP.put(48.0, 10.61);
+
+        // distance inches -> flywheel percent (0-100)
+        FLYWHEEL_SPEED_MAP.put(48.0, 62.1);
     }
+
 
     // Feed gate.
     public static final double READY_DWELL_SECONDS = 0.10;
@@ -57,8 +66,10 @@ public final class ShooterConstants {
     // Alliance HIVE field positions in Pedro coordinates.
     public static final double RED_HIVE_X = 59.25;
     public static final double RED_HIVE_Y = 72.0;
+
     public static final double BLUE_HIVE_X = 84.75;
     public static final double BLUE_HIVE_Y = 72.0;
+
     public static final double CELL_TARGET_RADIUS_IN = 42.91 / 2.0 - 9.938 / 2.0;
 
     // Moving-HIVE vision and early-feed gate.
@@ -66,6 +77,7 @@ public final class ShooterConstants {
     public static final double LIMELIGHT_PITCH_DEGREES = 0.0; // verify after mounting
     public static final double LIMELIGHT_ROLL_DEGREES = 0.0;  // verify after mounting
     public static final double HIVE_STABLE_ANGLE_DEGREES = 30.0;
+
     public static final double HIVE_STABLE_TOLERANCE_DEGREES = 5.0;
     public static final double HIVE_ANGLE_FILTER = 0.35;
     public static final double HIVE_RATE_FILTER = 0.30;
