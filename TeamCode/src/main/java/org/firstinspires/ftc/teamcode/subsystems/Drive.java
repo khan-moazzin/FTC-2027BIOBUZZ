@@ -7,6 +7,7 @@ import com.pedropathing.ivy.behaviors.InterruptedBehavior;
 import com.pedropathing.ivy.commands.Commands;
 import com.pedropathing.localization.FusionLocalizer;
 import com.pedropathing.math.Pose;
+import com.pedropathing.math.Velocity;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants;
@@ -44,6 +45,15 @@ public class Drive {
 
     public void setPose(Pose pose) {
         follower.setPose(pose);
+    }
+
+    public double getTranslationalSpeed() {
+        Velocity velocity = follower.velocity();
+        return Math.hypot(velocity.vx, velocity.vy);
+    }
+
+    public double getAngularSpeedDegrees() {
+        return Math.toDegrees(Math.abs(follower.velocity().omega));
     }
 
     // -----------------------------------------------------

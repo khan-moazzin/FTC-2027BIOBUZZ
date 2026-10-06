@@ -3,26 +3,39 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.commands.Commands;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import static org.firstinspires.ftc.teamcode.Constants.*;
+import static org.firstinspires.ftc.teamcode.ShooterConstants.*;
 
 public class Turret {
 
-    private final Servo left;
-    private final Servo right;
+    private static final double COMMAND_EPSILON_DEGREES = 0.50;
+
+    private final ServoImplEx left;
+    private final ServoImplEx right;
 
     private double position;
+    private long estimatedReadyNanos;
 
     public Turret(HardwareMap hw) {
-        left = hw.get(Servo.class, "turret1");
-        right = hw.get(Servo.class, "turret2");
+        left = hw.get(ServoImplEx.class, "turret1");
+        right = hw.get(ServoImplEx.class, "turret2");
+
+        PwmControl.PwmRange axonRange =
+                new PwmControl.PwmRange(AXON_PWM_MIN_US, AXON_PWM_MAX_US);
+        left.setPwmRange(axonRange);
+        right.setPwmRange(axonRange);
 
         left.setDirection(Servo.Direction.FORWARD);
         right.setDirection(Servo.Direction.REVERSE);
 
-        position = TURRET_CENTER;
+        position = TURRET_CENTER_POSITION;
         apply(position);
+        estimatedReadyNanos = System.nanoTime() + secondsToNanos(
+                180.0 / 60.0 * TURRET_SECONDS_PER_60_DEGREES
+                        + SERVO_SETTLE_MARGIN_SECONDS);
     }
 
     // -----------------------------------------------------
@@ -37,16 +50,16 @@ public class Turret {
     }
 
     public Command center() {
-        return goTo(TURRET_CENTER);
+        return goTo(TURRET_CENTER_POSITION);
     }
 
     // -----------------------------------------------------
     // ANGLE CONTROL
     // -----------------------------------------------------
     /**
-     * 0 = forward and CCW is positive. Exact -180 and +180 requests select their
-     * respective ends of the servo range even though both point directly backward.
-     * Returns false and holds the previous target if the request is not finite.
+     * 0 = forward and CCW is positive. Returns false and holds the previous target
+     * if the request is not finite. An unreachable bearing parks at the nearer
+     * configured limit and returns false.
      */
     public boolean setAngle(double degrees) {
         if (!Double.isFinite(degrees)) return false;
@@ -68,27 +81,16 @@ public class Turret {
         return false;
     }
 
-    public boolean canReach(double degrees) {
-        if (!Double.isFinite(degrees)) return false;
-
-        double normalized = normalize(degrees);
-        for (double offset : WRAP_OFFSETS) {
-            double candidate = normalized + offset;
-            if (candidate >= minAngle() && candidate <= maxAngle()) return true;
-        }
-        return false;
-    }
-
     public double getAngle() {
         return servoToAngle(position);
     }
 
     public static double minAngle() {
-        return servoToAngle(TURRET_MIN);
+        return TURRET_MIN_DEGREES;
     }
 
     public static double maxAngle() {
-        return servoToAngle(TURRET_MAX);
+        return TURRET_MAX_DEGREES;
     }
 
     // -----------------------------------------------------
@@ -97,7 +99,17 @@ public class Turret {
     public void setPosition(double target) {
         if (!Double.isFinite(target)) return;
 
-        position = clamp(target, TURRET_MIN, TURRET_MAX);
+        double next = clamp(target, minPosition(), maxPosition());
+        double travelDegrees = Math.abs(servoToAngle(next) - servoToAngle(position));
+        if (travelDegrees >= COMMAND_EPSILON_DEGREES) {
+            long travelNanos = secondsToNanos(
+                    travelDegrees / 60.0 * TURRET_SECONDS_PER_60_DEGREES
+                            + SERVO_SETTLE_MARGIN_SECONDS);
+            estimatedReadyNanos = Math.max(
+                    estimatedReadyNanos,
+                    System.nanoTime() + travelNanos);
+        }
+        position = next;
         apply(position);
     }
 
@@ -105,22 +117,30 @@ public class Turret {
         return position;
     }
 
+    /** Open-loop estimate only; no analog feedback is used. */
+    public boolean isSettled() {
+        return System.nanoTime() >= estimatedReadyNanos;
+    }
+
     // -----------------------------------------------------
     // HELPERS
     // -----------------------------------------------------
     private static final double[] WRAP_OFFSETS = {0.0, -360.0, 360.0};
 
-    /** Converts the configured logical servo interval into mechanism degrees. */
-    private static double degreesPerServoUnit() {
-        return TURRET_RANGE_DEGREES / (TURRET_MAX - TURRET_MIN);
+    private static double minPosition() {
+        return angleToServo(TURRET_MIN_DEGREES);
+    }
+
+    private static double maxPosition() {
+        return angleToServo(TURRET_MAX_DEGREES);
     }
 
     private static double angleToServo(double degrees) {
-        return TURRET_CENTER + degrees / degreesPerServoUnit();
+        return TURRET_CENTER_POSITION + degrees / TURRET_DEGREES_PER_SERVO_UNIT;
     }
 
     private static double servoToAngle(double servoPosition) {
-        return (servoPosition - TURRET_CENTER) * degreesPerServoUnit();
+        return (servoPosition - TURRET_CENTER_POSITION) * TURRET_DEGREES_PER_SERVO_UNIT;
     }
 
     /** To [-180, 180], preserving the sign of an exact 180-degree request. */
@@ -138,5 +158,9 @@ public class Turret {
 
     private static double clamp(double v, double min, double max) {
         return Math.max(min, Math.min(max, v));
+    }
+
+    private static long secondsToNanos(double seconds) {
+        return (long) (Math.max(0.0, seconds) * 1_000_000_000.0);
     }
 }

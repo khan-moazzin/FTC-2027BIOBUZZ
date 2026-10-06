@@ -6,29 +6,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import static org.firstinspires.ftc.teamcode.Constants.*;
+import static org.firstinspires.ftc.teamcode.ShooterConstants.*;
 
 public class Flywheel {
 
-    private final DcMotorEx leftShooter;
-    private final DcMotorEx rightShooter;
+    private final DcMotorEx shooter;
     private double targetRpm = 0.0;
 
     public Flywheel(HardwareMap hw) {
-        leftShooter = hw.get(DcMotorEx.class, "flywheel1");
-        rightShooter = hw.get(DcMotorEx.class, "flywheel2");
-
-        leftShooter.setDirection(DcMotor.Direction.FORWARD);
-        rightShooter.setDirection(DcMotor.Direction.REVERSE);
-
-
-        leftShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightShooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        leftShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter = hw.get(DcMotorEx.class, "flywheel");
+        shooter.setDirection(DcMotor.Direction.FORWARD);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     // -----------------------------------------------------
@@ -51,33 +41,20 @@ public class Flywheel {
     public void setTargetRpm(double rpm) {
         if (!Double.isFinite(rpm)) rpm = 0.0;
 
-        targetRpm = Math.max(0.0, rpm);
+        targetRpm = clamp(rpm, 0.0, FLYWHEEL_MAX_RPM);
         double ticksPerSecond = targetRpm / 60.0 * FLYWHEEL_TICKS_PER_REV;
-        leftShooter.setVelocity(ticksPerSecond);
-        rightShooter.setVelocity(ticksPerSecond);
+        shooter.setVelocity(ticksPerSecond);
     }
 
     /** Gate for readyToShoot later. False whenever the wheel is commanded off. */
     public boolean atSpeed() {
         if (targetRpm <= 0.0) return false;
-        double leftRpm = getLeftRpm();
-        double rightRpm = getRightRpm();
-        return Double.isFinite(leftRpm)
-                && Double.isFinite(rightRpm)
-                && Math.abs(leftRpm - targetRpm) <= FLYWHEEL_TOLERANCE
-                && Math.abs(rightRpm - targetRpm) <= FLYWHEEL_TOLERANCE;
+        double rpm = getRpm();
+        return Double.isFinite(rpm) && Math.abs(rpm - targetRpm) <= FLYWHEEL_TOLERANCE_RPM;
     }
 
     public double getRpm() {
-        return (getLeftRpm() + getRightRpm()) / 2.0;
-    }
-
-    public double getLeftRpm() {
-        return ticksPerSecondToRpm(leftShooter.getVelocity());
-    }
-
-    public double getRightRpm() {
-        return ticksPerSecondToRpm(rightShooter.getVelocity());
+        return ticksPerSecondToRpm(shooter.getVelocity());
     }
 
     public double getTargetRpm() {
@@ -86,5 +63,9 @@ public class Flywheel {
 
     private static double ticksPerSecondToRpm(double ticksPerSecond) {
         return ticksPerSecond / FLYWHEEL_TICKS_PER_REV * 60.0;
+    }
+
+    private static double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
     }
 }

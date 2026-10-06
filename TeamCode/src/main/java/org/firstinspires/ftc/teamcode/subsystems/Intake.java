@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.ivy.Command;
+import com.pedropathing.ivy.behaviors.InterruptedBehavior;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -27,22 +28,26 @@ public class Intake {
     // -----------------------------------------------------
     public Command intake() {
         return Command.build()
-                .setStart(() -> set(INTAKE))
-                .setEnd(end -> set(INTAKE_IDLE))
-                .requiring(this);
+                .setExecute(() -> setPower(INTAKE))
+                .setEnd(end -> setPower(INTAKE_IDLE))
+                .requiring(this)
+                .setInterruptedBehavior(InterruptedBehavior.SUSPEND);
     }
 
     public Command outtake() {
         return Command.build()
-                .setStart(() -> set(OUTTAKE))
-                .setEnd(end -> set(INTAKE_IDLE))
-                .requiring(this);
+                .setExecute(() -> setPower(OUTTAKE))
+                .setEnd(end -> setPower(INTAKE_IDLE))
+                .requiring(this)
+                .setInterruptedBehavior(InterruptedBehavior.SUSPEND);
     }
 
     // -----------------------------------------------------
     // STATE
     // -----------------------------------------------------
-    private void set(double power) {
+    public void setPower(double power) {
+        if (!Double.isFinite(power)) power = INTAKE_IDLE;
+        power = Math.max(-1.0, Math.min(1.0, power));
         intake1.setPower(power);
         intake2.setPower(power);
     }

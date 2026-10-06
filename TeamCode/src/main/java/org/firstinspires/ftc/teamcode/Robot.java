@@ -6,7 +6,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Hood;
+import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 
 
@@ -17,6 +19,10 @@ public class Robot {
     public Turret turret;
     public Hood hood;
     public Flywheel flywheel;
+    public Indexer indexer;
+    public Limelight limelight;
+    public HiveTracker hiveTracker;
+    public ShootingController shooting;
 
     private Telemetry telemetry;
 
@@ -28,6 +34,11 @@ public class Robot {
         turret = new Turret(hw);
         hood = new Hood(hw);
         flywheel = new Flywheel(hw);
+        indexer = new Indexer(hw);
+        limelight = new Limelight(hw);
+        hiveTracker = new HiveTracker();
+        shooting = new ShootingController(
+                drive, intake, turret, hood, flywheel, indexer, hiveTracker);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -35,12 +46,15 @@ public class Robot {
 
     public void update() {
         drive.update();
+        limelight.update();
+        hiveTracker.update(limelight, drive.getPose(), turret.getAngle(), Constants.ALLIANCE);
         sendTelemetry();
     }
 
-    // Vision comes back when the Limelight is mounted and in the config. Re-add:
-    //   limelight field + new Limelight(hw) in init + updateVision() in update().
-    // The hook it feeds is Drive.addVisionMeasurement(pose, nanoTime - latency).
+    public void stop() {
+        shooting.stop();
+        limelight.stop();
+    }
 
     public void sendTelemetry() {
         telemetry.addData("X", drive.getPose().x());
@@ -54,5 +68,7 @@ public class Robot {
         telemetry.addData("Flywheel RPM", flywheel.getRpm());
         telemetry.addData("Flywheel Target", flywheel.getTargetRpm());
         telemetry.addData("Flywheel At Speed", flywheel.atSpeed());
+        telemetry.addData("Indexer", indexer.getPosition());
+        shooting.addTelemetry(telemetry);
     }
 }

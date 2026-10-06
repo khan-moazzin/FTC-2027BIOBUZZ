@@ -35,23 +35,6 @@ public class Constants {
     public static double OUTTAKE = -0.9;
     public static double INTAKE_IDLE = 0.0;
 
-    // ================= FLYWHEEL =================
-    public static double FLYWHEEL_TICKS_PER_REV = 28.0;
-    public static double FLYWHEEL_TOLERANCE = 75.0;
-
-    // ================= TURRET =================
-    // The two Axon MAX servos drive the turret 1:1. Logical servo position 0.5
-    // points straight forward; the complete [0, 1] PWM range is one revolution.
-    public static double TURRET_MIN = 0.0;
-    public static double TURRET_MAX = 1.0;
-    public static double TURRET_CENTER = 0.5;
-    public static double TURRET_RANGE_DEGREES = 360.0;
-
-    // ================= HOOD =================
-    public static double HOOD_MIN = 0.15;
-    public static double HOOD_MAX = 0.85;
-    public static double HOOD_STOW = 0.15;
-
     // ================= ALLIANCE =================
     public enum Alliance {
         RED,
@@ -68,19 +51,6 @@ public class Constants {
     public static double driverForwardDegrees() {
         return ALLIANCE == Alliance.RED ? RED_DRIVER_FORWARD_DEG : BLUE_DRIVER_FORWARD_DEG;
     }
-
-    // ================= VISION =================
-    public static double RED_HIVE_X = 59.25,  RED_HIVE_Y = 72.0;
-    public static double BLUE_HIVE_X = 84.75, BLUE_HIVE_Y = 72.0;
-
-    /** AprilTag pipeline on the Limelight. */
-    public static int LIMELIGHT_PIPELINE = 1;
-
-    // PLACEHOLDER: Camera offset ahead of the turret axis, inches.
-    public static double LL_FORWARD_FROM_TURRET_IN = 0.0;
-    // PLACEHOLDER: Turret axis from robot center, robot frame (+fwd, +left).
-    public static double TURRET_FORWARD_IN = 0.0;
-    public static double TURRET_LEFT_IN = 0.0;
 
     // ================= LOCALIZER =================
     // TUNER: PinpointTuner, pod type CUSTOM; podtypes

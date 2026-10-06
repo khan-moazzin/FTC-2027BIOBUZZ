@@ -60,6 +60,11 @@ public class TeleOp extends OpMode {
                     .until(() -> !gamepad1.left_bumper));
         }
 
+        if (gamepad1.rightBumperWasPressed()) {
+            Scheduler.schedule(mRobot.shooting.shoot()
+                    .until(() -> !gamepad1.right_bumper));
+        }
+
         boolean reset = gamepad1.back;
         if (reset && !lastReset) mRobot.drive.resetHeading();
         lastReset = reset;
@@ -76,6 +81,7 @@ public class TeleOp extends OpMode {
     @Override
     public void stop() {
         Scheduler.reset();
+        if (mRobot != null) mRobot.stop();
     }
 
     //Stick Drift Helper
