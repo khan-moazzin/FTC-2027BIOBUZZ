@@ -56,3 +56,11 @@ Added per-cycle full-robot snapshots, bounded asynchronous CSV writing, live FTC
 - `:TeamCode:lintDebug`: completed, zero reported errors; existing dependency/resource/usable-space warnings and Kotlin metadata limitation remain.
 - `git diff --check`: passed. No unresolved Git conflicts remain.
 - Physical calibration remains required, including new Tune 6 indexer endpoints before Tune 5 feeding. Preserved trial data lacks height and flight time and does not enable the predictive shot map.
+
+## Stable-HIVE physics update (2026-10-05)
+
+- 55 desktop unit tests passed, zero failures/errors/skips. New checks cover analytic gravity, numerical drag, tilted aperture crossings, distinct-frame stability dwell, loss of frames, independent stability gates, synthetic parameter recovery, held-out calibration rejection, bounded stable-target solutions and invalidated model rejection.
+- Debug APK assembly passed. Lint completed with 0 errors and the existing 16 warnings; the local Kotlin metadata compatibility diagnostics remain in its output. This does not establish hardware timing or readiness.
+- Offline synthetic demo: 99 search samples and 357 validation points; maximum nominal model miss 0.02245 m. These numbers describe synthetic inputs only. Demo exports remain disabled. The normal generator correctly refuses the current uncalibrated robot configuration.
+- The first positive trajectory fixture was rejected under its initial uncertainty settings; the fixture now explicitly models a synthetic repeatable launcher. Production uncertainty defaults were not reduced to make the test pass.
+- Competition shooting now requires stable-HIVE evidence and a generated physics model. Prior sections describing active moving-HIVE prediction/map coverage are historical. See [Physics shooting](PHYSICS_SHOOTING.md) for measurement requirements and limitations.

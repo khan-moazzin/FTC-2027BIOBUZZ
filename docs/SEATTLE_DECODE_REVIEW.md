@@ -1,5 +1,8 @@
 # Seattle Solvers DECODE — complete source audit
 
+> Historical integration record. Competition shooting now uses the [stable-HIVE physics solver](PHYSICS_SHOOTING.md); references below to active moving-target prediction or shot-map aiming describe the earlier implementation.
+
+
 Reviewed 2026-10-04 at [FTC-23511/Decode-2026, 02a453104b0b208a885571b5fa93b0465c054b78](https://github.com/FTC-23511/Decode-2026/tree/02a453104b0b208a885571b5fa93b0465c054b78).
 
 ## Scope and evidence

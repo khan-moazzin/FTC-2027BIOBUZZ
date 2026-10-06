@@ -11,7 +11,7 @@ Packages:
 - field/math: official geometry, rigid camera transforms, numerical fitting.
 - vision: Limelight adapter, capture-time turret history, HIVE estimators, pose fitting.
 - localization: bounded delayed pose filter with covariance and innovation rejection.
-- control/subsystems: measured mechanism state, aiming, shot interpolation, readiness and command ownership.
+- control/subsystems: measured mechanism state, aiming, physics shot calculation, readiness and command ownership.
 - calibration: separate guided OpModes and complete Java configuration export.
 
 The vision estimator uses per-tag 3D camera-space translations, explicitly converts optical (right, down, forward) to (forward, left, up), and fits robot XY/yaw and one HIVE angle. It requires at least two separated tag IDs from the same HIVE. It rejects degenerate fits; it does not silently fall back to static field poses. Camera roll/pitch/yaw and turret COR are part of the transform.
@@ -20,7 +20,7 @@ Red and blue have separate angle, angular velocity, covariance, and freshness. C
 
 Fusion uses capture time, full pose covariance, a Mahalanobis innovation gate, and replay of odometry after correction. It is bounded to two seconds / 512 entries including inserted corrections. Frames older than the latest accepted correction are rejected so they cannot erase that correction. Reset clears history, covariance and time state. Fresh duplicate camera frames are not fused twice.
 
-Moving-shot aiming uses Seattle's iterative virtual-goal approach, extended with cell height and HIVE motion. Robot angular velocity around the turret and turret velocity around an offset muzzle affect launch velocity. Relative line-of-sight feedforward has the corrected sign. Flight interpolation is restricted to measured distance/height triangles. Prediction assumes constant velocities over flight and clamps HIVE angle at the mechanical endpoints; uncertainty can inhibit shooting.
+Competition aiming uses `StableShotSolver`: a generated physics polynomial, robot muzzle-motion compensation and runtime aperture-clearance checks. Only a fresh, stable raised HIVE cell is eligible. The old moving-target solver remains an inactive library reference. See [Physics shooting](PHYSICS_SHOOTING.md).
 
 ## Driver controls
 
@@ -52,7 +52,7 @@ Generated files are in /sdcard/FIRST/biobuzz-calibration on the Control Hub. Cop
 3. **Tune 2 â€” Complete BIOBUZZ Vision Wizard.** Requires the copied turret export. Enter surveyed robot XY/heading, known red/blue HIVE angles, and physically measured turret-axis height. At each static robot/HIVE placement record slow bidirectional turret sweeps. Repeat at three or more robot positions/headings and both HIVE endpoints. The fit estimates COR XY, camera XYZ, roll/pitch/yaw and residual latency. COR Z is fixed by physical measurement to remove an otherwise unobservable vertical-offset ambiguity. A subset of observations is held out for validation. Rank-deficient or high-error fits do not enable calibration. Observations are exported to CSV for review. One complete VisionConfig.java is exported.
 4. **Tune 3 â€” Flywheel feedforward.** Empty shooter, hold RB through staged characterization. It fits the single motor's static and velocity coefficients. The proportional coefficient is an initial value derived from measured velocity gain, not a measured optimal controller. Validate settling and loaded recovery in Tune 5 before competition.
 5. **Tune 4 â€” Hood angle mapping.** Record two well-separated servo positions and physically measured launch angles. Adjust the safe hood limits in MechanismConfig to the actual mechanism before operating outside them. This is a linear mapping; validate intermediate positions if the linkage is nonlinear.
-6. **Tune 5 â€” Shooter flight map.** Record successful shots across distance and height. Enter measured flight time (video is appropriate), RPM and hood angle. Three non-collinear samples are the minimum for interpolation, not sufficient coverage for a full field. Measure turretToMuzzle and transferDelay in ShotConfig; they cannot be recovered from tag data. The tuner exports the complete shot table.
+6. **Tune 5 — Physics shot calibration.** Keep the robot stationary and HIVE stable. Record at least nine varied successful shots with measured distance, height, RPM, hood angle and flight time. Y archives the samples and exports a validated speed/angle calibration. Then verify opening geometry and run the offline generator; see [the full workflow](PHYSICS_SHOOTING.md).
 
 Vision noise thresholds, exposure duration, HIVE acceleration process noise, readiness tolerances and gate thresholds are initial policy values, not measured robot constants. Validate them against field motion and replay logs. If impact-time HIVE uncertainty exceeds maxHiveSigma, feeding remains inhibited even with a good current pose. The wizard does not claim to measure projectile flight, camera exposure settings, or all future HIVE dynamics from static tag captures.
 
@@ -94,4 +94,4 @@ The integration of main `bea78b3` uses one forward `flywheel` motor (28 ticks/re
 
 Run **Tune 6 - Indexer endpoints** before Tune 5: hold RB and move the left stick slowly, A captures retracted, X captures deployed, Y exports. The old .15/.85 endpoints remain placeholders and automatic feeding requires `indexerCalibrated`. Tune 4 measures absolute launch angle even though the mechanical gearing is known.
 
-The shot-calibration OpMode starts from main's reference trial (48 inches, 62.1% of 5800 RPM, 10.61° above the hood's lowest position), converting the relative hood angle through the current calibration. Measure height difference and flight time; the trial alone does not enable the shot map. `MechanismConfig.stationaryShotsOnly` enables main's conservative 6 in/s and 15°/s limits; the default retains predictive moving shots.
+The shot-calibration OpMode starts from main's reference trial (48 inches, 62.1% of 5800 RPM, 10.61° above the hood's lowest position). Height and flight time still require measurement. The trial does not activate a model. `stationaryShotsOnly` optionally constrains robot motion; HIVE stability is always required by the competition shooter.

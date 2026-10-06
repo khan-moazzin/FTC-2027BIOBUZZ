@@ -43,7 +43,7 @@ Useful graph sets:
 - **Flywheel recovery:** `Flywheel/Target_rpm`, `Measured_rpm`, `Duty` and battery voltage.
 - **Turret lag:** `Turret/Target_rad`, `Command_rad`, `Measured_rad`, `Velocity_rad_s` and feedback health.
 - **Vision correction:** frame age/sequence, each HIVE's `Fit/Result`, `Fit/Accepted`, `Fit/Rms_in`, `Fit/Innovation`, fused/raw pose and covariance.
-- **Prediction:** `Shot/PredictedTarget_in/*`, `LaunchVelocity_in_s/*`, `Flight_s`, HIVE rate and impact variance.
+- **Prediction:** `Shot/Target_in/*`, `LaunchVelocity_in_s/*`, `Flight_s`, HIVE rate and current HIVE variance.
 - **Performance:** work and previous period, previous snapshot duration, queue occupancy and drops. A current row's previous period covers the interval since the preceding cycle start; it includes the preceding snapshot and telemetry work.
 
 ## Interpreting data correctly
@@ -77,3 +77,7 @@ Desktop tests exercise typed/escaped CSV, monotonic timestamps, immutable snapsh
 Run `python tools/verify_ascope_csv.py TeamCode/build/logging-fixtures/synthetic-ascope.csv` to check the fixture with the pinned upstream CSV decoder. This optional check needs network access and Node.js and uses a stub log receiver, not the desktop UI.
 
 Schema 2 follows the confirmed single-motor hardware: `Flywheel/Measured_rpm` and `Flywheel/Duty` replace schema 1's left/right fields. Indexer state and overall readiness dwell are included. Older run files retain their original field names.
+
+## Schema 3: stable-HIVE physics
+
+Metadata includes `PhysicsShotConfig`. `HIVE/Red/Stable` and `HIVE/Blue/Stable` record independent stability gates. `Shot/Model` identifies the solver, `Shot/Clearance_m` records the smallest tested aperture margin, and `Shot/TrajectoryChecks` counts evaluated trajectories. `Shot/Target_in` replaces `Shot/PredictedTarget_in`; `Shot/HiveVariance_rad2` replaces `Shot/ImpactHiveVariance_rad2`. Historical CSV files retain their original names.

@@ -1,6 +1,6 @@
 # Code — Understand the field. Predict the shot. Understand every decision.
 
-Our software connects a moving camera, a moving HIVE and a moving robot. Three parts of the code make that possible: vision that accounts for changing geometry, shot calculations that predict the moment of impact, and logging that connects what the robot saw to what it calculated and commanded.
+Our software connects a moving camera, a moving HIVE and a moving robot. Three parts of the code make that possible: vision that accounts for changing geometry, physics calculations for a stable scoring target, and logging that connects what the robot saw to what it calculated and commanded.
 
 Suggested format: one code page with three substantial sections. Each section can expand into its own technical page later.
 
@@ -30,37 +30,33 @@ A guided vision wizard fits camera mounting geometry, turret center-of-rotation 
 
 **Suggested visual:** a robot–turret–camera–HIVE geometry diagram, paired with a capture-to-arrival timeline.
 
-## 2. Advanced shot calculation — Aim for where the cell will be
+## 2. Advanced shot calculation — Physics for a stable HIVE
 
-### Predicting the moment of impact
+### Search offline, calculate on the robot
 
-Between requesting a shot and reaching the HIVE, the projectile passes through a launch delay and a flight interval. During that time, the scoring cell can move.
+Our shooter adapts Team 4414's published approach: simulate trajectories, select shots that tolerate launch errors, then fit a compact polynomial. This is our implementation of their method; their 2026 shooter source was not publicly available when we researched it.
 
-Our solver predicts the selected cell's future position, calculates a shot and uses its flight time to update that prediction. It repeats until the flight-time estimate converges. This couples target motion, target height, turret direction, hood angle and flywheel speed in one solution.
+The simulator models gravity and optional quadratic air drag. It searches launch angles and speeds across a configured distance and radial robot-velocity range. Candidate shots must descend into the target with clearance under configured speed and angle errors. A second-order polynomial represents exit speed, launch angle and flight time. A separate validation grid checks the fit before export.
 
-The prediction assumes constant velocities over the shot interval and respects the HIVE's angular limits. Increasing prediction uncertainty can prevent a shot from being released.
+### Measure the launcher, then generate its model
 
-### Accounting for motion at the muzzle
+We record distance, height difference, RPM, hood angle and flight time from measured shots. The calibration fits an RPM-to-exit-speed coefficient and an angle correction, reserving every third sample for validation. Opening geometry, projectile size and uncertainty settings require physical measurements too.
 
-The muzzle can move even when the robot's center stays in place. Chassis rotation and turret rotation create tangential velocity because the launch point is offset from their axes.
+The generated model is bounded by the calibrated operating range. Changed physical settings invalidate its fingerprint, and requests outside its domain are rejected. There is no empirical shot-map fallback.
 
-Our calculation includes chassis translation, chassis rotation and turret rotation when estimating muzzle velocity. That velocity contributes to the projectile's motion, so it changes the required aim offset.
+### Wait for stability, then check the actual opening
 
-### Combining prediction with measured shots
+Competition shooting requires distinct fresh observations showing low HIVE motion near an endpoint for a continuous dwell. Red and blue maintain separate stability histories. Only the raised cell is eligible. The selected target remains fixed during the shot calculation; moving-HIVE shots are deferred.
 
-Our shot map stores horizontal distance, target height difference, flywheel RPM, hood angle and measured flight time. The solver interpolates within regions covered by recorded samples and rejects requests outside that coverage.
+Robot motion compensation remains separate. Translation, chassis rotation and turret rotation contribute to muzzle velocity. Radial velocity enters the polynomial, while tangential compensation adjusts the launch vector. The runtime solver rechecks 27 combinations of speed, elevation and yaw error against the actual tilted aperture plane before accepting a shot.
 
-The turret tracks the resulting angle using two analog feedback channels, calibrated travel limits and a velocity-based lead that compensates for measured response lag. The single flywheel motor uses measured RPM feedback and calibrated control coefficients.
+### Connect the calculation to readiness
 
-### Releasing only when the whole system is ready
+A valid trajectory does not immediately deploy the indexer. Localization, turret alignment, hood settling and flywheel speed must pass their checks, followed by an overall readiness dwell. The single flywheel and 1:1 Axon-feedback turret retain their calibrated controllers.
 
-A calculated solution is one condition for firing. The target estimate must also be fresh enough, localization must be healthy, the turret must be aligned, the hood must have settled, and the flywheel must remain within speed tolerance for a continuous dwell period. All shot conditions then pass an overall readiness dwell before the indexer deploys.
+The model is a point-mass and aperture-clearance approximation. It does not simulate spin lift or rim collisions, and desktop tests do not establish shot accuracy. See the [physics shooting guide](PHYSICS_SHOOTING.md) for calibration and limitations.
 
-These checks connect prediction to the physical state of the robot. The shooter can prepare its mechanisms while waiting for the conditions needed to feed a projectile.
-
-Our predictive aiming adapts Seattle Solvers' iterative virtual-target and velocity-lead techniques, extended for BIOBUZZ geometry, moving cells and our robot's feedback. Attribution remains in the codebase.
-
-**Suggested visual:** current cell position, predicted impact position and compensated aim direction, with launch delay and flight time labeled.
+**Suggested visual:** a family of simulated arcs, the chosen error-tolerant shot, and the stable-HIVE/readiness gates on a shared timeline.
 
 ## 3. Logging and AdvantageScope — Seeing inside the robot
 
@@ -68,7 +64,7 @@ Our predictive aiming adapts Seattle Solvers' iterative virtual-target and veloc
 
 A missed shot can begin with a camera observation, a delayed estimate or a mechanism that has not reached its target. Our logging system puts those signals on a shared timeline so we can investigate how they relate.
 
-Each control-cycle snapshot records robot pose and uncertainty, separate red and blue HIVE states, tag observations, shot predictions, driver inputs and mechanism targets and measurements. Every run gets a uniquely named CSV file and a companion record of its calibration settings.
+Each control-cycle snapshot records robot pose and uncertainty, separate red and blue HIVE states, tag observations, shot solutions, driver inputs and mechanism targets and measurements. Every run gets a uniquely named CSV file and a companion record of its calibration settings.
 
 ### Understanding why the robot waited
 
@@ -78,9 +74,9 @@ This lets us trace a decision from measurement to action. If feeding is inhibite
 
 ### Comparing predictions with response
 
-The aiming logs include the predicted cell position, muzzle position and velocity, flight time and solver iterations. Mechanism logs show turret target and measured angle, commanded servo position, flywheel speed and motor command, and indexer position commands.
+The aiming logs include the fixed target position, muzzle position and velocity, flight time, clearance and trajectory-check count. Mechanism logs show turret target and measured angle, commanded servo position, flywheel speed and motor command, and indexer position commands.
 
-Overlaying these signals helps us investigate tracking lag, flywheel recovery and changes in the predicted shot. The independent HIVE histories show whether target motion or confidence changed at the same time.
+Overlaying these signals helps us investigate tracking lag, flywheel recovery and changes in the calculated shot. The independent HIVE histories show whether target motion or confidence changed at the same time.
 
 ### Live views and recorded analysis
 
@@ -100,6 +96,6 @@ File-size and free-space limits bound storage use, and shutdown attempts to drai
 
 ---
 
-**Explore the source:** [FTC-2027BIOBUZZ](https://github.com/khan-moazzin/FTC-2027BIOBUZZ/tree/codex/solverslib-biobuzz-integration)
+**Explore the source:** [FTC-2027BIOBUZZ](https://github.com/khan-moazzin/FTC-2027BIOBUZZ/tree/main)
 
-**Development status:** these sections describe implemented software. Accuracy, shot success and timing claims require calibrated robot trials. Built with the FTC SDK, SolversLib and Pedro Pathing, with aiming techniques adapted from Seattle Solvers.
+**Development status:** these sections describe implemented software. Accuracy, shot success and timing claims require calibrated robot trials. Built with the FTC SDK, SolversLib and Pedro Pathing, with turret aiming techniques adapted from Seattle Solvers and a physics-shot method inspired by Team 4414.

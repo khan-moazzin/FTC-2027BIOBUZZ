@@ -1,5 +1,8 @@
 # Main integration — 2026-10-05
 
+> Historical integration record. Competition shooting now uses the [stable-HIVE physics solver](PHYSICS_SHOOTING.md); references below to active moving-target prediction or shot-map aiming describe the earlier implementation.
+
+
 Merged khan-moazzin's `5c65367` and `bea78b3` into the SolversLib integration branch. The user confirmed that main's hardware definitions are correct. Both original commits remain ancestors of the merge; this is not an overwrite or squash of their history.
 
 ## Resolution decisions

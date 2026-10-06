@@ -6,11 +6,11 @@ The editable robot surface is under `TeamCode/src/main/java/org/firstinspires/ft
 | --- | --- |
 | `Robot.java` | Construct hardware once; acquire/fuse, run commands, then apply outputs; clean up partial initialization and shutdown. |
 | `Constants.java` | Alliance and Pedro/Pinpoint configuration produced by tuners. |
-| `config/` | Copy generated `VisionConfig`, `MechanismConfig`, and `ShotConfig` here. Their package names and export destinations are unchanged. `LoggingConfig` sets file/live recording limits. |
+| `config/` | Copy generated `VisionConfig`, `MechanismConfig`, `ShotConfig`, and `PhysicsShotConfig` here. Their package names and export destinations are unchanged. `LoggingConfig` sets file/live recording limits. |
 | `subsystems/` | Robot-specific behavior, hardware names, control policy and SolversLib requirements. |
 | `opmodes/TeleOp.java` | Driver controls and the competition loop. Driver Station name remains `TeleopMain`. |
-| `opmodes/tuning/` | All seven guided calibration/verification OpModes. Driver Station names remain unchanged. |
-| `lib/control/` | Tested angle/target math, shot solver/map, readiness, voltage cache and profiling. |
+| `opmodes/tuning/` | All seven guided calibration/verification OpModes. Tune 5 is named Physics shot calibration. |
+| `lib/control/` | Tested angle/target math, stable-HIVE physics solver, inactive legacy solver/map, readiness, voltage cache and profiling. |
 | `lib/vision/` | Limelight observations, transforms, per-HIVE state and pose fitting. |
 | `lib/logging/` | Immutable snapshots, bounded asynchronous CSV recording and live AdvantageScope via FTC Dashboard. |
 | `lib/localization/` | Buffered delayed fusion and sensor health gates. |
@@ -23,3 +23,5 @@ The editable robot surface is under `TeamCode/src/main/java/org/firstinspires/ft
 Tests remain in `TeamCode/src/test/java/org/firstinspires/ftc/teamcode`. SDK scaffolding in `FtcRobotController`, Gradle build files, and binary dependencies keep their required locations. No duplicate copy of the old support packages is kept. External SolversLib/Pedro dependencies remain pinned rather than copied into `lib`.
 
 The old `control`, `vision`, `localization`, `math`, `field` and `pedro` packages now have a `lib` prefix. Old `calibration` OpModes moved to `opmodes.tuning`; their shared helpers moved to `lib.calibration`. The `OpModes` package is now lowercase `opmodes`. Update imports in any private code outside this checkout accordingly.
+
+`tools/generate-shot-model.ps1` builds the offline model from calibrated configs. See [Physics shooting](PHYSICS_SHOOTING.md).
