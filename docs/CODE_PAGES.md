@@ -50,11 +50,11 @@ Our calculation includes chassis translation, chassis rotation and turret rotati
 
 Our shot map stores horizontal distance, target height difference, flywheel RPM, hood angle and measured flight time. The solver interpolates within regions covered by recorded samples and rejects requests outside that coverage.
 
-The turret tracks the resulting angle using two analog feedback channels, calibrated travel limits and a velocity-based lead that compensates for measured response lag. Each flywheel has separate feedback and control coefficients.
+The turret tracks the resulting angle using two analog feedback channels, calibrated travel limits and a velocity-based lead that compensates for measured response lag. The single flywheel motor uses measured RPM feedback and calibrated control coefficients.
 
 ### Releasing only when the whole system is ready
 
-A calculated solution is one condition for firing. The target estimate must also be fresh enough, localization must be healthy, the turret must be aligned, the hood must have settled, and both flywheels must remain within speed tolerance for a continuous dwell period.
+A calculated solution is one condition for firing. The target estimate must also be fresh enough, localization must be healthy, the turret must be aligned, the hood must have settled, and the flywheel must remain within speed tolerance for a continuous dwell period. All shot conditions then pass an overall readiness dwell before the indexer deploys.
 
 These checks connect prediction to the physical state of the robot. The shooter can prepare its mechanisms while waiting for the conditions needed to feed a projectile.
 
@@ -78,7 +78,7 @@ This lets us trace a decision from measurement to action. If feeding is inhibite
 
 ### Comparing predictions with response
 
-The aiming logs include the predicted cell position, muzzle position and velocity, flight time and solver iterations. Mechanism logs show turret target and measured angle, commanded servo position, both flywheel speeds and motor commands.
+The aiming logs include the predicted cell position, muzzle position and velocity, flight time and solver iterations. Mechanism logs show turret target and measured angle, commanded servo position, flywheel speed and motor command, and indexer position commands.
 
 Overlaying these signals helps us investigate tracking lag, flywheel recovery and changes in the predicted shot. The independent HIVE histories show whether target motion or confidence changed at the same time.
 

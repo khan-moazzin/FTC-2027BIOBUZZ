@@ -25,8 +25,7 @@ public final class FlywheelTuner extends GuidedOpMode {
     telemetry.addData("Battery volts", volts);
     telemetry.addLine(
         "Empty shooter. Hold RB continuously to run automatic 20-70% power steps. Release stops.");
-    telemetry.addLine(
-        "A starts/restarts. Y fits each wheel independently and exports MechanismConfig.");
+    telemetry.addLine("A starts/restarts. Y fits the single motor and exports MechanismConfig.");
     if (a) {
       stage = 1;
       started = now;
@@ -41,7 +40,7 @@ public final class FlywheelTuner extends GuidedOpMode {
       if (power > 0) {
         double age = (now - started) * 1e-9;
         if (age > 1.5 && now - sampledAt >= 20000000L) {
-          samples.add(new double[] {wheel.getLeftRpm(), wheel.getRightRpm(), power * volts});
+          samples.add(new double[] {wheel.getRpm(), power * volts});
           sampledAt = now;
         }
         if (age > 2.5) {
@@ -50,36 +49,29 @@ public final class FlywheelTuner extends GuidedOpMode {
         }
       }
     }
-    telemetry.addData(
-        "Stage / RPM L/R", stage + " / " + wheel.getLeftRpm() + " / " + wheel.getRightRpm());
+    telemetry.addData("Stage / RPM", stage + " / " + wheel.getRpm());
     if (y && stage > 6) {
-      double[] sGain = new double[2], vGain = new double[2], pGain = new double[2];
-      for (int i = 0; i < 2; i++) {
-        final int side = i;
-        LeastSquares.Fit f =
-            LeastSquares.fit(
-                p -> {
-                  double[] r = new double[samples.size()];
-                  for (int j = 0; j < r.length; j++) {
-                    double[] s = samples.get(j);
-                    r[j] = p[0] + p[1] * s[side] - s[2];
-                  }
-                  return r;
-                },
-                new double[] {0, .001},
-                3);
-        if (!f.valid || f.rms > .48 || f.parameters[1] <= 0) {
-          result = "Characterization failed; check RPM sign and encoder resolution";
-          return;
-        }
-        sGain[i] = Math.max(0, f.parameters[0]);
-        vGain[i] = f.parameters[1];
-        // Starting feedback gain only; Tune 5 must verify loaded response.
-        pGain[i] = f.parameters[1] * .25;
+
+      LeastSquares.Fit f =
+          LeastSquares.fit(
+              p -> {
+                double[] r = new double[samples.size()];
+                for (int j = 0; j < r.length; j++) {
+                  double[] s = samples.get(j);
+                  r[j] = p[0] + p[1] * s[0] - s[1];
+                }
+                return r;
+              },
+              new double[] {0, .001},
+              3);
+      if (!f.valid || f.rms > .48 || f.parameters[1] <= 0) {
+        result = "Characterization failed; check RPM sign and encoder resolution";
+        return;
       }
-      MechanismConfig.flywheelS = sGain;
-      MechanismConfig.flywheelV = vGain;
-      MechanismConfig.flywheelP = pGain;
+      MechanismConfig.flywheelS = Math.max(0, f.parameters[0]);
+      MechanismConfig.flywheelV = f.parameters[1];
+      // Starting feedback gain only; Tune 5 must verify loaded response.
+      MechanismConfig.flywheelP = f.parameters[1] * .25;
       MechanismConfig.flywheelGainsInVolts = true;
       MechanismConfig.flywheelCalibrated = true;
       export(new MechanismConfig());

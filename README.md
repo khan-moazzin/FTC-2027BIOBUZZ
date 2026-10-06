@@ -10,7 +10,7 @@ Open `TeamCode/src/main/java/org/firstinspires/ftc/teamcode`:
 Robot.java       Hardware ownership and read → commands → write lifecycle
 Constants.java   Alliance and Pedro drivetrain/Pinpoint configuration
 config/          Vision, mechanism and measured-shot settings
-subsystems/      Drive, Shooter, Turret, Flywheel, Hood and Intake
+subsystems/      Drive, Shooter, Turret, Flywheel, Hood, Intake and Indexer
 opmodes/         Competition TeleOp and guided tuning modes
 lib/             Reusable control, vision, localization, math and Pedro support
 ```

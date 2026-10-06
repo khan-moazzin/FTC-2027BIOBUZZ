@@ -47,3 +47,12 @@ Added per-cycle full-robot snapshots, bounded asynchronous CSV writing, live FTC
 - `:TeamCode:lintDebug`: completed, zero reported errors and 16 warnings: 12 native-library alignment warnings, 2 SDK placeholder resources and 2 suggestions to use Android allocatable-space APIs. Logging deliberately checks current usable bytes and does not reclaim other cached storage. The existing Kotlin dependency-metadata mismatch still limits dependency lint analysis.
 - Synthetic CSV successfully decoded with the actual upstream AdvantageScope `CSVDecoder` pinned at `abb616bdd575dfa27f5794ed6be427ffd0209897`, using a stub log receiver. Values, timestamps, field names and escaped messages round-trip. This validates parser compatibility, not the desktop UI.
 - Hardware/GUI checks remaining: connect live, inspect a real recorded run in AdvantageScope, compare loaded loop periods with logging on/off, check free-space/size-limit reporting, and confirm shutdown completion on the Robot Controller. No measured overhead or field performance is claimed.
+
+## Merge of confirmed main hardware — 2026-10-05
+
+- Integrated main through `bea78b3`; details in [MAIN_INTEGRATION.md](MAIN_INTEGRATION.md).
+- `:TeamCode:testDebugUnitTest`: 45 tests, zero failures/errors/skips, including single-motor readiness, reverse/feed arbitration, optional stationary-shot gating, hood travel settling and incomplete trial-data checks.
+- `:TeamCode:assembleDebug`: passed.
+- `:TeamCode:lintDebug`: completed, zero reported errors; existing dependency/resource/usable-space warnings and Kotlin metadata limitation remain.
+- `git diff --check`: passed. No unresolved Git conflicts remain.
+- Physical calibration remains required, including new Tune 6 indexer endpoints before Tune 5 feeding. Preserved trial data lacks height and flight time and does not enable the predictive shot map.

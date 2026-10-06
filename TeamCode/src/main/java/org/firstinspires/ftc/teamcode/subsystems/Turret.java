@@ -33,8 +33,8 @@ public final class Turret extends SubsystemBase {
     rightVoltage = re.getVoltage();
     feedback.update(leftVoltage, rightVoltage, now, config);
     if (feedback.healthy && !initialized) {
-      double lo = (config.servoMin - config.servoCenter) * config.radiansPerServo;
-      double hi = (config.servoMax - config.servoCenter) * config.radiansPerServo;
+      double lo = minimumAngle();
+      double hi = maximumAngle();
       if (TurretTarget.ambiguous(feedback.angle, lo, hi, config.feedbackTolerance)) {
         // A 1:1 absolute encoder cannot distinguish the two ends of a complete turn at startup.
         feedback.healthy = false;
@@ -53,8 +53,7 @@ public final class Turret extends SubsystemBase {
         || !Double.isFinite(angle)
         || !Double.isFinite(rate)
         || !Double.isFinite(dt)) return Double.NaN;
-    double lo = (config.servoMin - config.servoCenter) * config.radiansPerServo,
-        hi = (config.servoMax - config.servoCenter) * config.radiansPerServo;
+    double lo = minimumAngle(), hi = maximumAngle();
     double wanted = Angles.wrap(angle);
     targetAngle =
         org.firstinspires.ftc.teamcode.lib.control.TurretTarget.choose(
@@ -70,8 +69,8 @@ public final class Turret extends SubsystemBase {
   }
 
   public boolean ready() {
-    double lo = (config.servoMin - config.servoCenter) * config.radiansPerServo;
-    double hi = (config.servoMax - config.servoCenter) * config.radiansPerServo;
+    double lo = minimumAngle();
+    double hi = maximumAngle();
     double measured =
         TurretTarget.measured(feedback.angle, lastCommandAngle, lo, hi, config.feedbackTolerance);
     return initialized
@@ -86,9 +85,29 @@ public final class Turret extends SubsystemBase {
     }
   }
 
+  private double minimumAngle() {
+    return Math.max(
+        MechanismConfig.turretMinRadians,
+        (config.servoMin - config.servoCenter) * config.radiansPerServo);
+  }
+
+  private double maximumAngle() {
+    return Math.min(
+        MechanismConfig.turretMaxRadians,
+        (config.servoMax - config.servoCenter) * config.radiansPerServo);
+  }
+
   public void setRawPosition(double p) {
     if (Double.isFinite(p)) {
-      position = Angles.clamp(p, 0, 1);
+      position =
+          Angles.clamp(
+              p,
+              Math.max(
+                  0,
+                  config.servoCenter + MechanismConfig.turretMinRadians / config.radiansPerServo),
+              Math.min(
+                  1,
+                  config.servoCenter + MechanismConfig.turretMaxRadians / config.radiansPerServo));
       left.set(position);
       right.set(position);
     }
@@ -112,8 +131,8 @@ public final class Turret extends SubsystemBase {
 
   public void hold() {
     if (feedback.healthy) {
-      double lo = (config.servoMin - config.servoCenter) * config.radiansPerServo;
-      double hi = (config.servoMax - config.servoCenter) * config.radiansPerServo;
+      double lo = minimumAngle();
+      double hi = maximumAngle();
       lastCommandAngle =
           TurretTarget.measured(feedback.angle, lastCommandAngle, lo, hi, config.feedbackTolerance);
       targetAngle = lastCommandAngle;

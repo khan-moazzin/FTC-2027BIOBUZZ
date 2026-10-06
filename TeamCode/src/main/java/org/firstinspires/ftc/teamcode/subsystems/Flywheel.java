@@ -8,51 +8,40 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import org.firstinspires.ftc.teamcode.config.MechanismConfig;
 import org.firstinspires.ftc.teamcode.lib.control.*;
 
+/** One direct-drive goBILDA motor, as configured on the physical robot. */
 public final class Flywheel extends SubsystemBase {
-  private final MotorEx[] motors;
+  private final MotorEx motor;
   private final CachedVoltage voltage;
-  private final PIDFController[] pid = {
-    new PIDFController(0, 0, 0, 0), new PIDFController(0, 0, 0, 0)
-  };
+  private final PIDFController pid = new PIDFController(0, 0, 0, 0);
   private final Readiness gate = new Readiness();
-  private final double[] rpm = new double[2];
-  private final double[] duty = new double[2];
-
-  public double duty(int wheel) {
-    return duty[wheel];
-  }
-
-  private double target;
+  private double rpm, duty, target;
   private boolean ready;
 
   public Flywheel(HardwareMap hw) {
-    // Resolve hardware during INIT, never in the active loop.
     VoltageSensor sensor = hw.voltageSensor.iterator().next();
     voltage = new CachedVoltage(sensor::getVoltage);
-    motors = new MotorEx[] {new MotorEx(hw, "flywheel1"), new MotorEx(hw, "flywheel2")};
-    for (int i = 0; i < 2; i++) {
-      motors[i].motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      motors[i].setRunMode(Motor.RunMode.RawPower);
-      motors[i].setInverted(i == 1);
-      motors[i].setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-    }
+    motor = new MotorEx(hw, "flywheel");
+    motor.motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    motor.setRunMode(Motor.RunMode.RawPower);
+    motor.setInverted(false);
+    motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
   }
 
   public void read(long now) {
     voltage.read(now);
-    for (int i = 0; i < 2; i++) rpm[i] = motors[i].getVelocity() * 60 / MechanismConfig.ticksPerRev;
+    rpm = motor.getVelocity() * 60 / MechanismConfig.ticksPerRev;
     ready =
         gate.update(
             MechanismConfig.flywheelCalibrated
                 && (!MechanismConfig.flywheelGainsInVolts || Double.isFinite(voltage.volts(now)))
-                && Readiness.wheels(rpm[0], rpm[1], target, MechanismConfig.flywheelTolerance),
+                && Readiness.speed(rpm, target, MechanismConfig.flywheelTolerance),
             now,
             MechanismConfig.readySeconds);
   }
 
   public void setTargetRpm(double r) {
     double next = Double.isFinite(r) ? Angles.clamp(r, 0, MechanismConfig.maxRpm) : 0;
-    if (!Readiness.wheels(rpm[0], rpm[1], next, MechanismConfig.flywheelTolerance)) {
+    if (!Readiness.speed(rpm, next, MechanismConfig.flywheelTolerance)) {
       ready = false;
       gate.update(false, 0, 0);
     }
@@ -60,40 +49,36 @@ public final class Flywheel extends SubsystemBase {
   }
 
   public void write() {
-    for (int i = 0; i < 2; i++) {
-      pid[i].setPIDF(MechanismConfig.flywheelP[i], 0, 0, 0);
-      double p =
-          target > 0 && MechanismConfig.flywheelCalibrated
-              ? pid[i].calculate(rpm[i], target)
-                  + MechanismConfig.flywheelS[i]
-                  + MechanismConfig.flywheelV[i] * target
-              : 0;
-      if (MechanismConfig.flywheelGainsInVolts) p = CachedVoltage.duty(p, getVoltage());
-      duty[i] = Double.isFinite(p) ? Angles.clamp(p, 0, 1) : 0;
-      motors[i].set(duty[i]);
-    }
+    pid.setPIDF(MechanismConfig.flywheelP, 0, 0, 0);
+    double p =
+        target > 0 && MechanismConfig.flywheelCalibrated
+            ? pid.calculate(rpm, target)
+                + MechanismConfig.flywheelS
+                + MechanismConfig.flywheelV * target
+            : 0;
+    if (MechanismConfig.flywheelGainsInVolts) p = CachedVoltage.duty(p, getVoltage());
+    characterize(p);
   }
 
   public void characterize(double p) {
-    for (int i = 0; i < 2; i++) {
-      duty[i] = Double.isFinite(p) ? Angles.clamp(p, 0, 1) : 0;
-      motors[i].set(duty[i]);
-    }
+    duty = Double.isFinite(p) ? Angles.clamp(p, 0, 1) : 0;
+    motor.set(duty);
   }
 
   public void stop() {
     target = 0;
     ready = false;
     gate.update(false, 0, 0);
-    for (PIDFController controller : pid) controller.reset();
-    for (int i = 0; i < 2; i++) {
-      duty[i] = 0;
-      motors[i].set(0);
-    }
+    pid.reset();
+    characterize(0);
   }
 
   public boolean atSpeed() {
     return ready && (!MechanismConfig.flywheelGainsInVolts || Double.isFinite(getVoltage()));
+  }
+
+  public double duty() {
+    return duty;
   }
 
   public double getVoltage() {
@@ -101,15 +86,7 @@ public final class Flywheel extends SubsystemBase {
   }
 
   public double getRpm() {
-    return (rpm[0] + rpm[1]) / 2;
-  }
-
-  public double getLeftRpm() {
-    return rpm[0];
-  }
-
-  public double getRightRpm() {
-    return rpm[1];
+    return rpm;
   }
 
   public double getTargetRpm() {

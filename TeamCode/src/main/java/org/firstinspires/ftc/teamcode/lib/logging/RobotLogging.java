@@ -36,7 +36,7 @@ public final class RobotLogging implements AutoCloseable {
       File file = File.createTempFile("run-" + System.currentTimeMillis() + "-", ".csv", directory);
       path = file.getAbsolutePath();
       Map<String, Object> metadata = new LinkedHashMap<>();
-      metadata.put("schema", 1);
+      metadata.put("schema", 2);
       metadata.put("createdUnixMs", System.currentTimeMillis());
       metadata.put("timebase", "monotonic seconds since logger INIT; snapshot time is cycle start");
       metadata.put("poseUnits", "Pedro inches and radians");
@@ -181,6 +181,7 @@ public final class RobotLogging implements AutoCloseable {
       v.put("Shot/Preparing", r.shooter.preparing);
       v.put("Shot/FeedRequested", r.shooter.feedRequested);
       v.put("Shot/Cancelled", r.shooter.cancelled());
+      v.put("Shot/ReadinessEvaluated", r.shooter.readinessEvaluated);
       v.put("Shot/ReadinessBlockers", r.shooter.readinessBlockers);
       String[] gates = {
         "VisionCalibration",
@@ -190,7 +191,9 @@ public final class RobotLogging implements AutoCloseable {
         "Turret",
         "Flywheels",
         "HoodSettled",
-        "HoodRange"
+        "HoodRange",
+        "IndexerCalibrated",
+        "RobotMotion"
       };
       for (int i = 0; i < gates.length; i++)
         v.put("Shot/Blocked/" + gates[i], (r.shooter.readinessBlockers & (1 << i)) != 0);
@@ -221,10 +224,11 @@ public final class RobotLogging implements AutoCloseable {
       v.put("Turret/Healthy", r.turret.feedback.healthy);
       v.put("Turret/Ready", r.turret.ready());
       n(v, "Flywheel/Target_rpm", r.flywheel.getTargetRpm());
-      n(v, "Flywheel/Left_rpm", r.flywheel.getLeftRpm());
-      n(v, "Flywheel/Right_rpm", r.flywheel.getRightRpm());
-      n(v, "Flywheel/LeftDuty", r.flywheel.duty(0));
-      n(v, "Flywheel/RightDuty", r.flywheel.duty(1));
+      n(v, "Flywheel/Measured_rpm", r.flywheel.getRpm());
+      n(v, "Flywheel/Duty", r.flywheel.duty());
+      n(v, "Indexer/CommandPosition", r.indexer.getPosition());
+      v.put("Indexer/Calibrated", MechanismConfig.indexerCalibrated);
+      v.put("Shot/DwellReady", r.shooter.dwellReady);
       n(v, "Battery/Voltage_V", r.flywheel.getVoltage());
       v.put("Flywheel/Ready", r.flywheel.atSpeed());
       n(v, "Hood/CommandPosition", r.hood.getPosition());

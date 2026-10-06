@@ -15,12 +15,14 @@ public final class Shooter extends SubsystemBase {
   private Field.Cell selection;
   private boolean cancelled;
   private long lastTime;
+  private final Readiness shotGate = new Readiness();
+  public boolean dwellReady;
   public MovingShotSolver.Solution solution = new MovingShotSolver.Solution();
   public String status = "Idle";
-  public boolean ready, preparing, feedRequested;
+  public boolean ready, preparing, feedRequested, readinessEvaluated;
   // Bitmask: calibration, RPM range, pose, reachability, turret, flywheels, hood settle, hood
   // range.
-  public int readinessBlockers = 255;
+  public int readinessBlockers = 1023;
 
   public String selectedCell() {
     return selection == null ? "AUTO_RAISED" : selection.name();
@@ -45,6 +47,7 @@ public final class Shooter extends SubsystemBase {
         () -> control(g1, g2, System.nanoTime()),
         this,
         robot.intake,
+        robot.indexer,
         robot.turret,
         robot.hood,
         robot.flywheel);
@@ -61,8 +64,10 @@ public final class Shooter extends SubsystemBase {
     boolean prepare = !cancelled && (g2.left_trigger > .5 || g2.right_trigger > .5);
     preparing = prepare;
     feedRequested = g2.right_trigger > .5;
-    readinessBlockers = 255;
+    readinessBlockers = 1023;
+    readinessEvaluated = false;
     ready = false;
+    dwellReady = false;
     overflow = 0;
     if (prepare && !robot.drive.localizer().healthy(now)) {
       solution.valid = false;
@@ -92,6 +97,7 @@ public final class Shooter extends SubsystemBase {
         robot.hood.setAngle(solution.hood);
         double hoodPosition =
             MechanismConfig.hoodZero + solution.hood / MechanismConfig.hoodRadiansPerUnit;
+        readinessEvaluated = true;
         readinessBlockers =
             (robot.visionConfig.calibrated ? 0 : 1)
                 | (solution.rpm <= MechanismConfig.maxRpm ? 0 : 2)
@@ -104,12 +110,26 @@ public final class Shooter extends SubsystemBase {
                 | (robot.turret.ready() ? 0 : 16)
                 | (robot.flywheel.atSpeed() ? 0 : 32)
                 | (robot.hood.ready(now) ? 0 : 64)
+                | (MechanismConfig.indexerCalibrated ? 0 : 256)
+                | (Readiness.motionAllowed(
+                        MechanismConfig.stationaryShotsOnly,
+                        robot.drive.localizer().velocity().vx,
+                        robot.drive.localizer().velocity().vy,
+                        robot.drive.localizer().velocity().omega,
+                        MechanismConfig.maxShotTranslation,
+                        MechanismConfig.maxShotRotation)
+                    ? 0
+                    : 512)
                 | (hoodPosition >= MechanismConfig.hoodMin
                         && hoodPosition <= MechanismConfig.hoodMax
                     ? 0
                     : 128);
-        ready = readinessBlockers == 0;
-        status = ready ? "Ready" : "Waiting for mechanisms/pose";
+        dwellReady = shotGate.update(readinessBlockers == 0, now, MechanismConfig.shotReadySeconds);
+        ready = readinessBlockers == 0 && dwellReady;
+        status =
+            ready
+                ? "Ready"
+                : readinessBlockers == 0 ? "Readiness dwell" : "Waiting for mechanisms/pose";
       } else {
         robot.flywheel.setTargetRpm(0);
         robot.turret.hold();
@@ -122,13 +142,14 @@ public final class Shooter extends SubsystemBase {
       status = cancelled ? "Cancelled: release triggers" : "Idle";
       solution.valid = false;
     }
-    // Reverse always wins. Feeding cannot bypass shot readiness.
+    if (!prepare || !solution.valid || readinessBlockers != 0) shotGate.update(false, now, 0);
+    // Reverse retracts the indexer even when a valid shooting request is held.
+    boolean feed = Readiness.feed(prepare, feedRequested, ready, g1.left_bumper);
+    robot.indexer.feed(feed);
     robot.intake.set(
         g1.left_bumper
             ? -.9
-            : (prepare
-                ? (g2.right_trigger > .5 && ready ? 1 : 0)
-                : Intake.requested(g1.left_trigger > .5, false)));
+            : prepare ? (feed ? 1 : 0) : Intake.requested(g1.left_trigger > .5, false));
   }
 
   public double yaw(double manual, boolean assist) {

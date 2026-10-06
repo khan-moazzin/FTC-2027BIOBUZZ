@@ -31,8 +31,8 @@ References: [AdvantageScope live sources](https://docs.advantagescope.org/overvi
 | `HIVE/Red`, `HIVE/Blue` | Independent angle, rate, age, variance, freshness; latest frame's tag count, fit RMS, proposed robot pose/HIVE angle, robot innovation score, acceptance and rejection reason. |
 | `Shot` | Requested preparation/feed, cancellation, selected-cell mode, solution validity/reason, readiness blockers, target angle/rate, RPM, hood, flight time, distance/height, predicted target, muzzle position/velocity, iteration count and impact HIVE variance. |
 | `Turret` | Both analog voltages, encoder disagreement, measured angle/rate, target, lag-compensated/rate-limited command, servo command, health and readiness. |
-| `Flywheel`, `Battery` | Target versus separate wheel RPM, commanded duty, readiness and cached voltage. |
-| `Hood`, `Intake` | Commanded servo position/settling and intake power. Hood position is a command, not measured feedback. |
+| `Flywheel`, `Battery` | Target versus single-motor RPM, commanded duty, readiness and cached voltage. |
+| `Hood`, `Intake`, `Indexer` | Commanded servo position/settling intake power and indexer commanded position/calibration state. Hood position is a command, not measured feedback. |
 | `Drive`, `Driver1`, `Driver2` | Manual forward/strafe/yaw commands, orientation/path flags and sticks, triggers and control buttons. Drive commands describe manual requests, not individual wheel outputs or autonomous follower commands. |
 | `Loop` | Read/estimation, command and output work; work total and previous start-to-start period. |
 | `Logging` | Sequence, queue occupancy, file bytes, recorded/dropped counts, sink status and previous snapshot collection duration. |
@@ -40,7 +40,7 @@ References: [AdvantageScope live sources](https://docs.advantagescope.org/overvi
 Useful graph sets:
 
 - **Shot release:** `Shot/FeedRequested`, `Shot/Ready`, `Shot/Status`, `Shot/Blocked/*`, `Intake/CommandPower`.
-- **Flywheel recovery:** `Flywheel/Target_rpm`, `Left_rpm`, `Right_rpm`, both duty signals and battery voltage.
+- **Flywheel recovery:** `Flywheel/Target_rpm`, `Measured_rpm`, `Duty` and battery voltage.
 - **Turret lag:** `Turret/Target_rad`, `Command_rad`, `Measured_rad`, `Velocity_rad_s` and feedback health.
 - **Vision correction:** frame age/sequence, each HIVE's `Fit/Result`, `Fit/Accepted`, `Fit/Rms_in`, `Fit/Innovation`, fused/raw pose and covariance.
 - **Prediction:** `Shot/PredictedTarget_in/*`, `LaunchVelocity_in_s/*`, `Flight_s`, HIVE rate and impact variance.
@@ -52,7 +52,7 @@ All values in a row are copied after that cycle's commands/outputs; its timestam
 
 Every potentially nonfinite numeric channel has a `/Valid` boolean. Invalid values are represented by zero **and `Valid=false`** to keep the column numeric across CSV and Dashboard. Never interpret the zero alone as a measurement. `Shot/Valid` determines whether shot fields describe a usable solution; fields can retain the last calculation while idle. HIVE freshness and `Vision/FrameSequence`/age must be checked before treating a held observation as new.
 
-`Shot/ReadinessBlockers` uses bits 1 calibration, 2 RPM range, 4 pose uncertainty, 8 reachable angle, 16 turret, 32 flywheels, 64 hood settling, 128 hood range. Individual boolean channels expose the same bits. These gates are evaluated only for a valid solution during preparation with healthy localization; otherwise 255 means not evaluated/blocked. Consult `Shot/Status` and `Shot/Valid` first. A new `Vision/FrameSequence` marks when fit outcomes were evaluated; held acceptance flags do not count as additional accepted frames.
+`Shot/ReadinessBlockers` uses bits 1 calibration, 2 RPM range, 4 pose uncertainty, 8 reachable angle, 16 turret, 32 flywheel, 64 hood settling, 128 hood range, 256 indexer calibration, 512 robot motion. Individual boolean channels expose the same bits. These gates are evaluated only for a valid solution during preparation with healthy localization; otherwise 1023 means not evaluated/blocked. `Shot/ReadinessEvaluated` explicitly identifies this distinction. `Shot/DwellReady` reports the additional 0.10-second all-conditions dwell. Consult `Shot/Status` and `Shot/Valid` first. A new `Vision/FrameSequence` marks when fit outcomes were evaluated; held acceptance flags do not count as additional accepted frames.
 
 Covariance uses inchesÂ² for XY, radiansÂ² for heading and mixed units off diagonal. HIVE variance is radiansÂ². Fit RMS is camera-position residual RMS in inches. The robot innovation score is the squared Mahalanobis distance when that gate was reached; its validity flag is false when an earlier gate rejected the observation.
 
@@ -75,3 +75,5 @@ The queue is bounded, not allocation-free: each snapshot copies and boxes scalar
 Desktop tests exercise typed/escaped CSV, monotonic timestamps, immutable snapshots, invalid-number flags, queue overflow under blocked storage, file/live sink isolation, size limits, live throttling and close behavior. A synthetic CSV is generated in `TeamCode/build/logging-fixtures/` by the tests. Hardware acceptance still needs a real INIT â†’ START â†’ drive/aim/feed â†’ STOP run, a live AdvantageScope connection, CSV opening in the desktop app, and an overhead comparison with logging disabled. Save the build's Git revision with trial notes; the metadata records configuration but does not claim to identify the exact source commit.
 
 Run `python tools/verify_ascope_csv.py TeamCode/build/logging-fixtures/synthetic-ascope.csv` to check the fixture with the pinned upstream CSV decoder. This optional check needs network access and Node.js and uses a stub log receiver, not the desktop UI.
+
+Schema 2 follows the confirmed single-motor hardware: `Flywheel/Measured_rpm` and `Flywheel/Duty` replace schema 1's left/right fields. Indexer state and overall readiness dwell are included. Older run files retain their original field names.

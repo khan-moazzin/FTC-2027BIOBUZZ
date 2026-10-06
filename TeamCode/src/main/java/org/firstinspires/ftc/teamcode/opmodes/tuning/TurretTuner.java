@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.*;
+import org.firstinspires.ftc.teamcode.config.MechanismConfig;
 import org.firstinspires.ftc.teamcode.config.VisionConfig;
 import org.firstinspires.ftc.teamcode.lib.calibration.*;
 import org.firstinspires.ftc.teamcode.lib.control.Angles;
@@ -33,7 +34,15 @@ public final class TurretTuner extends GuidedOpMode {
     if (gamepad1.right_bumper) {
       pos =
           Angles.clamp(
-              pos + gamepad1.left_stick_x * .1 * dt, stage >= 4 ? low : 0, stage >= 4 ? high : 1);
+              pos + gamepad1.left_stick_x * .1 * dt,
+              stage >= 4
+                  ? low
+                  : Math.max(
+                      0, c.servoCenter + MechanismConfig.turretMinRadians / c.radiansPerServo),
+              stage >= 4
+                  ? high
+                  : Math.min(
+                      1, c.servoCenter + MechanismConfig.turretMaxRadians / c.radiansPerServo));
       turret.setRawPosition(pos);
     }
     if (stage == 0) {

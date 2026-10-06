@@ -37,11 +37,11 @@ Moving-shot aiming uses Seattle's iterative virtual-goal approach, extended with
 | G2 | A / X / Y | automatic raised cell / audience cell / scoring cell |
 | G1 during INIT | dpad left/right | blue/red alliance |
 
-Preparation owns the shared intake path. An intake trigger cannot bypass the shooting gate while preparing. Releasing preparation restores ordinary intake control. There is no separate feeder hardware specified in this robot; gated feed uses the two intake motors.
+Preparation owns the shared intake path. An intake trigger cannot bypass the shooting gate while preparing. Releasing preparation restores ordinary intake control. Gated feed deploys the `indexer` servo and runs the two intake motors together. Reverse, cancellation and loss of readiness retract the indexer.
 
-At startup, put the turret away from the shared endpoints of a full revolution (forward is suitable). A 1:1 absolute encoder cannot distinguish the two travel endpoints there; automatic turret output remains inhibited until its position is unambiguous.
+Turret travel is limited to -170 through +170 degrees, using the two Axon analog feedback channels at 1:1. Calibration can narrow these limits. Start near physical forward and verify servo/encoder direction before sweeping.
 
-Both flywheel RPMs must individually meet tolerance continuously for the dwell time. A changing target inside the tolerance does not needlessly restart the dwell. Any invalid/zero target, wheel error, stale HIVE, bad turret feedback, unreachable target, uncalibrated mechanism, hood travel violation, or poor pose certainty inhibits feed. Large target changes reset readiness.
+The single `flywheel` motor must meet RPM tolerance continuously for its dwell time; all shot conditions must additionally remain ready for 0.10 seconds. A changing target inside the tolerance does not needlessly restart the dwell. Any invalid/zero target, wheel error, stale HIVE, bad turret feedback, unreachable target, uncalibrated mechanism, hood travel violation, or poor pose certainty inhibits feed. Large target changes reset readiness.
 
 ## Calibration workflow
 
@@ -50,7 +50,7 @@ Generated files are in /sdcard/FIRST/biobuzz-calibration on the Control Hub. Cop
 1. **Tune 0 â€” Drive and Pinpoint verification.** Verify axis signs with limited power and surveyed distances. Run registered Pedro AutoTune Mecanum, Pinpoint CUSTOM for SWYFT pods, then Foresight. Copy the resulting Pedro configuration into Constants. Those hardware values remain marked TUNER until measured.
 2. **Tune 1 â€” Turret feedback and lag.** Physically mark forward, record center, move CCW to identify each analog sign, record both safe software limits, then sweep back and forth. The regression fits PWM angle scale and angular-velocity lag. The two encoders are read directly at 1:1; commanded servo position is never substituted for feedback. Use the Axon programmer to establish correct position mode and compatible travel before sweeping. The tuner rejects a negative PWM-to-CCW mapping rather than quietly reversing a coupled mechanism.
 3. **Tune 2 â€” Complete BIOBUZZ Vision Wizard.** Requires the copied turret export. Enter surveyed robot XY/heading, known red/blue HIVE angles, and physically measured turret-axis height. At each static robot/HIVE placement record slow bidirectional turret sweeps. Repeat at three or more robot positions/headings and both HIVE endpoints. The fit estimates COR XY, camera XYZ, roll/pitch/yaw and residual latency. COR Z is fixed by physical measurement to remove an otherwise unobservable vertical-offset ambiguity. A subset of observations is held out for validation. Rank-deficient or high-error fits do not enable calibration. Observations are exported to CSV for review. One complete VisionConfig.java is exported.
-4. **Tune 3 â€” Flywheel feedforward.** Empty shooter, hold RB through staged characterization. It fits each wheel's static and velocity coefficients separately. The proportional coefficient is an initial value derived from measured velocity gain, not a measured optimal controller. Validate settling and loaded recovery in Tune 5 before competition.
+4. **Tune 3 â€” Flywheel feedforward.** Empty shooter, hold RB through staged characterization. It fits the single motor's static and velocity coefficients. The proportional coefficient is an initial value derived from measured velocity gain, not a measured optimal controller. Validate settling and loaded recovery in Tune 5 before competition.
 5. **Tune 4 â€” Hood angle mapping.** Record two well-separated servo positions and physically measured launch angles. Adjust the safe hood limits in MechanismConfig to the actual mechanism before operating outside them. This is a linear mapping; validate intermediate positions if the linkage is nonlinear.
 6. **Tune 5 â€” Shooter flight map.** Record successful shots across distance and height. Enter measured flight time (video is appropriate), RPM and hood angle. Three non-collinear samples are the minimum for interpolation, not sufficient coverage for a full field. Measure turretToMuzzle and transferDelay in ShotConfig; they cannot be recovered from tag data. The tuner exports the complete shot table.
 
@@ -87,3 +87,11 @@ Vision commits a HIVE update only after the matching robot-pose correction passe
 ## Full robot logging
 
 `TeleopMain` now also records uniquely named AdvantageScope-compatible CSV sessions with calibration metadata and completion summaries, and publishes matching live data through FTC Dashboard. This runs alongside the older last-512-cycle timing CSV. See [LOGGING.md](LOGGING.md) for connection steps, field meanings, storage limits and hardware validation.
+
+## Confirmed hardware from main
+
+The integration of main `bea78b3` uses one forward `flywheel` motor (28 ticks/rev, 5800 RPM maximum), an `indexer` servo, opposed `turret1`/`turret2` servos with ±170° travel, and an Axon MINI hood with 30T:173T gearing. All Axon servo outputs use 500–2500 µs PWM.
+
+Run **Tune 6 - Indexer endpoints** before Tune 5: hold RB and move the left stick slowly, A captures retracted, X captures deployed, Y exports. The old .15/.85 endpoints remain placeholders and automatic feeding requires `indexerCalibrated`. Tune 4 measures absolute launch angle even though the mechanical gearing is known.
+
+The shot-calibration OpMode starts from main's reference trial (48 inches, 62.1% of 5800 RPM, 10.61° above the hood's lowest position), converting the relative hood angle through the current calibration. Measure height difference and flight time; the trial alone does not enable the shot map. `MechanismConfig.stationaryShotsOnly` enables main's conservative 6 in/s and 15°/s limits; the default retains predictive moving shots.

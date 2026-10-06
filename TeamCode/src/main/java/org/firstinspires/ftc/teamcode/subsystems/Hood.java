@@ -14,6 +14,8 @@ public final class Hood extends SubsystemBase {
 
   public Hood(HardwareMap hw) {
     servo = new ServoEx(hw, "hood");
+    servo.setPwm(new com.qualcomm.robotcore.hardware.PwmControl.PwmRange(500, 2500));
+    servo.setInverted(false);
     settling.command(position);
   }
 
@@ -34,7 +36,10 @@ public final class Hood extends SubsystemBase {
 
   public void write() {
     servo.set(position);
-    settling.written(System.nanoTime());
+    settling.written(
+        System.nanoTime(),
+        MechanismConfig.hoodSecondsPer60Degrees * 6,
+        MechanismConfig.servoSettleMargin);
   }
 
   public void stow() {

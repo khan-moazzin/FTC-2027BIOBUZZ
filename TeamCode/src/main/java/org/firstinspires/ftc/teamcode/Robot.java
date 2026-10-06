@@ -14,6 +14,7 @@ public final class Robot implements AutoCloseable {
   public Shooter shooter;
   public Drive drive;
   public Intake intake;
+  public Indexer indexer;
   public Turret turret;
   public Hood hood;
   public Flywheel flywheel;
@@ -33,6 +34,7 @@ public final class Robot implements AutoCloseable {
       for (LynxModule h : hubs) h.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
       drive = new Drive(hw);
       intake = new Intake(hw);
+      indexer = new Indexer(hw);
       turret = new Turret(hw, visionConfig);
       hood = new Hood(hw);
       flywheel = new Flywheel(hw);
@@ -67,6 +69,7 @@ public final class Robot implements AutoCloseable {
   public void write() {
     long started = System.nanoTime();
     drive.update();
+    indexer.write();
     intake.write();
     turret.write();
     hood.write();
@@ -85,8 +88,7 @@ public final class Robot implements AutoCloseable {
     telemetry.addData("Vision", vision.status);
     telemetry.addData("Pose", drive.getPose());
     telemetry.addData("Turret feedback", turret.feedback.healthy);
-    telemetry.addData(
-        "Flywheel RPM L/R", "%.0f / %.0f", flywheel.getLeftRpm(), flywheel.getRightRpm());
+    telemetry.addData("Flywheel RPM", flywheel.getRpm());
   }
 
   public void close() {
@@ -95,6 +97,9 @@ public final class Robot implements AutoCloseable {
       () -> CommandScheduler.getInstance().cancelAll(),
       () -> {
         if (intake != null) intake.stop();
+      },
+      () -> {
+        if (indexer != null) indexer.retract();
       },
       () -> {
         if (flywheel != null) flywheel.stop();
@@ -118,7 +123,8 @@ public final class Robot implements AutoCloseable {
           if (shooter != null) {
             shooter.ready = shooter.preparing = shooter.feedRequested = false;
             shooter.solution.valid = false;
-            shooter.readinessBlockers = 255;
+            shooter.readinessBlockers = 1023;
+            shooter.readinessEvaluated = shooter.dwellReady = false;
             shooter.status = "Stopped";
           }
           if (shooter != null) logging.capture(this, System.nanoTime(), driver1, driver2);

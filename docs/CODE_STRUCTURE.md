@@ -9,7 +9,7 @@ The editable robot surface is under `TeamCode/src/main/java/org/firstinspires/ft
 | `config/` | Copy generated `VisionConfig`, `MechanismConfig`, and `ShotConfig` here. Their package names and export destinations are unchanged. `LoggingConfig` sets file/live recording limits. |
 | `subsystems/` | Robot-specific behavior, hardware names, control policy and SolversLib requirements. |
 | `opmodes/TeleOp.java` | Driver controls and the competition loop. Driver Station name remains `TeleopMain`. |
-| `opmodes/tuning/` | All six guided calibration/verification OpModes. Driver Station names remain unchanged. |
+| `opmodes/tuning/` | All seven guided calibration/verification OpModes. Driver Station names remain unchanged. |
 | `lib/control/` | Tested angle/target math, shot solver/map, readiness, voltage cache and profiling. |
 | `lib/vision/` | Limelight observations, transforms, per-HIVE state and pose fitting. |
 | `lib/logging/` | Immutable snapshots, bounded asynchronous CSV recording and live AdvantageScope via FTC Dashboard. |

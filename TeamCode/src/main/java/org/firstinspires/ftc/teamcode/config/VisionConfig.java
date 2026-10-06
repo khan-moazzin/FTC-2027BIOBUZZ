@@ -8,7 +8,10 @@ public class VisionConfig {
       rightFeedback = "turretEncoder2";
   public int pipeline = 1;
   public double leftZero = 0, rightZero = 0, leftSign = 1, rightSign = -1, analogRange = 3.3;
-  public double servoCenter = .5, radiansPerServo = 2 * Math.PI, servoMin = .5, servoMax = .5;
+  public double servoCenter = .5,
+      radiansPerServo = 2 * Math.PI,
+      servoMin = .5 - 170.0 / 360,
+      servoMax = .5 + 170.0 / 360;
   public double feedbackTolerance = Math.toRadians(5), turretLag = 0, maxTurretRate = 1;
   public double[] robotToTurret = {0, 0, 0}, turretToCamera = {0, 0, 0}, cameraRotation = {0, 0, 0};
   public double extraLatency = 0, maxFrameAge = .25, hiveMaxAge = .4;

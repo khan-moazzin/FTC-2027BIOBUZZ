@@ -12,6 +12,7 @@ public final class ShotTuner extends GuidedOpMode {
   private Flywheel flywheel;
   private Hood hood;
   private Intake intake;
+  private Indexer indexer;
   private final ShotConfig c = new ShotConfig();
   private final List<double[]> samples = new ArrayList<>();
   private final double[] row = {48, 24, 3000, .6, .5};
@@ -29,6 +30,13 @@ public final class ShotTuner extends GuidedOpMode {
     flywheel = new Flywheel(hardwareMap);
     hood = new Hood(hardwareMap);
     intake = new Intake(hardwareMap);
+    indexer = new Indexer(hardwareMap);
+    row[0] = c.referenceTrial[0];
+    row[2] = c.referenceTrial[2] / 100 * 5800;
+    // Convert the old mechanical-zero hood angle into the calibrated absolute launch frame.
+    row[3] =
+        (MechanismConfig.hoodMin - MechanismConfig.hoodZero) * MechanismConfig.hoodRadiansPerUnit
+            + Math.toRadians(c.referenceTrial[1]);
   }
 
   protected void tick(long now) throws Exception {
@@ -39,8 +47,8 @@ public final class ShotTuner extends GuidedOpMode {
     row[selected] -= gamepad1.left_stick_y * dt * (selected == 2 ? 500 : selected >= 3 ? .2 : 5);
     telemetry.addData("X selects; stick adjusts", labels[selected] + " = " + row[selected]);
     telemetry.addLine(
-        "Hold RB prepares. RT feeds only when both wheels and hood ready. A records a CONFIRMED"
-            + " successful measured shot.");
+        "Hold RB prepares. RT feeds only when flywheel, hood and calibrated indexer ready. A"
+            + " records a CONFIRMED successful measured shot.");
     telemetry.addLine(
         "Use video for flight time; cover multiple distances AND target heights. Y exports only a"
             + " non-collinear map.");
@@ -56,12 +64,20 @@ public final class ShotTuner extends GuidedOpMode {
     if (achievable) hood.setAngle(row[3]);
     flywheel.write();
     hood.write();
-    intake.set(
-        spin && achievable && gamepad1.right_trigger > .5 && flywheel.atSpeed() && hood.ready(now)
-            ? 1
-            : 0);
+    boolean feed =
+        spin
+            && achievable
+            && gamepad1.right_trigger > .5
+            && flywheel.atSpeed()
+            && hood.ready(now)
+            && MechanismConfig.indexerCalibrated;
+    indexer.feed(feed);
+    indexer.write();
+    intake.set(feed ? 1 : 0);
     intake.write();
-    telemetry.addData("RPM L/R", flywheel.getLeftRpm() + " / " + flywheel.getRightRpm());
+    telemetry.addData("RPM", flywheel.getRpm());
+    if (!MechanismConfig.indexerCalibrated)
+      telemetry.addLine("Run Tune 6 to calibrate indexer before feeding");
     telemetry.addData("Samples", samples.size());
     if (!achievable) telemetry.addLine("Requested shot exceeds configured RPM/hood limits");
     if (a && achievable) samples.add(row.clone());
@@ -80,6 +96,7 @@ public final class ShotTuner extends GuidedOpMode {
 
   protected void shutdown() {
     if (intake != null) intake.stop();
+    if (indexer != null) indexer.retract();
     if (flywheel != null) flywheel.stop();
     if (hood != null) hood.stow();
   }
