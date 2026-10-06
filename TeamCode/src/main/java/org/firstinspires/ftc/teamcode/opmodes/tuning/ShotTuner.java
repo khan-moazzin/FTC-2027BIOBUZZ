@@ -7,13 +7,14 @@ import org.firstinspires.ftc.teamcode.lib.calibration.*;
 import org.firstinspires.ftc.teamcode.lib.control.*;
 import org.firstinspires.ftc.teamcode.subsystems.*;
 
-@TeleOp(name = "Tune 5 - Shooter flight map", group = "Calibration")
+@TeleOp(name = "Tune 5 - Physics shot calibration", group = "Calibration")
 public final class ShotTuner extends GuidedOpMode {
   private Flywheel flywheel;
   private Hood hood;
   private Intake intake;
   private Indexer indexer;
   private final ShotConfig c = new ShotConfig();
+  private final PhysicsShotConfig physics = new PhysicsShotConfig();
   private final List<double[]> samples = new ArrayList<>();
   private final double[] row = {48, 24, 3000, .6, .5};
   private int selected;
@@ -50,8 +51,8 @@ public final class ShotTuner extends GuidedOpMode {
         "Hold RB prepares. RT feeds only when flywheel, hood and calibrated indexer ready. A"
             + " records a CONFIRMED successful measured shot.");
     telemetry.addLine(
-        "Use video for flight time; cover multiple distances AND target heights. Y exports only a"
-            + " non-collinear map.");
+        "Stationary robot and stable raised HIVE only. Measure flight time with video. Y exports a"
+            + " physics fit after 9+ varied shots, including held-out validation.");
     boolean spin = gamepad1.right_bumper;
     double hoodPosition = MechanismConfig.hoodZero + row[3] / MechanismConfig.hoodRadiansPerUnit;
     boolean achievable =
@@ -83,14 +84,18 @@ public final class ShotTuner extends GuidedOpMode {
     if (a && achievable) samples.add(row.clone());
     if (y) {
       c.samples = samples.toArray(new double[0][]);
-      c.calibrated = true;
-      boolean coverage = false;
-      for (double[] p : samples) if (ShotMap.lookup(c, p[0], p[1]) != null) coverage = true;
-      if (!coverage) {
-        result = "Need 3+ non-collinear distance/height samples";
+      c.calibrated = false; // Archive measured samples; runtime no longer uses the empirical map.
+      export(c);
+      PhysicsCalibration.Result fit = PhysicsCalibration.fit(physics, c.samples);
+      if (!fit.valid) {
+        result = fit.reason + "; measured samples saved in ShotConfig";
         return;
       }
-      export(c);
+      export(physics);
+      result +=
+          "; validation max "
+              + fit.validationMax
+              + " m. Verify geometry, then run offline generator.";
     }
   }
 

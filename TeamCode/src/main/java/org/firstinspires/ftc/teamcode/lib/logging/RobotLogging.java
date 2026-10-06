@@ -36,13 +36,14 @@ public final class RobotLogging implements AutoCloseable {
       File file = File.createTempFile("run-" + System.currentTimeMillis() + "-", ".csv", directory);
       path = file.getAbsolutePath();
       Map<String, Object> metadata = new LinkedHashMap<>();
-      metadata.put("schema", 2);
+      metadata.put("schema", 3);
       metadata.put("createdUnixMs", System.currentTimeMillis());
       metadata.put("timebase", "monotonic seconds since logger INIT; snapshot time is cycle start");
       metadata.put("poseUnits", "Pedro inches and radians");
       metadata.put("VisionConfig", config(robot.visionConfig));
       metadata.put("MechanismConfig", config(new MechanismConfig()));
       metadata.put("ShotConfig", config(new ShotConfig()));
+      metadata.put("PhysicsShotConfig", config(robot.shooter.physics));
       metadata.put("LoggingConfig", config(new LoggingConfig()));
       try (Writer writer =
           new OutputStreamWriter(new FileOutputStream(path + ".json"), StandardCharsets.UTF_8)) {
@@ -174,6 +175,10 @@ public final class RobotLogging implements AutoCloseable {
       hive(v, "Red", r.vision.red, r.vision.redDiagnostic, r, now);
       hive(v, "Blue", r.vision.blue, r.vision.blueDiagnostic, r, now);
       v.put("Shot/Status", r.shooter.status);
+      v.put("Shot/Model", "Stable-HIVE physics polynomial");
+      v.put("HIVE/Red/Stable", r.shooter.redStable);
+      v.put("HIVE/Blue/Stable", r.shooter.blueStable);
+      n(v, "Shot/Clearance_m", r.shooter.solution.clearance);
       v.put("Shot/Reason", r.shooter.solution.reason);
       v.put("Shot/SelectedCell", r.shooter.selectedCell());
       v.put("Shot/Valid", r.shooter.solution.valid);
@@ -197,9 +202,9 @@ public final class RobotLogging implements AutoCloseable {
       };
       for (int i = 0; i < gates.length; i++)
         v.put("Shot/Blocked/" + gates[i], (r.shooter.readinessBlockers & (1 << i)) != 0);
-      n(v, "Shot/Iterations", r.shooter.solution.iterations);
-      n(v, "Shot/ImpactHiveVariance_rad2", r.shooter.solution.impactVariance);
-      vector(v, "Shot/PredictedTarget_in", r.shooter.solution.predictedTarget);
+      n(v, "Shot/TrajectoryChecks", r.shooter.solution.iterations);
+      n(v, "Shot/HiveVariance_rad2", r.shooter.solution.impactVariance);
+      vector(v, "Shot/Target_in", r.shooter.solution.predictedTarget);
       vector(v, "Shot/Muzzle_in", r.shooter.solution.muzzle);
       vector(v, "Shot/LaunchVelocity_in_s", r.shooter.solution.launchVelocity);
       n(v, "Drive/CommandForward", r.drive.commandForward);

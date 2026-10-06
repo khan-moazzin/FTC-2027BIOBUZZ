@@ -12,12 +12,15 @@ import org.firstinspires.ftc.teamcode.lib.vision.HiveState;
 public final class Shooter extends SubsystemBase {
   private final Robot robot;
   private final ShotConfig config = new ShotConfig();
+  public final PhysicsShotConfig physics = new PhysicsShotConfig();
+  private final StableHiveGate redGate = new StableHiveGate(), blueGate = new StableHiveGate();
+  public boolean redStable, blueStable;
   private Field.Cell selection;
   private boolean cancelled;
   private long lastTime;
   private final Readiness shotGate = new Readiness();
   public boolean dwellReady;
-  public MovingShotSolver.Solution solution = new MovingShotSolver.Solution();
+  public ShotSolution solution = new ShotSolution();
   public String status = "Idle";
   public boolean ready, preparing, feedRequested, readinessEvaluated;
   // Bitmask: calibration, RPM range, pose, reachability, turret, flywheels, hood settle, hood
@@ -61,6 +64,8 @@ public final class Shooter extends SubsystemBase {
     if (g2.y) selection = Field.Cell.SCORING;
     if (g2.b) cancelled = true;
     else if (g2.left_trigger < .1 && g2.right_trigger < .1) cancelled = false;
+    redStable = stable(robot.vision.red, redGate, now);
+    blueStable = stable(robot.vision.blue, blueGate, now);
     boolean prepare = !cancelled && (g2.left_trigger > .5 || g2.right_trigger > .5);
     preparing = prepare;
     feedRequested = g2.right_trigger > .5;
@@ -80,7 +85,7 @@ public final class Shooter extends SubsystemBase {
           Constants.ALLIANCE == Constants.Alliance.RED ? Field.Hive.RED : Field.Hive.BLUE;
       HiveState hive = robot.vision.hive(alliance);
       solution =
-          MovingShotSolver.solve(
+          StableShotSolver.solve(
               robot.drive.getPose(),
               robot.drive.localizer().velocity(),
               robot.turret.feedback.angle,
@@ -90,7 +95,9 @@ public final class Shooter extends SubsystemBase {
               selection == null ? Field.raised(hive.angle(now)) : selection,
               now,
               robot.visionConfig,
-              config);
+              config,
+              physics,
+              alliance == Field.Hive.RED ? redStable : blueStable);
       if (solution.valid) {
         overflow = robot.turret.aim(solution.angle, solution.angularVelocity, dt);
         robot.flywheel.setTargetRpm(solution.rpm);
@@ -150,6 +157,15 @@ public final class Shooter extends SubsystemBase {
         g1.left_bumper
             ? -.9
             : prepare ? (feed ? 1 : 0) : Intake.requested(g1.left_trigger > .5, false));
+  }
+
+  private boolean stable(HiveState hive, StableHiveGate gate, long now) {
+    double variance = hive.variance(now, robot.visionConfig.hiveAccelerationNoise);
+    boolean fresh =
+        hive.fresh(now, robot.visionConfig.hiveMaxAge)
+            && Double.isFinite(variance)
+            && Math.sqrt(variance) <= robot.visionConfig.maxHiveSigma;
+    return gate.update(hive.angle(now), hive.rate(), fresh, hive.observationTime(), now, physics);
   }
 
   public double yaw(double manual, boolean assist) {

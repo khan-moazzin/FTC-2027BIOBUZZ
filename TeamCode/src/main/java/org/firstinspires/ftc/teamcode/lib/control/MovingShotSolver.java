@@ -12,14 +12,7 @@ import org.firstinspires.ftc.teamcode.lib.math.Vec3;
 import org.firstinspires.ftc.teamcode.lib.vision.HiveState;
 
 public final class MovingShotSolver {
-  public static final class Solution {
-    public boolean valid;
-    public String reason = "No solution";
-    public Vec3 predictedTarget, muzzle, launchVelocity;
-    public int iterations;
-    public double impactVariance = Double.NaN;
-    public double angle, angularVelocity, rpm, hood, flight, distance, height;
-  }
+  public static final class Solution extends ShotSolution {}
 
   public static double lineOfSightRate(
       double rx, double ry, double relativeVx, double relativeVy, double robotOmega) {

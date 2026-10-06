@@ -24,6 +24,10 @@ public final class HiveState {
     return Angles.clamp(angle + rate * age(t), -Field.MAX_ANGLE, Field.MAX_ANGLE);
   }
 
+  public long observationTime() {
+    return time;
+  }
+
   public double rate() {
     return rate;
   }
