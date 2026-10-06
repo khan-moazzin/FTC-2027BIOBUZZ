@@ -1,6 +1,6 @@
 # Code — Understand the field. Predict the shot. Understand every decision.
 
-Our software connects a moving camera, a moving HIVE and a moving robot. Three parts of the code make that possible: vision that accounts for changing geometry, physics calculations for a stable scoring target, and logging that connects what the robot saw to what it calculated and commanded.
+Our software connects a moving camera, a moving HIVE and a moving robot. Three parts of the code make that possible: vision that accounts for changing geometry, empirical shooting maps with bounded motion correction, and logging that connects what the robot saw to what it calculated and commanded.
 
 Suggested format: one code page with three substantial sections. Each section can expand into its own technical page later.
 
@@ -30,33 +30,33 @@ A guided vision wizard fits camera mounting geometry, turret center-of-rotation 
 
 **Suggested visual:** a robot–turret–camera–HIVE geometry diagram, paired with a capture-to-arrival timeline.
 
-## 2. Advanced shot calculation — Physics for a stable HIVE
+## 2. Advanced shot calculation — Measured maps for a stable HIVE
 
-### Search offline, calculate on the robot
+### Make successful trials authoritative
 
-Our shooter adapts Team 4414's published approach: simulate trajectories, select shots that tolerate launch errors, then fit a compact polynomial. This is our implementation of their method; their 2026 shooter source was not publicly available when we researched it.
+Our primary shot settings come from two independent trial-derived maps. One maps horizontal distance to hood degrees; the other maps distance to a 0–100 flywheel percentage. Their distance keys do not need to match. Each map interpolates inside its own measured zones and clamps to the nearest endpoint outside them.
 
-The simulator models gravity and optional quadratic air drag. It searches launch angles and speeds across a configured distance and radial robot-velocity range. Candidate shots must descend into the target with clearance under configured speed and angle errors. A second-order polynomial represents exit speed, launch angle and flight time. A separate validation grid checks the fit before export.
+This makes physical testing—not an idealized projectile model—the source of the stationary shot. The percentage is converted to measured motor RPM only at the control boundary, keeping calibration and debugging readable.
 
-### Measure the launcher, then generate its model
+### Use physics only as a bounded correction
 
-We record distance, height difference, RPM, hood angle and flight time from measured shots. The calibration fits an RPM-to-exit-speed coefficient and an angle correction, reserving every third sample for validation. Opening geometry, projectile size and uncertainty settings require physical measurements too.
+Robot motion can still change the required release. When a fully calibrated physics model is available, the solver compares its moving and stationary predictions at the same distance and applies only that difference to the mapped setting. The result is clamped between the two measured values defining the active distance zone. Physics cannot replace the empirical stationary setting.
 
-The generated model is bounded by the calibrated operating range. Changed physical settings invalidate its fingerprint, and requests outside its domain are rejected. There is no empirical shot-map fallback.
+The optional model adapts Team 4414's published offline-search and polynomial approach. It models gravity and optional quadratic drag, and its generated fingerprint is invalidated by changed physical settings. If the model is missing, changed or outside its calibrated domain, the empirical map remains available without correction.
 
 ### Wait for stability, then check the actual opening
 
 Competition shooting requires distinct fresh observations showing low HIVE motion near an endpoint for a continuous dwell. Red and blue maintain separate stability histories. Only the raised cell is eligible. The selected target remains fixed during the shot calculation; moving-HIVE shots are deferred.
 
-Robot motion compensation remains separate. Translation, chassis rotation and turret rotation contribute to muzzle velocity. Radial velocity enters the polynomial, while tangential compensation adjusts the launch vector. The runtime solver rechecks 27 combinations of speed, elevation and yaw error against the actual tilted aperture plane before accepting a shot.
+Robot translation, chassis rotation and turret rotation contribute to muzzle velocity. Radial velocity can adjust the bounded mechanism targets, while tangential compensation adjusts turret aim. When physics correction is active, the runtime solver rechecks 27 combinations of speed, elevation and yaw error against the actual tilted aperture plane before accepting a shot. The drivetrain remains entirely under driver yaw control; there is no chassis aim assist.
 
 ### Connect the calculation to readiness
 
 A valid trajectory does not immediately deploy the indexer. Localization, turret alignment, hood settling and flywheel speed must pass their checks, followed by an overall readiness dwell. The single flywheel and 1:1 Axon-feedback turret retain their calibrated controllers.
 
-The model is a point-mass and aperture-clearance approximation. It does not simulate spin lift or rim collisions, and desktop tests do not establish shot accuracy. See the [physics shooting guide](PHYSICS_SHOOTING.md) for calibration and limitations.
+The optional model is a point-mass and aperture-clearance approximation. It does not simulate spin lift or rim collisions, and desktop tests do not establish shot accuracy. See the [shot-map and physics-correction guide](PHYSICS_SHOOTING.md) for calibration and limitations.
 
-**Suggested visual:** a family of simulated arcs, the chosen error-tolerant shot, and the stable-HIVE/readiness gates on a shared timeline.
+**Suggested visual:** independent hood/flywheel interpolation curves, a bounded motion correction, and the stable-HIVE/readiness gates on a shared timeline.
 
 ## 3. Logging and AdvantageScope — Seeing inside the robot
 

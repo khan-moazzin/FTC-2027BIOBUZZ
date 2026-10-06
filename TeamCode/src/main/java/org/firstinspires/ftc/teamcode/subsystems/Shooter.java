@@ -106,7 +106,7 @@ public final class Shooter extends SubsystemBase {
             MechanismConfig.hoodZero + solution.hood / MechanismConfig.hoodRadiansPerUnit;
         readinessEvaluated = true;
         readinessBlockers =
-            (robot.visionConfig.calibrated ? 0 : 1)
+            (robot.visionConfig.calibrated && config.calibrated ? 0 : 1)
                 | (solution.rpm <= MechanismConfig.maxRpm ? 0 : 2)
                 | (robot.drive.localizer().positionSigma() <= robot.visionConfig.maxPoseSigma
                     ? 0
@@ -168,15 +168,4 @@ public final class Shooter extends SubsystemBase {
     return gate.update(hive.angle(now), hive.rate(), fresh, hive.observationTime(), now, physics);
   }
 
-  public double yaw(double manual, boolean assist) {
-    if (Math.abs(manual) > .001
-        || !assist
-        || !solution.valid
-        || !robot.drive.localizer().healthy(System.nanoTime())) return manual;
-    double error = Math.abs(overflow) > MechanismConfig.turretTolerance ? overflow : solution.angle;
-    return Double.isFinite(error)
-        ? Angles.clamp(
-            error * MechanismConfig.assistP, -MechanismConfig.assistMax, MechanismConfig.assistMax)
-        : 0;
-  }
 }

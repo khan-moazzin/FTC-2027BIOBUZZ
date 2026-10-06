@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.lib.control.*;
 
 /** One direct-drive goBILDA motor, as configured on the physical robot. */
 public final class Flywheel extends SubsystemBase {
-  private final MotorEx motor;
+  private final MotorEx flywheel;
   private final CachedVoltage voltage;
   private final PIDFController pid = new PIDFController(0, 0, 0, 0);
   private final Readiness gate = new Readiness();
@@ -20,16 +20,16 @@ public final class Flywheel extends SubsystemBase {
   public Flywheel(HardwareMap hw) {
     VoltageSensor sensor = hw.voltageSensor.iterator().next();
     voltage = new CachedVoltage(sensor::getVoltage);
-    motor = new MotorEx(hw, "flywheel");
-    motor.motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    motor.setRunMode(Motor.RunMode.RawPower);
-    motor.setInverted(false);
-    motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+    flywheel = new MotorEx(hw, "flywheel");
+    flywheel.motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    flywheel.setRunMode(Motor.RunMode.RawPower);
+    flywheel.setInverted(false);
+    flywheel.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
   }
 
   public void read(long now) {
     voltage.read(now);
-    rpm = motor.getVelocity() * 60 / MechanismConfig.ticksPerRev;
+    rpm = flywheel.getVelocity() * 60 / MechanismConfig.ticksPerRev;
     ready =
         gate.update(
             MechanismConfig.flywheelCalibrated
@@ -62,7 +62,7 @@ public final class Flywheel extends SubsystemBase {
 
   public void characterize(double p) {
     duty = Double.isFinite(p) ? Angles.clamp(p, 0, 1) : 0;
-    motor.set(duty);
+    flywheel.set(duty);
   }
 
   public void stop() {

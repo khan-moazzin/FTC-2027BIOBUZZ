@@ -26,5 +26,5 @@ public final class MechanismConfig {
   public static double maxShotTranslation = 6, maxShotRotation = Math.toRadians(15);
   public static double turretMinRadians = Math.toRadians(-170),
       turretMaxRadians = Math.toRadians(170);
-  public static double turretTolerance = Math.toRadians(3), assistP = 1, assistMax = .35;
+  public static double turretTolerance = Math.toRadians(3);
 }

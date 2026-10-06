@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.lib.math.Vec3;
 
 /** Shared mechanism targets and diagnostic values. Distances inches, angles radians. */
 public class ShotSolution {
-  public boolean valid;
+  public boolean valid, mapClamped, physicsCorrected;
   public String reason = "No solution";
   public Vec3 predictedTarget, muzzle, launchVelocity;
   public int iterations;

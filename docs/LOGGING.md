@@ -81,3 +81,7 @@ Schema 2 follows the confirmed single-motor hardware: `Flywheel/Measured_rpm` an
 ## Schema 3: stable-HIVE physics
 
 Metadata includes `PhysicsShotConfig`. `HIVE/Red/Stable` and `HIVE/Blue/Stable` record independent stability gates. `Shot/Model` identifies the solver, `Shot/Clearance_m` records the smallest tested aperture margin, and `Shot/TrajectoryChecks` counts evaluated trajectories. `Shot/Target_in` replaces `Shot/PredictedTarget_in`; `Shot/HiveVariance_rad2` replaces `Shot/ImpactHiveVariance_rad2`. Historical CSV files retain their original names.
+
+## Schema 4: empirical maps with optional correction
+
+The active hood and flywheel setpoints now come from independent distance maps. `Shot/MapClamped` identifies endpoint-clamped lookup, `Shot/PhysicsCorrected` reports whether the valid physics model supplied a bounded motion correction and aperture check, and `Shot/FlywheelPercent` exposes the final 0–100 command alongside RPM. `Shot/Model` describes the hybrid solver. Physics fields remain present when no correction is active so a single AdvantageScope layout works for both modes.

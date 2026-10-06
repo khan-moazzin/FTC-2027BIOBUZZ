@@ -64,3 +64,10 @@ Added per-cycle full-robot snapshots, bounded asynchronous CSV writing, live FTC
 - Offline synthetic demo: 99 search samples and 357 validation points; maximum nominal model miss 0.02245 m. These numbers describe synthetic inputs only. Demo exports remain disabled. The normal generator correctly refuses the current uncalibrated robot configuration.
 - The first positive trajectory fixture was rejected under its initial uncertainty settings; the fixture now explicitly models a synthetic repeatable launcher. Production uncertainty defaults were not reduced to make the test pass.
 - Competition shooting now requires stable-HIVE evidence and a generated physics model. Prior sections describing active moving-HIVE prediction/map coverage are historical. See [Physics shooting](PHYSICS_SHOOTING.md) for measurement requirements and limitations.
+
+## Empirical-map shooting restoration (2026-10-06)
+
+- Independent distance-to-hood-degree and distance-to-flywheel-percent maps are again the primary competition setpoints. Each map interpolates and endpoint-clamps independently.
+- A valid physics model can only add a motion-dependent correction bounded by the active empirical zone; missing or invalid physics falls back to the calibrated maps. Stable-HIVE and readiness gates remain in force.
+- Chassis aim assist was removed. G1 right-stick X is always the driver's drivetrain-yaw command; turret tracking remains independent.
+- `:TeamCode:assembleDebug` passed and all 57 unit tests passed with zero failures/errors/skips. `:TeamCode:lintDebug` completed with zero errors and the existing 16 warnings; Kotlin dependency-metadata diagnostics still limit dependency analysis. Physical defaults remain uncalibrated, so this does not establish shot accuracy or robot readiness.

@@ -147,17 +147,41 @@ public class PhysicsShootingTest {
   }
 
   private static ShotSolution solve(PhysicsShotConfig c, boolean stable, Field.Cell cell) {
+    PhysicsShotConfig nominal = model();
+    double flywheelPercent =
+        nominal.speedCoefficients[0] / nominal.speedPerRpm / MechanismConfig.maxRpm * 100;
+    double hoodDegrees =
+        Math.toDegrees(nominal.angleCoefficients[0] - nominal.launchAngleOffset);
+    return solve(
+        c,
+        stable,
+        cell,
+        Velocity.zero(),
+        new double[][] {{70, flywheelPercent}, {90, flywheelPercent}},
+        new double[][] {{70, hoodDegrees}, {90, hoodDegrees}});
+  }
+
+  private static ShotSolution solve(
+      PhysicsShotConfig c,
+      boolean stable,
+      Field.Cell cell,
+      Velocity velocity,
+      double[][] flywheelMap,
+      double[][] hoodMap) {
     VisionConfig vision = new VisionConfig();
     vision.robotToTurret[2] = c.muzzleHeight / .0254;
     vision.hiveAccelerationNoise = 0;
     ShotConfig shots = new ShotConfig();
+    shots.calibrated = true;
+    shots.flywheelMap = flywheelMap;
+    shots.hoodMap = hoodMap;
     HiveState hive = new HiveState();
     long now = 2000000000L;
     hive.update(Field.MAX_ANGLE, .000001, now, 0);
     Vec3 goal = Field.cell(Field.Hive.BLUE, Field.Cell.SCORING, Field.MAX_ANGLE);
     return StableShotSolver.solve(
         new Pose(goal.x - 2 / .0254, goal.y, 0),
-        Velocity.zero(),
+        velocity,
         0,
         0,
         hive,
@@ -171,10 +195,11 @@ public class PhysicsShootingTest {
   }
 
   @Test
-  public void stablePhysicsProducesBoundedShotButMovingOrLowerCellCannotFire() {
+  public void stableHybridSolverUsesMapsAndValidatesWithPhysics() {
     PhysicsShotConfig c = model();
     ShotSolution shot = solve(c, true, Field.Cell.SCORING);
     assertTrue(shot.reason, shot.valid);
+    assertTrue(shot.physicsCorrected);
     assertTrue(shot.clearance > 0);
     assertEquals(27, shot.iterations);
     assertFalse(solve(c, false, Field.Cell.SCORING).valid);
@@ -182,19 +207,47 @@ public class PhysicsShootingTest {
   }
 
   @Test
-  public void changedPhysicsOrMissingModelNeverFallsBackToMap() {
+  public void changedOrMissingPhysicsFallsBackToEmpiricalMaps() {
     PhysicsShotConfig c = model();
     c.speedPerRpm *= 1.1;
-    assertFalse(solve(c, true, Field.Cell.SCORING).valid);
+    assertTrue(solve(c, true, Field.Cell.SCORING).valid);
+    assertFalse(solve(c, true, Field.Cell.SCORING).physicsCorrected);
     c = model();
     c.modelGenerated = false;
-    assertFalse(solve(c, true, Field.Cell.SCORING).valid);
+    assertTrue(solve(c, true, Field.Cell.SCORING).valid);
     c = model();
     c.speedCoefficients[0] = Double.NaN;
-    assertFalse(solve(c, true, Field.Cell.SCORING).valid);
+    assertTrue(solve(c, true, Field.Cell.SCORING).valid);
     c = model();
     c.openingRadius = .045;
     c.modelSignature = ShotPolynomial.signature(c);
-    assertFalse(solve(c, true, Field.Cell.SCORING).valid);
+    ShotSolution fallback = solve(c, true, Field.Cell.SCORING);
+    assertTrue(fallback.reason, fallback.valid);
+    assertFalse(fallback.physicsCorrected);
+    assertEquals(0, fallback.iterations);
+  }
+
+  @Test
+  public void physicsMotionCorrectionCannotLeaveTheEmpiricalDistanceZone() {
+    PhysicsShotConfig c = model();
+    double basePercent =
+        c.speedCoefficients[0] / c.speedPerRpm / MechanismConfig.maxRpm * 100;
+    double baseHood = Math.toDegrees(c.angleCoefficients[0] - c.launchAngleOffset);
+    c.speedCoefficients[2] = .5;
+    c.angleCoefficients[2] = Math.toRadians(5);
+    c.openingRadius = .8;
+    c.modelSignature = ShotPolynomial.signature(c);
+    ShotSolution shot =
+        solve(
+            c,
+            true,
+            Field.Cell.SCORING,
+            new Velocity(10, 0, 0),
+            new double[][] {{70, basePercent - 1}, {90, basePercent + 1}},
+            new double[][] {{70, baseHood - 1}, {90, baseHood + 1}});
+    assertTrue(shot.reason, shot.valid);
+    assertTrue(shot.physicsCorrected);
+    assertEquals((basePercent + 1) / 100 * MechanismConfig.maxRpm, shot.rpm, 1e-8);
+    assertEquals(Math.toRadians(baseHood + 1), shot.hood, 1e-8);
   }
 }

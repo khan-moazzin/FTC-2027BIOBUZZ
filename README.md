@@ -27,7 +27,7 @@ Use Android Studio's bundled JBR and run:
 
 On Windows use `gradlew.bat`. Keep the pinned Gradle/AGP versions.
 
-- [Stable-HIVE physics shooting and model generation](docs/PHYSICS_SHOOTING.md)
+- [Empirical shot maps and optional physics correction](docs/PHYSICS_SHOOTING.md)
 - [AdvantageScope logging and connection guide](docs/LOGGING.md)
 - [Code-page copy: vision, aiming and logging](docs/CODE_PAGES.md)
 - [Controls and calibration](docs/ROBOT_INTEGRATION.md)

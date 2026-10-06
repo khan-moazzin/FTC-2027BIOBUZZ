@@ -28,7 +28,27 @@ public class AimingTest {
   }
 
   @Test
-  public void shotMapRejectsExtrapolation() {
+  public void independentMapsInterpolateAndClampTheirOwnDistanceZones() {
+    ShotConfig c = new ShotConfig();
+    c.calibrated = true;
+    c.hoodMap = new double[][] {{40, 10}, {60, 20}};
+    c.flywheelMap = new double[][] {{30, 40}, {70, 80}};
+    assertTrue(ShotMap.ready(c));
+    ShotMap.Interpolation hood = ShotMap.interpolate(c.hoodMap, 50);
+    ShotMap.Interpolation flywheel = ShotMap.interpolate(c.flywheelMap, 50);
+    assertEquals(15, hood.value, 1e-9);
+    assertEquals(60, flywheel.value, 1e-9);
+    assertFalse(hood.clamped);
+    assertFalse(flywheel.clamped);
+    assertEquals(10, ShotMap.interpolate(c.hoodMap, 20).value, 1e-9);
+    assertEquals(80, ShotMap.interpolate(c.flywheelMap, 100).value, 1e-9);
+    assertTrue(ShotMap.interpolate(c.hoodMap, 20).clamped);
+    c.calibrated = false;
+    assertFalse(ShotMap.ready(c));
+  }
+
+  @Test
+  public void archivedPhysicsSampleMapStillRejectsExtrapolation() {
     ShotConfig c = new ShotConfig();
     c.calibrated = true;
     c.samples =

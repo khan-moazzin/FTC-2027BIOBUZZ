@@ -8,13 +8,13 @@ import org.firstinspires.ftc.teamcode.lib.control.Angles;
 
 /** Axon indexer; shooting, reverse and shutdown share one feed decision. */
 public final class Indexer extends SubsystemBase {
-  private final ServoEx servo;
+  private final ServoEx indexer;
   private double position;
 
   public Indexer(HardwareMap hw) {
-    servo = new ServoEx(hw, "indexer");
-    servo.setPwm(new PwmControl.PwmRange(500, 2500));
-    servo.setInverted(false);
+    indexer = new ServoEx(hw, "indexer");
+    indexer.setPwm(new PwmControl.PwmRange(500, 2500));
+    indexer.setInverted(false);
     retract();
   }
 
@@ -31,7 +31,7 @@ public final class Indexer extends SubsystemBase {
   }
 
   public void write() {
-    servo.set(position);
+    indexer.set(position);
   }
 
   public void retract() {

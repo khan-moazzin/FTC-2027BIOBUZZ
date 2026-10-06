@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.config;
 
-/** Measured successful shots only; wizard export replaces this file. */
+/** Measured successful shots and their independently interpolated mechanism maps. */
 public class ShotConfig {
   public boolean calibrated = false;
 
@@ -13,6 +13,12 @@ public class ShotConfig {
   public double transferDelay = 0.15;
   public double[] turretToMuzzle = {0, 0, 0};
 
-  /** Each row: horizontal inches, height difference inches, RPM, hood radians, flight seconds. */
+  /** Rows are {horizontal distance inches, hood launch angle degrees}. */
+  public double[][] hoodMap = {{48.0, 10.61}};
+
+  /** Rows are {horizontal distance inches, flywheel percent from 0 to 100}. */
+  public double[][] flywheelMap = {{48.0, 62.1}};
+
+  /** Physics-fit archive: horizontal inches, height difference, RPM, hood radians, flight seconds. */
   public double[][] samples = {};
 }

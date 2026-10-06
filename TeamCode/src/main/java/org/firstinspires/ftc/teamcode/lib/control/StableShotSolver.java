@@ -1,18 +1,19 @@
 package org.firstinspires.ftc.teamcode.lib.control;
 
-import com.pedropathing.math.*;
-import org.firstinspires.ftc.teamcode.config.*;
+import com.pedropathing.math.Pose;
+import com.pedropathing.math.Velocity;
+import org.firstinspires.ftc.teamcode.config.MechanismConfig;
+import org.firstinspires.ftc.teamcode.config.PhysicsShotConfig;
+import org.firstinspires.ftc.teamcode.config.ShotConfig;
+import org.firstinspires.ftc.teamcode.config.VisionConfig;
 import org.firstinspires.ftc.teamcode.lib.field.Field;
 import org.firstinspires.ftc.teamcode.lib.math.Vec3;
 import org.firstinspires.ftc.teamcode.lib.vision.HiveState;
 
-/**
- * Original adaptation of 4414's published physics/precomputed-polynomial method; no target-motion
- * mode.
- */
+/** Stable-HIVE empirical-map solver with optional bounded physics motion correction. */
 public final class StableShotSolver {
-  private static Vec3 mirror(double[] v, Field.Cell cell) {
-    return new Vec3(v[0], cell == Field.Cell.SCORING ? v[1] : -v[1], v[2]);
+  private static Vec3 mirror(double[] value, Field.Cell cell) {
+    return new Vec3(value[0], cell == Field.Cell.SCORING ? value[1] : -value[1], value[2]);
   }
 
   public static ShotSolution solve(
@@ -26,140 +27,239 @@ public final class StableShotSolver {
       long now,
       VisionConfig vision,
       ShotConfig shots,
-      PhysicsShotConfig c,
+      PhysicsShotConfig physics,
       boolean stable) {
-    ShotSolution s = new ShotSolution();
+    ShotSolution solution = new ShotSolution();
     if (!stable
         || !hive.fresh(now, vision.hiveMaxAge)
-        || Math.abs(hive.rate()) > c.stableRate
-        || Math.abs(Math.abs(hive.angle(now)) - Field.MAX_ANGLE) > c.stableAngleTolerance) {
-      s.reason = "Waiting for stable HIVE";
-      return s;
+        || Math.abs(hive.rate()) > physics.stableRate
+        || Math.abs(Math.abs(hive.angle(now)) - Field.MAX_ANGLE)
+            > physics.stableAngleTolerance) {
+      solution.reason = "Waiting for stable HIVE";
+      return solution;
     }
     if (cell != Field.raised(hive.angle(now))) {
-      s.reason = "Select raised stable cell";
-      return s;
+      solution.reason = "Select raised stable cell";
+      return solution;
     }
-    if (!c.calibrated
-        || !c.modelGenerated
-        || !c.geometryVerified
-        || !ShotPolynomial.physicalInputsValid(c)
-        || !ShotPolynomial.signature(c).equals(c.modelSignature)) {
-      s.reason = "Physics calibration/model missing or changed";
-      return s;
+    if (!ShotMap.ready(shots)) {
+      solution.reason = "Empirical hood/flywheel maps not calibrated";
+      return solution;
     }
-    if (!Double.isFinite(turret)
-        || !Double.isFinite(turretRate)
-        || !Double.isFinite(robot.x())
-        || !Double.isFinite(robot.y())
-        || !Double.isFinite(robot.heading())
-        || !Double.isFinite(velocity.vx)
-        || !Double.isFinite(velocity.vy)
-        || !Double.isFinite(velocity.omega)
-        || !Double.isFinite(shots.transferDelay)
+    if (!finite(
+            turret,
+            turretRate,
+            robot.x(),
+            robot.y(),
+            robot.heading(),
+            velocity.vx,
+            velocity.vy,
+            velocity.omega,
+            shots.transferDelay)
         || shots.transferDelay < 0
         || shots.transferDelay > 1) {
-      s.reason = "Invalid motion/release delay";
-      return s;
+      solution.reason = "Invalid motion/release delay";
+      return solution;
     }
-    Vec3 offset =
+
+    Vec3 robotToMuzzle =
         new Vec3(vision.robotToTurret)
             .plus(new Vec3(shots.turretToMuzzle).rotateZ(turret))
             .rotateZ(robot.heading());
-    Vec3 muzzle = new Vec3(robot.x(), robot.y(), 0).plus(offset).times(.0254);
-    Vec3 arm = new Vec3(shots.turretToMuzzle).rotateZ(turret + robot.heading()).times(.0254);
-    Vec3 platform =
+    Vec3 muzzle = new Vec3(robot.x(), robot.y(), 0).plus(robotToMuzzle);
+    Vec3 turretArm = new Vec3(shots.turretToMuzzle).rotateZ(turret + robot.heading());
+    Vec3 platformVelocity =
         new Vec3(
-            velocity.vx * .0254 - velocity.omega * offset.y * .0254 - turretRate * arm.y,
-            velocity.vy * .0254 + velocity.omega * offset.x * .0254 + turretRate * arm.x,
+            velocity.vx - velocity.omega * robotToMuzzle.y - turretRate * turretArm.y,
+            velocity.vy + velocity.omega * robotToMuzzle.x + turretRate * turretArm.x,
             0);
-    // Freeze the observed target. No HIVE angle extrapolation to future impact time.
-    double angle = hive.angle(now);
-    Vec3 goal =
-        Field.cell(alliance, cell, angle)
-            .times(.0254)
-            .plus(mirror(c.apertureOffset, cell).rotateX(angle));
-    Vec3 normal = mirror(c.apertureNormal, cell).rotateX(angle);
-    Vec3 release = muzzle.plus(platform.times(shots.transferDelay)), delta = goal.minus(release);
-    double distance = Math.hypot(delta.x, delta.y), bearing = Math.atan2(delta.y, delta.x);
-    double radial = platform.x * Math.cos(bearing) + platform.y * Math.sin(bearing);
-    double tangent = -platform.x * Math.sin(bearing) + platform.y * Math.cos(bearing);
-    s.muzzle = muzzle.times(1 / .0254);
-    s.predictedTarget = goal.times(1 / .0254);
-    s.launchVelocity = platform.times(1 / .0254);
-    s.distance = distance / .0254;
-    s.height = delta.z / .0254;
-    s.impactVariance = hive.variance(now, vision.hiveAccelerationNoise);
-    if (!Double.isFinite(s.impactVariance) || Math.sqrt(s.impactVariance) > vision.maxHiveSigma) {
-      s.reason = "HIVE uncertain";
-      return s;
+
+    boolean physicsReady = physicsReady(physics);
+    double hiveAngle = hive.angle(now);
+    Vec3 goal = Field.cell(alliance, cell, hiveAngle);
+    if (physicsReady)
+      goal =
+          goal.plus(
+              mirror(physics.apertureOffset, cell).rotateX(hiveAngle).times(1.0 / .0254));
+
+    Vec3 release = muzzle.plus(platformVelocity.times(shots.transferDelay));
+    Vec3 delta = goal.minus(release);
+    double distance = Math.hypot(delta.x, delta.y);
+    ShotMap.Interpolation hood = ShotMap.interpolate(shots.hoodMap, distance);
+    ShotMap.Interpolation flywheel = ShotMap.interpolate(shots.flywheelMap, distance);
+    if (hood == null || flywheel == null || flywheel.value <= 0 || flywheel.value > 100) {
+      solution.reason = "Invalid empirical hood/flywheel map";
+      return solution;
     }
-    if (distance < c.minDistance
-        || distance > c.maxDistance
-        || Math.abs(radial) > c.maxRadialSpeed
-        || Math.abs(muzzle.z - c.muzzleHeight) > c.heightTolerance
-        || Math.abs(goal.z - c.targetHeight) > c.heightTolerance) {
-      s.reason = "Outside generated physics domain";
-      return s;
+
+    solution.muzzle = muzzle;
+    solution.predictedTarget = goal;
+    solution.distance = distance;
+    solution.height = delta.z;
+    double flywheelPercent = flywheel.value;
+    solution.rpm = flywheelPercent / 100 * MechanismConfig.maxRpm;
+    solution.hood = Math.toRadians(hood.value);
+    solution.mapClamped = hood.clamped || flywheel.clamped;
+    solution.impactVariance = hive.variance(now, vision.hiveAccelerationNoise);
+    if (!Double.isFinite(solution.impactVariance)
+        || Math.sqrt(solution.impactVariance) > vision.maxHiveSigma) {
+      solution.reason = "HIVE uncertain";
+      return solution;
     }
-    double[] basis = ShotPolynomial.basis(distance, radial, c);
-    double speed = ShotPolynomial.evaluate(c.speedCoefficients, basis),
-        elevation = ShotPolynomial.evaluate(c.angleCoefficients, basis);
-    double flight = ShotPolynomial.evaluate(c.flightCoefficients, basis);
-    double horizontal = speed * Math.cos(elevation), vertical = speed * Math.sin(elevation);
-    double launchYaw = bearing + Math.atan2(-tangent, horizontal);
-    double launchElevation = Math.atan2(vertical, Math.hypot(horizontal, tangent));
-    double exitSpeed = Math.sqrt(speed * speed + tangent * tangent);
-    if (!Double.isFinite(speed)
-        || speed <= 0
-        || !Double.isFinite(elevation)
-        || !Double.isFinite(flight)
-        || flight <= 0
-        || flight > c.maxFlightSeconds
-        || exitSpeed > c.maxExitSpeed
-        || launchElevation < c.minLaunchAngle
-        || launchElevation > c.maxLaunchAngle) {
-      s.reason = "Invalid polynomial / exit limits";
-      return s;
+
+    double bearing = Math.atan2(delta.y, delta.x);
+    double radialInches =
+        platformVelocity.x * Math.cos(bearing) + platformVelocity.y * Math.sin(bearing);
+    double tangentInches =
+        -platformVelocity.x * Math.sin(bearing) + platformVelocity.y * Math.cos(bearing);
+    double launchYaw = bearing;
+
+    double distanceMeters = distance * .0254;
+    double radialMeters = radialInches * .0254;
+    boolean insidePhysicsDomain =
+        physicsReady
+            && distanceMeters >= physics.minDistance
+            && distanceMeters <= physics.maxDistance
+            && Math.abs(radialMeters) <= physics.maxRadialSpeed
+            && Math.abs(muzzle.z * .0254 - physics.muzzleHeight) <= physics.heightTolerance
+            && Math.abs(goal.z * .0254 - physics.targetHeight) <= physics.heightTolerance;
+    if (insidePhysicsDomain) {
+      double[] moving = ShotPolynomial.basis(distanceMeters, radialMeters, physics);
+      double[] stationary = ShotPolynomial.basis(distanceMeters, 0, physics);
+      double movingSpeed = ShotPolynomial.evaluate(physics.speedCoefficients, moving);
+      double stationarySpeed = ShotPolynomial.evaluate(physics.speedCoefficients, stationary);
+      double movingAngle = ShotPolynomial.evaluate(physics.angleCoefficients, moving);
+      double stationaryAngle = ShotPolynomial.evaluate(physics.angleCoefficients, stationary);
+      double flight = ShotPolynomial.evaluate(physics.flightCoefficients, moving);
+      if (finite(movingSpeed, stationarySpeed, movingAngle, stationaryAngle, flight)
+          && movingSpeed > 0
+          && stationarySpeed > 0
+          && flight > 0
+          && flight <= physics.maxFlightSeconds) {
+        flywheelPercent =
+            clamp(
+                flywheelPercent
+                    + (movingSpeed - stationarySpeed)
+                        / physics.speedPerRpm
+                        / MechanismConfig.maxRpm
+                        * 100,
+                flywheel.zoneMin,
+                flywheel.zoneMax);
+        solution.rpm = flywheelPercent / 100 * MechanismConfig.maxRpm;
+        solution.hood =
+            clamp(
+                solution.hood + movingAngle - stationaryAngle,
+                Math.toRadians(hood.zoneMin),
+                Math.toRadians(hood.zoneMax));
+        solution.flight = flight;
+        solution.physicsCorrected = true;
+
+        double exitSpeed = solution.rpm * physics.speedPerRpm;
+        double elevation = solution.hood + physics.launchAngleOffset;
+        double horizontalSpeed = exitSpeed * Math.cos(elevation);
+        launchYaw = bearing + Math.atan2(-tangentInches * .0254, horizontalSpeed);
+        if (!validatePhysics(
+            solution,
+            release.times(.0254),
+            goal.times(.0254),
+            mirror(physics.apertureNormal, cell).rotateX(hiveAngle),
+            platformVelocity.times(.0254),
+            launchYaw,
+            elevation,
+            exitSpeed,
+            physics)) return solution;
+      }
     }
-    s.rpm = exitSpeed / c.speedPerRpm;
-    s.hood = launchElevation - c.launchAngleOffset;
-    s.angle = Angles.wrap(launchYaw - robot.heading() - velocity.omega * shots.transferDelay);
-    s.angularVelocity =
+
+    solution.launchVelocity = platformVelocity;
+    solution.angle =
+        Angles.wrap(launchYaw - robot.heading() - velocity.omega * shots.transferDelay);
+    solution.angularVelocity =
         MovingShotSolver.lineOfSightRate(
-            delta.x, delta.y, -platform.x, -platform.y, velocity.omega);
-    double clear = c.openingRadius - c.projectileRadius - c.clearanceMargin;
+            delta.x, delta.y, -platformVelocity.x, -platformVelocity.y, velocity.omega);
+    solution.valid =
+        finite(solution.angle, solution.angularVelocity, solution.rpm, solution.hood)
+            && solution.rpm > 0
+            && solution.rpm <= MechanismConfig.maxRpm;
+    solution.reason =
+        solution.valid
+            ? solution.physicsCorrected
+                ? "Stable HIVE empirical maps + bounded physics correction"
+                : solution.mapClamped
+                    ? "Stable HIVE empirical maps (distance clamped)"
+                    : "Stable HIVE empirical maps"
+            : "Mechanism setpoint invalid";
+    return solution;
+  }
+
+  private static boolean validatePhysics(
+      ShotSolution solution,
+      Vec3 release,
+      Vec3 goal,
+      Vec3 normal,
+      Vec3 platformVelocity,
+      double launchYaw,
+      double elevation,
+      double exitSpeed,
+      PhysicsShotConfig physics) {
+    if (exitSpeed > physics.maxExitSpeed
+        || elevation < physics.minLaunchAngle
+        || elevation > physics.maxLaunchAngle) {
+      solution.reason = "Physics limits rejected mapped shot";
+      return false;
+    }
+    double clear = physics.openingRadius - physics.projectileRadius - physics.clearanceMargin;
     double worst = 0;
     Ballistics.Crossing nominal = null;
-    for (int sv = -1; sv <= 1; sv++)
-      for (int av = -1; av <= 1; av++)
-        for (int yv = -1; yv <= 1; yv++) {
-          double v = exitSpeed * (1 + sv * c.speedSigmaFraction * c.errorMultiplier);
-          double a = launchElevation + av * c.angleSigma * c.errorMultiplier;
-          double yaw = launchYaw + yv * c.angleSigma * c.errorMultiplier;
-          Vec3 launch =
+    for (int speedError = -1; speedError <= 1; speedError++)
+      for (int angleError = -1; angleError <= 1; angleError++)
+        for (int yawError = -1; yawError <= 1; yawError++) {
+          double speed =
+              exitSpeed
+                  * (1 + speedError * physics.speedSigmaFraction * physics.errorMultiplier);
+          double angle = elevation + angleError * physics.angleSigma * physics.errorMultiplier;
+          double yaw = launchYaw + yawError * physics.angleSigma * physics.errorMultiplier;
+          Vec3 projectile =
               new Vec3(
-                      v * Math.cos(a) * Math.cos(yaw),
-                      v * Math.cos(a) * Math.sin(yaw),
-                      v * Math.sin(a))
-                  .plus(platform);
+                      speed * Math.cos(angle) * Math.cos(yaw),
+                      speed * Math.cos(angle) * Math.sin(yaw),
+                      speed * Math.sin(angle))
+                  .plus(platformVelocity);
           Ballistics.Crossing hit =
-              Ballistics.cross(release, launch, goal, normal, c.dragPerMeter, c.maxFlightSeconds);
-          s.iterations++;
+              Ballistics.cross(
+                  release,
+                  projectile,
+                  goal,
+                  normal,
+                  physics.dragPerMeter,
+                  physics.maxFlightSeconds);
+          solution.iterations++;
           if (hit == null || hit.miss > clear) {
-            s.reason = "Trajectory clearance / uncertainty rejected";
-            return s;
+            solution.reason = "Physics clearance rejected mapped shot";
+            return false;
           }
           worst = Math.max(worst, hit.miss);
-          if (sv == 0 && av == 0 && yv == 0) nominal = hit;
+          if (speedError == 0 && angleError == 0 && yawError == 0) nominal = hit;
         }
-    s.flight = nominal.time;
-    s.clearance = clear - worst;
-    s.valid =
-        Double.isFinite(s.angle)
-            && Double.isFinite(s.angularVelocity)
-            && s.rpm <= MechanismConfig.maxRpm;
-    s.reason = s.valid ? "Stable HIVE physics" : "Mechanism speed limit";
-    return s;
+    solution.flight = nominal.time;
+    solution.clearance = clear - worst;
+    return true;
+  }
+
+  private static boolean physicsReady(PhysicsShotConfig physics) {
+    return physics.calibrated
+        && physics.modelGenerated
+        && physics.geometryVerified
+        && ShotPolynomial.physicalInputsValid(physics)
+        && ShotPolynomial.signature(physics).equals(physics.modelSignature);
+  }
+
+  private static boolean finite(double... values) {
+    for (double value : values) if (!Double.isFinite(value)) return false;
+    return true;
+  }
+
+  private static double clamp(double value, double min, double max) {
+    return Math.max(min, Math.min(max, value));
   }
 }

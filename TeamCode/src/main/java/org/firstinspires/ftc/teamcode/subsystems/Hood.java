@@ -8,14 +8,14 @@ import org.firstinspires.ftc.teamcode.lib.control.Angles;
 import org.firstinspires.ftc.teamcode.lib.control.ServoSettling;
 
 public final class Hood extends SubsystemBase {
-  private final ServoEx servo;
+  private final ServoEx hood;
   private double position = MechanismConfig.hoodStow;
   private final ServoSettling settling = new ServoSettling();
 
   public Hood(HardwareMap hw) {
-    servo = new ServoEx(hw, "hood");
-    servo.setPwm(new com.qualcomm.robotcore.hardware.PwmControl.PwmRange(500, 2500));
-    servo.setInverted(false);
+    hood = new ServoEx(hw, "hood");
+    hood.setPwm(new com.qualcomm.robotcore.hardware.PwmControl.PwmRange(500, 2500));
+    hood.setInverted(false);
     settling.command(position);
   }
 
@@ -35,7 +35,7 @@ public final class Hood extends SubsystemBase {
   }
 
   public void write() {
-    servo.set(position);
+    hood.set(position);
     settling.written(
         System.nanoTime(),
         MechanismConfig.hoodSecondsPer60Degrees * 6,

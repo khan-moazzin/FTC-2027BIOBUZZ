@@ -36,7 +36,7 @@ public final class RobotLogging implements AutoCloseable {
       File file = File.createTempFile("run-" + System.currentTimeMillis() + "-", ".csv", directory);
       path = file.getAbsolutePath();
       Map<String, Object> metadata = new LinkedHashMap<>();
-      metadata.put("schema", 3);
+      metadata.put("schema", 4);
       metadata.put("createdUnixMs", System.currentTimeMillis());
       metadata.put("timebase", "monotonic seconds since logger INIT; snapshot time is cycle start");
       metadata.put("poseUnits", "Pedro inches and radians");
@@ -175,13 +175,15 @@ public final class RobotLogging implements AutoCloseable {
       hive(v, "Red", r.vision.red, r.vision.redDiagnostic, r, now);
       hive(v, "Blue", r.vision.blue, r.vision.blueDiagnostic, r, now);
       v.put("Shot/Status", r.shooter.status);
-      v.put("Shot/Model", "Stable-HIVE physics polynomial");
+      v.put("Shot/Model", "Stable-HIVE empirical maps + bounded physics correction");
       v.put("HIVE/Red/Stable", r.shooter.redStable);
       v.put("HIVE/Blue/Stable", r.shooter.blueStable);
       n(v, "Shot/Clearance_m", r.shooter.solution.clearance);
       v.put("Shot/Reason", r.shooter.solution.reason);
       v.put("Shot/SelectedCell", r.shooter.selectedCell());
       v.put("Shot/Valid", r.shooter.solution.valid);
+      v.put("Shot/MapClamped", r.shooter.solution.mapClamped);
+      v.put("Shot/PhysicsCorrected", r.shooter.solution.physicsCorrected);
       v.put("Shot/Ready", r.shooter.ready);
       v.put("Shot/Preparing", r.shooter.preparing);
       v.put("Shot/FeedRequested", r.shooter.feedRequested);
@@ -189,7 +191,7 @@ public final class RobotLogging implements AutoCloseable {
       v.put("Shot/ReadinessEvaluated", r.shooter.readinessEvaluated);
       v.put("Shot/ReadinessBlockers", r.shooter.readinessBlockers);
       String[] gates = {
-        "VisionCalibration",
+        "Calibration",
         "RpmRange",
         "Pose",
         "Reachable",
@@ -213,6 +215,7 @@ public final class RobotLogging implements AutoCloseable {
       n(v, "Shot/Angle_rad", r.shooter.solution.angle);
       n(v, "Shot/AngularVelocity_rad_s", r.shooter.solution.angularVelocity);
       n(v, "Shot/Rpm", r.shooter.solution.rpm);
+      n(v, "Shot/FlywheelPercent", r.shooter.solution.rpm / MechanismConfig.maxRpm * 100);
       n(v, "Shot/Hood_rad", r.shooter.solution.hood);
       n(v, "Shot/Flight_s", r.shooter.solution.flight);
       n(v, "Shot/Distance_in", r.shooter.solution.distance);

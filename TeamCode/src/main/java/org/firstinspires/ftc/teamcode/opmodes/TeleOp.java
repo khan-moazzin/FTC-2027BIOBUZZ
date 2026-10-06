@@ -26,9 +26,7 @@ public final class TeleOp extends OpMode {
         robot.drive.teleopDrive(
             () -> -Angles.deadband(gamepad1.left_stick_y),
             () -> -Angles.deadband(gamepad1.left_stick_x),
-            () ->
-                robot.shooter.yaw(
-                    -.6 * Angles.deadband(gamepad1.right_stick_x), gamepad1.right_bumper)));
+            () -> -.6 * Angles.deadband(gamepad1.right_stick_x)));
     robot.shooter.setDefaultCommand(robot.shooter.driverControl(gamepad1, gamepad2));
   }
 

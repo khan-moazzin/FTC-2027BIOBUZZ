@@ -11,7 +11,7 @@ Packages:
 - field/math: official geometry, rigid camera transforms, numerical fitting.
 - vision: Limelight adapter, capture-time turret history, HIVE estimators, pose fitting.
 - localization: bounded delayed pose filter with covariance and innovation rejection.
-- control/subsystems: measured mechanism state, aiming, physics shot calculation, readiness and command ownership.
+- control/subsystems: measured mechanism state, empirical-map aiming, optional physics correction, readiness and command ownership.
 - calibration: separate guided OpModes and complete Java configuration export.
 
 The vision estimator uses per-tag 3D camera-space translations, explicitly converts optical (right, down, forward) to (forward, left, up), and fits robot XY/yaw and one HIVE angle. It requires at least two separated tag IDs from the same HIVE. It rejects degenerate fits; it does not silently fall back to static field poses. Camera roll/pitch/yaw and turret COR are part of the transform.
@@ -20,17 +20,16 @@ Red and blue have separate angle, angular velocity, covariance, and freshness. C
 
 Fusion uses capture time, full pose covariance, a Mahalanobis innovation gate, and replay of odometry after correction. It is bounded to two seconds / 512 entries including inserted corrections. Frames older than the latest accepted correction are rejected so they cannot erase that correction. Reset clears history, covariance and time state. Fresh duplicate camera frames are not fused twice.
 
-Competition aiming uses `StableShotSolver`: a generated physics polynomial, robot muzzle-motion compensation and runtime aperture-clearance checks. Only a fresh, stable raised HIVE cell is eligible. The old moving-target solver remains an inactive library reference. See [Physics shooting](PHYSICS_SHOOTING.md).
+Competition aiming uses `StableShotSolver`: independently interpolated hood/flywheel maps provide the setpoints, while a valid generated physics model may add a bounded robot-motion correction and aperture-clearance check. Physics is optional and cannot move a command outside its neighboring measured map values. Only a fresh, stable raised HIVE cell is eligible. The old moving-target solver remains an inactive library reference. See [shot maps and physics correction](PHYSICS_SHOOTING.md).
 
 ## Driver controls
 
 | Controller | Control | Action |
 |---|---|---|
-| G1 | left stick / right stick X | translation / yaw; manual yaw wins over assistance |
+| G1 | left stick / right stick X | translation / driver-controlled yaw |
 | G1 | B | robot/field drive toggle |
 | G1 | Back | driver-heading trim |
 | G1 | LT / LB | collect / reverse; reverse wins |
-| G1 | held RB | chassis aiming assistance when a valid prepared solution exists |
 | G2 | LT | prepare and track |
 | G2 | RT | prepare and feed only when all readiness conditions pass |
 | G2 | B | cancel, latched until triggers are released |
@@ -52,7 +51,7 @@ Generated files are in /sdcard/FIRST/biobuzz-calibration on the Control Hub. Cop
 3. **Tune 2 â€” Complete BIOBUZZ Vision Wizard.** Requires the copied turret export. Enter surveyed robot XY/heading, known red/blue HIVE angles, and physically measured turret-axis height. At each static robot/HIVE placement record slow bidirectional turret sweeps. Repeat at three or more robot positions/headings and both HIVE endpoints. The fit estimates COR XY, camera XYZ, roll/pitch/yaw and residual latency. COR Z is fixed by physical measurement to remove an otherwise unobservable vertical-offset ambiguity. A subset of observations is held out for validation. Rank-deficient or high-error fits do not enable calibration. Observations are exported to CSV for review. One complete VisionConfig.java is exported.
 4. **Tune 3 â€” Flywheel feedforward.** Empty shooter, hold RB through staged characterization. It fits the single motor's static and velocity coefficients. The proportional coefficient is an initial value derived from measured velocity gain, not a measured optimal controller. Validate settling and loaded recovery in Tune 5 before competition.
 5. **Tune 4 â€” Hood angle mapping.** Record two well-separated servo positions and physically measured launch angles. Adjust the safe hood limits in MechanismConfig to the actual mechanism before operating outside them. This is a linear mapping; validate intermediate positions if the linkage is nonlinear.
-6. **Tune 5 — Physics shot calibration.** Keep the robot stationary and HIVE stable. Record at least nine varied successful shots with measured distance, height, RPM, hood angle and flight time. Y archives the samples and exports a validated speed/angle calibration. Then verify opening geometry and run the offline generator; see [the full workflow](PHYSICS_SHOOTING.md).
+6. **Tune 5 — Shot map calibration.** Keep the robot stationary and HIVE stable. Record confirmed shots using distance, flywheel percent and hood degrees; Y exports the independent interpolated maps. Height/flight measurements and nine varied samples are needed only for the optional physics correction fit. See [the full workflow](PHYSICS_SHOOTING.md).
 
 Vision noise thresholds, exposure duration, HIVE acceleration process noise, readiness tolerances and gate thresholds are initial policy values, not measured robot constants. Validate them against field motion and replay logs. If impact-time HIVE uncertainty exceeds maxHiveSigma, feeding remains inhibited even with a good current pose. The wizard does not claim to measure projectile flight, camera exposure settings, or all future HIVE dynamics from static tag captures.
 
@@ -69,7 +68,7 @@ No robot is connected during this implementation. Physical calibration flags rem
 
 ## Seattle audit follow-up
 
-Pinpoint must report READY and finite pose/velocity after its normal Pedro bulk update. Startup calibration may finish normally. A later device fault invalidates the fusion history and latches automation off until a verified `Drive.setPose(...)` or OpMode restart. Manual control falls back to robot-relative drive; shooting, yaw assist and path/hold control are blocked. The back-button driver-forward trim does not reset this fault. Diagnose the device and re-establish field pose before continuing automation. A 250 ms freshness deadline also rejects an old state; no unchanged-position heuristic is used because a stationary robot is valid.
+Pinpoint must report READY and finite pose/velocity after its normal Pedro bulk update. Startup calibration may finish normally. A later device fault invalidates the fusion history and latches automation off until a verified `Drive.setPose(...)` or OpMode restart. Manual control falls back to robot-relative drive; shooting and path/hold control are blocked. The back-button driver-forward trim does not reset this fault. Diagnose the device and re-establish field pose before continuing automation. A 250 ms freshness deadline also rejects an old state; no unchanged-position heuristic is used because a stationary robot is valid.
 
 Tune 3 now records applied **volts**, not duty cycle, and exports `MechanismConfig.flywheelGainsInVolts=true`. Rerun the tuner to migrate existing gains; never just flip this flag. S has units volts, V has volts/RPM, and P has volts/RPM of error. Controller output is divided by cached measured battery voltage and clamped to [0,1]. Legacy duty-cycle configurations retain `false`. Voltage is read at 5 Hz; invalid or stale voltage inhibits voltage-mode output and readiness. The P estimate remains only a starting point for Tune 5 loaded testing.
 
