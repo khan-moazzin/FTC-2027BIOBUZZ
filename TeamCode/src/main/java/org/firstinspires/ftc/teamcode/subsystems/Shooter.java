@@ -47,7 +47,7 @@ public final class Shooter extends SubsystemBase {
 
   public Command driverControl(Gamepad g1, Gamepad g2) {
     return new RunCommand(
-        () -> control(g1, g2, System.nanoTime()),
+        () -> controlDriver(g1, g2, System.nanoTime()),
         this,
         robot.intake,
         robot.indexer,
@@ -56,19 +56,40 @@ public final class Shooter extends SubsystemBase {
         robot.flywheel);
   }
 
-  private void control(Gamepad g1, Gamepad g2, long now) {
-    double dt = lastTime == 0 ? .02 : Math.min(.1, (now - lastTime) * 1e-9);
-    lastTime = now;
+  private void controlDriver(Gamepad g1, Gamepad g2, long now) {
     if (g2.a) selection = null;
     if (g2.x) selection = Field.Cell.AUDIENCE;
     if (g2.y) selection = Field.Cell.SCORING;
     if (g2.b) cancelled = true;
     else if (g2.left_trigger < .1 && g2.right_trigger < .1) cancelled = false;
+    control(
+        !cancelled && (g2.left_trigger > .5 || g2.right_trigger > .5),
+        g2.right_trigger > .5,
+        g1.left_bumper,
+        g1.left_trigger > .5,
+        now);
+  }
+
+  /** Runs one autonomous shooting cycle. Feeding still requires every normal readiness gate. */
+  public void runAutoShot(long now) {
+    cancelled = false;
+    selection = null;
+    control(true, true, false, false, now);
+  }
+
+  /** Safely ends an autonomous shooting window and stows the mechanism. */
+  public void stopAutoShot(long now) {
+    control(false, false, false, false, now);
+  }
+
+  private void control(
+      boolean prepare, boolean requestFeed, boolean reverse, boolean collect, long now) {
+    double dt = lastTime == 0 ? .02 : Math.min(.1, (now - lastTime) * 1e-9);
+    lastTime = now;
     redStable = stable(robot.vision.red, redGate, now);
     blueStable = stable(robot.vision.blue, blueGate, now);
-    boolean prepare = !cancelled && (g2.left_trigger > .5 || g2.right_trigger > .5);
     preparing = prepare;
-    feedRequested = g2.right_trigger > .5;
+    feedRequested = requestFeed;
     readinessBlockers = 1023;
     readinessEvaluated = false;
     ready = false;
@@ -151,12 +172,10 @@ public final class Shooter extends SubsystemBase {
     }
     if (!prepare || !solution.valid || readinessBlockers != 0) shotGate.update(false, now, 0);
     // Reverse retracts the indexer even when a valid shooting request is held.
-    boolean feed = Readiness.feed(prepare, feedRequested, ready, g1.left_bumper);
+    boolean feed = Readiness.feed(prepare, feedRequested, ready, reverse);
     robot.indexer.feed(feed);
     robot.intake.set(
-        g1.left_bumper
-            ? -.9
-            : prepare ? (feed ? 1 : 0) : Intake.requested(g1.left_trigger > .5, false));
+        reverse ? -.9 : prepare ? (feed ? 1 : 0) : Intake.requested(collect, false));
   }
 
   private boolean stable(HiveState hive, StableHiveGate gate, long now) {

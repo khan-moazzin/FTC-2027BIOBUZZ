@@ -40,6 +40,13 @@ public final class Drive extends SubsystemBase {
     return c;
   }
 
+  /** Follows one path with an explicit fraction of the tuned maximum path speed. */
+  public Command follow(Path p, double maxPower) {
+    FollowPathCommand c = new FollowPathCommand(follower, p, false, maxPower);
+    c.addRequirements(this);
+    return c;
+  }
+
   public void drive(double x, double y, double yaw) {
     commandForward = x;
     commandStrafe = y;

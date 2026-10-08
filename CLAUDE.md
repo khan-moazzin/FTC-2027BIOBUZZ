@@ -27,8 +27,8 @@ shooter. Written by one student programmer who also codes FRC Team 5817.
 - `dev.frozenmilk.sinister:Sloth` arrives transitively from Pedro and resolves
   **only** from `https://repo.dairy.foundation/releases/`. That line must stay in
   `build.dependencies.gradle`. Never pin its version by hand.
-- No Panels or FtcDashboard in dependencies — no `@Configurable`, no live
-  constant tuning, plain FTC telemetry only.
+- No Panels or live `@Configurable` tuning. FTC Dashboard is used only to publish the bounded
+  AdvantageScope logging stream; robot constants remain source-controlled.
 - Decline Android Studio's AGP upgrade prompt and its "migrate to Daemon
   toolchain" prompt. Both break a pinned FTC build.
 
@@ -53,7 +53,7 @@ Explicit Axon PWM limits are 500–2500 microseconds; FTC SDK defaults are 600�
 Camera is a turret-mounted Limelight, using per-tag camera-space observations. Moving tags cannot use a static botpose map.
 Red and blue HIVE estimates remain independent. No single-tag or uncalibrated fallback may enable automatic feeding.
 
-Hardware names: fl, bl, fr, br, pinpoint, intake1, intake2, turret1, turret2, hood, flywheel1, flywheel2, limelight, turretEncoder1, turretEncoder2.
+Hardware names: fl, bl, fr, br, pinpoint, intake1, intake2, kickup1, kickup2, indexer, turret1, turret2, hood, flywheel, limelight, turretEncoder1, turretEncoder2.
 The last two analog names are configurable in VisionConfig. Verify them on the robot.
 SWYFT odometry requires CUSTOM Pinpoint scalar tuning.
 

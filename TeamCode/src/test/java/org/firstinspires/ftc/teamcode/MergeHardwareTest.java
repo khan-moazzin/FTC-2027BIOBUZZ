@@ -69,5 +69,6 @@ public class MergeHardwareTest {
     assertFalse(c.calibrated);
     assertEquals(0, c.samples.length);
     assertFalse(MechanismConfig.indexerCalibrated);
+    assertFalse(MechanismConfig.kickupCalibrated);
   }
 }

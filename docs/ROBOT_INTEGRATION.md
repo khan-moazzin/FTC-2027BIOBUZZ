@@ -36,6 +36,17 @@ Competition aiming uses `StableShotSolver`: independently interpolated hood/flyw
 | G2 | A / X / Y | automatic raised cell / audience cell / scoring cell |
 | G1 during INIT | dpad left/right | blue/red alliance |
 
+## Autonomous
+
+`AutoMain` uses the same Robot read → Solvers commands → write lifecycle as TeleOp. During
+INIT, G1 dpad left/right selects blue/red and dpad up/down selects FULL/DO_NOTHING. The route is
+authored for blue in `ThreeTipPaths`; red mirrors every pose and control point about field center X=72.
+Pedro paths run through SolversLib's `FollowPathCommand`, not a blocking `LinearOpMode` or a second
+Follower. Shooting windows request preparation and feeding for their bounded duration but cannot
+bypass vision, turret, flywheel, hood, indexer, localization or motion readiness. The final park
+path requests the full tuned Pedro path-speed limit; its real speed still depends on Foresight
+calibration.
+
 Preparation owns the shared intake path. An intake trigger cannot bypass the shooting gate while preparing. Releasing preparation restores ordinary intake control. Gated feed deploys the `indexer` servo and runs the two intake motors together. Reverse, cancellation and loss of readiness retract the indexer.
 
 Turret travel is limited to -170 through +170 degrees, using the two Axon analog feedback channels at 1:1. Calibration can narrow these limits. Start near physical forward and verify servo/encoder direction before sweeping.
@@ -89,7 +100,7 @@ Vision commits a HIVE update only after the matching robot-pose correction passe
 
 ## Confirmed hardware from main
 
-The integration of main `bea78b3` uses one forward `flywheel` motor (28 ticks/rev, 5800 RPM maximum), an `indexer` servo, opposed `turret1`/`turret2` servos with ±170° travel, and an Axon MINI hood with 30T:173T gearing. All Axon servo outputs use 500–2500 µs PWM.
+The integration of main `bea78b3` uses one forward `flywheel` motor (28 ticks/rev, 5800 RPM maximum), an `indexer` servo, opposed `turret1`/`turret2` servos with ±170° travel, an Axon MINI hood with 30T:173T gearing, and independent mirrored `kickup1`/`kickup2` servos with 20T:30T reductions. All Axon servo outputs use 500–2500 µs PWM. The kickup is not automatically coordinated with intake power; its .15/.85 endpoints are placeholders and output remains disabled until `kickupCalibrated` is enabled after measurement.
 
 Run **Tune 6 - Indexer endpoints** before Tune 5: hold RB and move the left stick slowly, A captures retracted, X captures deployed, Y exports. The old .15/.85 endpoints remain placeholders and automatic feeding requires `indexerCalibrated`. Tune 4 measures absolute launch angle even though the mechanical gearing is known.
 

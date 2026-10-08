@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.config.MechanismConfig;
 import org.firstinspires.ftc.teamcode.config.VisionConfig;
 import org.firstinspires.ftc.teamcode.lib.control.LoopTiming;
 import org.firstinspires.ftc.teamcode.lib.vision.BiobuzzVision;
@@ -14,6 +15,7 @@ public final class Robot implements AutoCloseable {
   public Shooter shooter;
   public Drive drive;
   public Intake intake;
+  public Kickup kickup;
   public Indexer indexer;
   public Turret turret;
   public Hood hood;
@@ -34,6 +36,7 @@ public final class Robot implements AutoCloseable {
       for (LynxModule h : hubs) h.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
       drive = new Drive(hw);
       intake = new Intake(hw);
+      kickup = new Kickup(hw);
       indexer = new Indexer(hw);
       turret = new Turret(hw, visionConfig);
       hood = new Hood(hw);
@@ -71,6 +74,7 @@ public final class Robot implements AutoCloseable {
     drive.update();
     indexer.write();
     intake.write();
+    kickup.write();
     turret.write();
     hood.write();
     flywheel.write();
@@ -89,6 +93,9 @@ public final class Robot implements AutoCloseable {
     telemetry.addData("Pose", drive.getPose());
     telemetry.addData("Turret feedback", turret.feedback.healthy);
     telemetry.addData("Flywheel RPM", flywheel.getRpm());
+    telemetry.addData(
+        "Kickup",
+        MechanismConfig.kickupCalibrated ? (kickup.isUp() ? "UP" : "DOWN") : "UNCALIBRATED");
   }
 
   public void close() {
@@ -97,6 +104,9 @@ public final class Robot implements AutoCloseable {
       () -> CommandScheduler.getInstance().cancelAll(),
       () -> {
         if (intake != null) intake.stop();
+      },
+      () -> {
+        if (kickup != null) kickup.stop();
       },
       () -> {
         if (indexer != null) indexer.retract();

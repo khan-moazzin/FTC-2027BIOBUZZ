@@ -21,6 +21,9 @@ public final class MechanismConfig {
   public static boolean indexerCalibrated = false;
   public static double indexerRetracted = .15,
       indexerDeployed = .85; // Main's placeholders; Tune 6.
+  // Placeholder endpoints; measure both before operating the kickup on the assembled robot.
+  public static boolean kickupCalibrated = false;
+  public static double kickupDown = .15, kickupUp = .85;
   public static double shotReadySeconds = .10;
   public static boolean stationaryShotsOnly = false;
   public static double maxShotTranslation = 6, maxShotRotation = Math.toRadians(15);

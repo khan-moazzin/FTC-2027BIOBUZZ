@@ -9,6 +9,7 @@ The editable robot surface is under `TeamCode/src/main/java/org/firstinspires/ft
 | `config/` | Copy generated `VisionConfig`, `MechanismConfig`, `ShotConfig`, and `PhysicsShotConfig` here. Their package names and export destinations are unchanged. `LoggingConfig` sets file/live recording limits. |
 | `subsystems/` | Robot-specific behavior, hardware names, control policy and SolversLib requirements. |
 | `opmodes/TeleOp.java` | Driver controls and the competition loop. Driver Station name remains `TeleopMain`. |
+| `opmodes/autos/` | Loop-driven competition auto, generated Pedro paths, reusable actions, mode factory and routines. |
 | `opmodes/tuning/` | All seven guided calibration/verification OpModes. Tune 5 calibrates empirical shot maps and the optional physics correction. |
 | `lib/control/` | Tested angle/target math, stable-HIVE map solver, optional bounded physics correction, inactive legacy solver, readiness, voltage cache and profiling. |
 | `lib/vision/` | Limelight observations, transforms, per-HIVE state and pose fitting. |

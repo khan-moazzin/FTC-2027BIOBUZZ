@@ -7,10 +7,11 @@ verified API details, or the environment history. Not needed every session.
 
 ## Decision log
 
-**Architecture went state-machine → Ivy command-based (2026-09-16).** The season
+**Architecture went state-machine → Ivy → SolversLib command-based.** The season
 started aiming to reuse MiniRex's 2025–26 state-machine architecture
-(github.com/khan-moazzin/FTC2026) for speed. That was reversed deliberately in
-favor of Ivy. Last season's naming, formatting and file layout were kept.
+(github.com/khan-moazzin/FTC2026) for speed, briefly used Ivy, then moved to
+SolversLib 0.3.6 and its Pedro command adapter. Last season's naming and compact
+robot/subsystem layout were kept.
 
 **`Constants` moved out of `pedro/` into `org.firstinspires.ftc.teamcode`.** The
 Pedro Quickstart ships `pedro/Constants.java`; this repo's copy had diverged and
@@ -34,8 +35,14 @@ Pedro example OpModes call `Constants.create(...)` and need updating.
 
 **`Drivetrain` → `Drive`** (user preference).
 
-**Intake and indexer are one motor.** Started as two; simplified to one motor
-driving both, so they always turn together.
+**Intake and indexer are separate mechanisms.** The intake uses two goBILDA motors
+that run together. An Axon MINI MK2 indexer servo moves the guide between its
+retracted and deployed endpoints.
+
+**The kickup is independent from the intake.** Two mirrored Axon MINI MK2 servos
+move arms and a bar ahead of the fixed intake between down and up positions. Each
+servo drives its arm through a 20T:30T pulley reduction; software uses calibrated
+servo endpoints instead of inferred arm angles.
 
 **Shoot-on-the-move is deferred, not adopted.** FRC 5817's 2026 robot has a full
 SOTM solver. FTC robots move far slower, so motion compensation buys much less
@@ -122,7 +129,7 @@ required fields throw `IllegalStateException: Config variable has not been set`
 at *runtime*, not compile time. The Quickstart ships `Constants.java` as
 `return null;` because all of it is expected to come from AutoTune.
 
-### Ivy
+### Ivy (historical; superseded by SolversLib)
 
 - No `Subsystem` class — requirements are `Set<Object>`, so `.requiring(this)`
 - No trigger/binding layer — edge-detect buttons in the OpMode loop
@@ -138,8 +145,8 @@ at *runtime*, not compile time. The Quickstart ships `Constants.java` as
 
 ### Hardware
 
-Axon MAX MK2: 500–2500µs PWM over 360°, which is exactly FTC's default `Servo`
-range. Plain `setPosition()` gets full travel — no `ServoImplEx`/`setPwmRange`.
+Axon MAX MK2: 500–2500µs PWM over 360°. FTC's SDK default is narrower, so the
+turret, hood, indexer and kickup explicitly program a 500–2500µs `PwmRange`.
 The servos close their own position loop, so there is no turret PID in our code.
 Axon servos do have a fourth-wire analog position output, but Axon's docs for it
 say "coming soon" and it is not wired or used here.

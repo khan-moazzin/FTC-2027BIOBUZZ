@@ -242,6 +242,9 @@ public final class RobotLogging implements AutoCloseable {
       n(v, "Hood/CommandPosition", r.hood.getPosition());
       v.put("Hood/Settled", r.hood.ready(now));
       n(v, "Intake/CommandPower", r.intake.getPower());
+      n(v, "Kickup/CommandPosition", r.kickup.getPosition());
+      v.put("Kickup/Up", r.kickup.isUp());
+      v.put("Kickup/Calibrated", MechanismConfig.kickupCalibrated);
       n(v, "Loop/Read_ms", r.timing.readMs);
       n(v, "Loop/Commands_ms", r.timing.commandMs);
       n(v, "Loop/Write_ms", r.timing.writeMs);

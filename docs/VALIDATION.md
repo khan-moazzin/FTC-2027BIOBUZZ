@@ -71,3 +71,13 @@ Added per-cycle full-robot snapshots, bounded asynchronous CSV writing, live FTC
 - A valid physics model can only add a motion-dependent correction bounded by the active empirical zone; missing or invalid physics falls back to the calibrated maps. Stable-HIVE and readiness gates remain in force.
 - Chassis aim assist was removed. G1 right-stick X is always the driver's drivetrain-yaw command; turret tracking remains independent.
 - `:TeamCode:assembleDebug` passed and all 57 unit tests passed with zero failures/errors/skips. `:TeamCode:lintDebug` completed with zero errors and the existing 16 warnings; Kotlin dependency-metadata diagnostics still limit dependency analysis. Physical defaults remain uncalibrated, so this does not establish shot accuracy or robot readiness.
+
+## Pedro competition autonomous (2026-10-06)
+
+- Added the ten supplied Pedro Path Generator segments as one continuous blue route with tested
+  red mirroring, reusable intake/shoot actions, a mode factory and loop-driven `AutoMain`.
+- Autonomous shooting uses the normal readiness gate and bounded 4.0/4.5-second windows. The route
+  never uses Ivy, a blocking loop, a background hardware thread or a second Follower.
+- Debug assembly and all 59 unit tests passed. Path continuity, finite endpoints and red/blue
+  symmetry are covered on desktop. Actual completion time, path tracking, intake timing and shot
+  success still require the tuned robot; the requested shooting windows alone total 16.5 seconds.

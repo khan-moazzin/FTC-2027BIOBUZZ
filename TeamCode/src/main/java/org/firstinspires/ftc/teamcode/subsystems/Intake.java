@@ -19,8 +19,8 @@ public final class Intake extends SubsystemBase {
     }
   }
 
-  public static double requested(boolean collect, boolean reverse) {
-    return reverse ? -.9 : collect ? 1 : 0;
+  public static double requested(boolean intake, boolean outtake) {
+    return outtake ? -.9 : intake ? 1 : 0;
   }
 
   public void set(double p) {

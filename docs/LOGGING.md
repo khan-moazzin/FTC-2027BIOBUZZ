@@ -32,7 +32,7 @@ References: [AdvantageScope live sources](https://docs.advantagescope.org/overvi
 | `Shot` | Requested preparation/feed, cancellation, selected-cell mode, solution validity/reason, readiness blockers, target angle/rate, RPM, hood, flight time, distance/height, predicted target, muzzle position/velocity, iteration count and impact HIVE variance. |
 | `Turret` | Both analog voltages, encoder disagreement, measured angle/rate, target, lag-compensated/rate-limited command, servo command, health and readiness. |
 | `Flywheel`, `Battery` | Target versus single-motor RPM, commanded duty, readiness and cached voltage. |
-| `Hood`, `Intake`, `Indexer` | Commanded servo position/settling intake power and indexer commanded position/calibration state. Hood position is a command, not measured feedback. |
+| `Hood`, `Intake`, `Kickup`, `Indexer` | Commanded servo position/settling, intake power, independent kickup state, and indexer commanded position/calibration state. Hood and kickup positions are commands, not measured feedback. |
 | `Drive`, `Driver1`, `Driver2` | Manual forward/strafe/yaw commands, orientation/path flags and sticks, triggers and control buttons. Drive commands describe manual requests, not individual wheel outputs or autonomous follower commands. |
 | `Loop` | Read/estimation, command and output work; work total and previous start-to-start period. |
 | `Logging` | Sequence, queue occupancy, file bytes, recorded/dropped counts, sink status and previous snapshot collection duration. |
