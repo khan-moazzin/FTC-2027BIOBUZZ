@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tuning;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.config.MechanismConfig;
 import org.firstinspires.ftc.teamcode.lib.calibration.*;
-import org.firstinspires.ftc.teamcode.subsystems.Hood;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Hood;
 
 @TeleOp(name = "Tune 4 - Hood angle mapping", group = "Calibration")
 public final class HoodTuner extends GuidedOpMode {

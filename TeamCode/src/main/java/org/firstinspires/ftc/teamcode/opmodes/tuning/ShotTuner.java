@@ -6,6 +6,8 @@ import org.firstinspires.ftc.teamcode.config.*;
 import org.firstinspires.ftc.teamcode.lib.calibration.*;
 import org.firstinspires.ftc.teamcode.lib.control.*;
 import org.firstinspires.ftc.teamcode.subsystems.*;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Hood;
 
 @TeleOp(name = "Tune 5 - Shot map calibration", group = "Calibration")
 public final class ShotTuner extends GuidedOpMode {

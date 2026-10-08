@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.shooter;
 
 import com.qualcomm.robotcore.hardware.*;
 import com.seattlesolvers.solverslib.command.SubsystemBase;

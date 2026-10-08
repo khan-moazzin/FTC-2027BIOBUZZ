@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.shooter;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.seattlesolvers.solverslib.command.*;
@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.config.*;
 import org.firstinspires.ftc.teamcode.lib.control.*;
 import org.firstinspires.ftc.teamcode.lib.field.Field;
 import org.firstinspires.ftc.teamcode.lib.vision.HiveState;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 public final class Shooter extends SubsystemBase {
   private final Robot robot;

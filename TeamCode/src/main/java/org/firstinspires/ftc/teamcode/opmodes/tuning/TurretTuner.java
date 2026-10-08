@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.config.MechanismConfig;
 import org.firstinspires.ftc.teamcode.config.VisionConfig;
 import org.firstinspires.ftc.teamcode.lib.calibration.*;
 import org.firstinspires.ftc.teamcode.lib.control.Angles;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Turret;
 
 @TeleOp(name = "Tune 1 - Turret feedback and lag", group = "Calibration")
 public final class TurretTuner extends GuidedOpMode {

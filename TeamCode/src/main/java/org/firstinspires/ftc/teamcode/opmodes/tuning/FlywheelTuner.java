@@ -5,7 +5,7 @@ import java.util.*;
 import org.firstinspires.ftc.teamcode.config.MechanismConfig;
 import org.firstinspires.ftc.teamcode.lib.calibration.*;
 import org.firstinspires.ftc.teamcode.lib.math.LeastSquares;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Flywheel;
 
 @TeleOp(name = "Tune 3 - Flywheel feedforward", group = "Calibration")
 public final class FlywheelTuner extends GuidedOpMode {

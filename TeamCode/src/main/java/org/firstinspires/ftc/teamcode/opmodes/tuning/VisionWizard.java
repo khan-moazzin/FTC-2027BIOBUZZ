@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.lib.calibration.*;
 import org.firstinspires.ftc.teamcode.lib.field.Field;
 import org.firstinspires.ftc.teamcode.lib.math.*;
 import org.firstinspires.ftc.teamcode.lib.vision.*;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Turret;
 
 @TeleOp(name = "Tune 2 - Complete BIOBUZZ Vision Wizard", group = "Calibration")
 public final class VisionWizard extends GuidedOpMode {

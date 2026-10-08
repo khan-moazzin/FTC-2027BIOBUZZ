@@ -10,6 +10,10 @@ import org.firstinspires.ftc.teamcode.config.VisionConfig;
 import org.firstinspires.ftc.teamcode.lib.control.LoopTiming;
 import org.firstinspires.ftc.teamcode.lib.vision.BiobuzzVision;
 import org.firstinspires.ftc.teamcode.subsystems.*;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Hood;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Turret;
 
 public final class Robot implements AutoCloseable {
   public Shooter shooter;
